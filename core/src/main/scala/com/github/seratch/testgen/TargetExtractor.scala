@@ -5,7 +5,7 @@ import java.io.File
 
 class TargetExtractor {
 
-  // TODO several package
+  // TODO package block
 
   def extract(path: String): List[Target] = {
     val lines = readLines(path)
@@ -13,13 +13,20 @@ class TargetExtractor {
     defOnly.split("package").toList flatMap {
       case eachDefOnly => {
         val fullPackageName = eachDefOnly.trim.split("\\s+").toList.head
-        val parser = new TargetParser(fullPackageName)
-        val parserResult = parser.parse(eachDefOnly.replaceFirst(fullPackageName, ""))
+        val importList = extractImportList(defOnly)
+        val parser = new TargetParser(fullPackageName, importList)
+        var defOnlyToParse = eachDefOnly.replaceFirst(fullPackageName, "")
+        importList foreach {
+          case toImport => defOnlyToParse = defOnlyToParse.replaceAll(
+            "\\s*import\\s+" + toImport + "\\s*", "")
+        }
+        val parserResult = parser.parse(defOnlyToParse)
         parserResult.getOrElse(Nil)
       }
     }
   }
 
+  // TODO configure encoding
   def readLines(path: String): List[String] = Source.fromFile(new File(path), "UTF-8").getLines.toList
 
   def extractDefOnly(lines: List[String]): String = {
@@ -27,7 +34,7 @@ class TargetExtractor {
     var blockDepth = 0
     (lines map {
       line => {
-        var line_ = line
+        var line_ = line.replaceAll("\\s*:\\s*", ":")
         if (line_.matches("\\s*//\\s*.*")) {
           // exclude line comments
           ""
@@ -65,6 +72,14 @@ class TargetExtractor {
         }
       }
     }).mkString(" ")
+  }
+
+  def extractImportList(defOnly: String): List[String] = {
+    defOnly.split("import\\s+").toList drop (1) map {
+      case each => {
+        each.trim.split("\\s+").toList.head
+      }
+    }
   }
 
 }

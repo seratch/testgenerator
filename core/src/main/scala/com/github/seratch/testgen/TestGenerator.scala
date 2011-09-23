@@ -25,7 +25,7 @@ class TestGenerator {
     val toImportList = List(
       "org.scalatest._",
       "org.scalatest.matchers._"
-    )
+    ) ::: target.importList
     val code = new CodeBuilder
     code += "package " += target.fullPackageName += CRLF
     code += CRLF
@@ -44,7 +44,24 @@ class TestGenerator {
     code += INDENT += """test("available") {""" += CRLF
     target.defType match {
       case DefType.Class => {
-        code += INDENT * 2 += "val instance = new " += target.typeName += "()" += CRLF
+        target.parameters match {
+          case Nil => {
+            code += INDENT * 2 += "val instance = new " += target.typeName += "()" += CRLF
+          }
+          case params => {
+            params foreach {
+              case param => {
+                code += INDENT * 2 += "val " += param.name += ": " += param.typeName += " = null" += CRLF
+              }
+            }
+            code += INDENT * 2 += "val instance = new " += target.typeName += "("
+            val paramArea = new CodeBuilder
+            params foreach {
+              case param => paramArea += param.name += ","
+            }
+            code += paramArea.toString.replaceFirst(",$", "") += ")" += CRLF
+          }
+        }
         code += INDENT * 2 += "instance should not be null" += CRLF
       }
       case DefType.Object => {

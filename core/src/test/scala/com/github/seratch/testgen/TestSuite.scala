@@ -13,8 +13,18 @@ class TestSuite extends FunSuite with ShouldMatchers {
   val extractor = new TargetExtractor
   val generator = new TestGenerator
 
-  test("createIfNotExist") {
+  test("createIfNotExist (no arg)") {
     val targets = extractor.extract("src/test/scala/com/example/noargs.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
+  }
+
+  test("createIfNotExist (with args)") {
+    val targets = extractor.extract("src/test/scala/com/example/withargs.scala")
     targets foreach {
       case target => {
         val test = generator.generate(target)
