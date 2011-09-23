@@ -1,2 +1,2 @@
 set SCRIPT_DIR=%~dp0
-java -Xmx512M -jar "%SCRIPT_DIR%\lib\sbt-launch.jar" %*
+java -Xmx1024M -jar "%SCRIPT_DIR%\lib\sbt-launch.jar" %*
