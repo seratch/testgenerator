@@ -4,12 +4,11 @@ object Command {
 
   def main(args: Array[String]) {
     val path = args(0)
-    val extractor = new TargetExtractor
-    val testgen = new TestGenerator
-    val targets = extractor.extract(path)
+    val generator = new TestGenerator
+    val targets = new TargetExtractor().extract(path)
     targets foreach {
       case target => {
-        testgen.generate(target).createFileIfNotExist()
+        generator.generate(target).createFileIfNotExist()
       }
     }
   }

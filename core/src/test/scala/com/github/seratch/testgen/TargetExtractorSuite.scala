@@ -12,6 +12,11 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
 
   val extractor = new TargetExtractor
 
+  test("extract import list") {
+    val result = extractor.extractImportList("package com.exemple import hoge._ import java.io.{InputStream, OutputStream}")
+    println(result)
+  }
+
   test("read target file and extact def only") {
     val lines = extractor.readLines("src/test/scala/com/example/noargs.scala")
     val result = extractor.extractDefOnly(lines)

@@ -77,7 +77,8 @@ class TargetExtractor {
   def extractImportList(defOnly: String): List[String] = {
     defOnly.split("import\\s+").toList drop (1) map {
       case each => {
-        each.trim.split("\\s+").toList.head
+        val toImport = each.trim.split("\\s+").toList.head
+        if (toImport.contains("{")) toImport.split("\\{").toList.head + "_" else toImport
       }
     }
   }

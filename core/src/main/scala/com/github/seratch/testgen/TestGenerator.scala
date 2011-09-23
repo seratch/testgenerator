@@ -24,7 +24,9 @@ class TestGenerator {
   def generate(target: Target): Test = {
     val toImportList = List(
       "org.scalatest._",
-      "org.scalatest.matchers._"
+      "org.scalatest.matchers._",
+      "org.junit.runner.RunWith",
+      "org.scalatest.junit.JUnitRunner"
     ) ::: target.importList
     val code = new CodeBuilder
     code += "package " += target.fullPackageName += CRLF
@@ -33,6 +35,7 @@ class TestGenerator {
       case toImport => code += "import " += toImport += CRLF
     }
     code += CRLF
+    code += "@RunWith(classOf[JUnitRunner])" += CRLF
     // TODO
     val toExtend = "extends FunSuite with ShouldMatchers"
     val suffix = "Suite"

@@ -13,6 +13,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def typeName: P[String] = white.maybeRep.r ~> ident <~ white.maybeRep.r
 
+  // TODO default value
+
   def args = repsep(ident ~ ":" ~ ident, ",") ^^ {
     case argList => argList map {
       case name ~ ":" ~ typeName => (name, typeName)
