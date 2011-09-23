@@ -1,15 +1,7 @@
-# scala-project-template
+# scala-testgen-core
 
-A project template for quickstart.
+Scala unit test generator
 
-## Run test
+## run SNAPSHOT
 
-### sbt (https://github.com/harrah/xsbt)
-
-    ./sbt test
-
-## Maven
-
-    maven test
-
-Have fun!
+   java -jar snapshot/scala-testgen-core-0.1-SNAPSHOT.jar src/main/scala/example/Name.scala

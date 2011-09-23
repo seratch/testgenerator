@@ -13,7 +13,10 @@ case class Test(fullPackageName: String, testClassName: String, sourceCode: Stri
         file.getParentFile.mkdir()
       }
       IO.using(new OutputStreamWriter(new FileOutputStream(file))) {
-        writer => writer.write(sourceCode)
+        writer => {
+          writer.write(sourceCode)
+          println(testClassName + " is created.")
+        }
       }
     }
   }
