@@ -35,6 +35,7 @@ project/boot
 .svn
 .CVS
 .hg*
+.history
 
 # switch to regexp syntax.
 #  syntax: regexp

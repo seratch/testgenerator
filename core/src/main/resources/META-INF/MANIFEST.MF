@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Created-By: Apache Maven
-Built-By: Kazuhiro Sera
-Main-Class: com.github.seratch.testgen.Command
-Class-Path: scala-library.jar
