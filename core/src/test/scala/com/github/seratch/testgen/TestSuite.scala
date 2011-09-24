@@ -11,10 +11,13 @@ class TestSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   val config = new Config
-  val extractor = new TargetExtractor(config)
   val generator = new TestGenerator(config)
 
   test("createIfNotExist (no arg)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
     val targets = extractor.extract("src/test/scala/com/example/noargs.scala")
     targets foreach {
       case target => {
@@ -25,6 +28,10 @@ class TestSuite extends FunSuite with ShouldMatchers {
   }
 
   test("createIfNotExist (with args)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
     val targets = extractor.extract("src/test/scala/com/example/withargs.scala")
     targets foreach {
       case target => {

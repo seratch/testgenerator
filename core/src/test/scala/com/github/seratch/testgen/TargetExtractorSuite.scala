@@ -13,6 +13,11 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   val config = new Config
   val extractor = new TargetExtractor(config)
 
+  test("extract directory") {
+    val targets = extractor.extract("src/main/scala/com/github/seratch")
+    targets.size should be > 0
+  }
+
   test("extract the list to import") {
     val result = extractor.extractImportList(
       "package com.exemple import hoge._ import java.io.{InputStream, OutputStream}"
@@ -107,6 +112,10 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   }
 
   test("extract all the targets from the target file") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
     val result = extractor.extract("src/test/scala/com/example/noargs.scala")
     result.size should equal(6)
     result(0).fullPackageName should equal("com.example")

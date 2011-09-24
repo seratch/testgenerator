@@ -20,12 +20,26 @@ import java.io.File
 
 class TargetExtractor(val config: Config) {
 
-  def extract(pathOrPackage: String): List[Target] = {
-    // TODO package specified
-    // TODO directory specified
-    val lines = readLines(pathOrPackage)
-    val defOnly = extractDefOnly(lines)
-    extractFromDefOnly(defOnly)
+  def extractFile(file: File): List[Target] = {
+    if (file.isDirectory) {
+      file.listFiles.toList flatMap {
+        case child if child.isDirectory => extractFile(child)
+        case child => {
+          val lines = readLines(child.getPath)
+          val defOnly = extractDefOnly(lines)
+          extractFromDefOnly(defOnly)
+        }
+      }
+    } else {
+      val lines = readLines(file.getPath)
+      val defOnly = extractDefOnly(lines)
+      extractFromDefOnly(defOnly)
+    }
+  }
+
+  def extract(path: String): List[Target] = {
+    if (!path.startsWith(config.srcDir)) extractFile(new File(config.srcDir + "/" + path))
+    else extractFile(new File(path))
   }
 
   def extractFromDefOnly(defOnly: String): List[Target] = {
