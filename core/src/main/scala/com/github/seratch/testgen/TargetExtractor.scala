@@ -21,21 +21,19 @@ import java.io.File
 class TargetExtractor(val config: Config) {
 
   def extract(pathOrPackage: String): List[Target] = {
-    val isPackageAndWithoutDotScala = {
-      pathOrPackage.matches("[\\.a-zA-Z0-9\\$_]+") && pathOrPackage.matches(".+\\.scala$")
-    }
-    val path_ = if (isPackageAndWithoutDotScala) {
-      pathOrPackage.replaceAll("\\.", "/") + ".scala"
-    } else {
-      pathOrPackage.replaceAll("\\.", "/").replaceFirst("/scala$", ".scala")
-    }
+    val path_ = pathOrPackage.replaceAll("\\.", "/").replaceFirst("/scala$", ".scala")
     if (!path_.startsWith(config.srcDir)) extractFile(new File(config.srcDir + "/" + path_))
     else extractFile(new File(path_))
   }
 
   def extractFile(file: File): List[Target] = {
-    if (file.isDirectory) {
-      file.listFiles.toList flatMap {
+
+    var file_ = file
+    val fileWithDotScala = new File(file.getPath + ".scala")
+    if (!file.exists && fileWithDotScala.exists) file_ = fileWithDotScala
+
+    if (file_.isDirectory) {
+      file_.listFiles.toList flatMap {
         case child if child.isDirectory => extractFile(child)
         case child => {
           val lines = readLines(child.getPath)
@@ -44,7 +42,7 @@ class TargetExtractor(val config: Config) {
         }
       }
     } else {
-      val lines = readLines(file.getPath)
+      val lines = readLines(file_.getPath)
       val defOnly = extractDefOnly(lines)
       extractFromDefOnly(defOnly)
     }
