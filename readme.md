@@ -10,11 +10,11 @@ This is the sbt plugin for "testgen".
 
 ### prepare xsbt 0.10.1
 
-    https://github.com/harrah/xsbt/wiki/Setup
+See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
 
 ### mkdir -p {root}/project/plugins
 
-if not exist.
+Create the directory if it doesn't exist yet.
 
 ### vim {root}/project/plugins/testgen.sbt
 
@@ -34,13 +34,24 @@ if not exist.
 
 ### run sbt and "testgen" command
 
+File path or directory:
+
     sbt
     > testgen src/main/scala/com/example/MyApp.scala
     > "com.example.MyAppSuite" is created.
-    
+
+Class:
+
     sbt
     > testgen com.example.MyApp
     > "com.example.MyAppSuite" is created.
+
+Package:
+
+    sbt
+    > testgen com.example
+    > "com.example.MyAppSuite" is created.
+    > "com.example.MyApp2Suite" is created.
 
 ### then Happy testing! :)
 
