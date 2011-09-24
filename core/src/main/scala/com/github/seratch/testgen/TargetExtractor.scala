@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Kazuhiro SERA.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package com.github.seratch.testgen
 
 import io.Source
@@ -5,7 +20,7 @@ import java.io.File
 
 class TargetExtractor {
 
-  // TODO package block
+  // TODO directory specified
 
   def extract(path: String): List[Target] = {
     val lines = readLines(path)
@@ -29,26 +44,31 @@ class TargetExtractor {
   // TODO configure encoding
   def readLines(path: String): List[String] = Source.fromFile(new File(path), "UTF-8").getLines.toList
 
+  // TODO package block
   def extractDefOnly(lines: List[String]): String = {
     var isComment = false
     var blockDepth = 0
     (lines map {
       line => {
+        // mutable line string
         var line_ = line.replaceAll("\\s*:\\s*", ":")
         if (line_.matches("\\s*//\\s*.*")) {
-          // exclude line comments
+          // line comment
           ""
         } else if (line_.contains("/*")) {
+          // comment start
           isComment = true
           val arr = line_.split("/\\*")
           if (arr.length > 0) arr(0) else ""
         } else {
           if (line_.contains("*/")) {
+            // comment end
             isComment = false
             val arr = line_.split("\\*/")
             if (arr.length > 0) line_ = arr(arr.length - 1) else line_ = ""
           }
           if (isComment) {
+            // inside of comment
             ""
           } else {
             val startCount = line_.count(c => c == '{')
@@ -78,6 +98,7 @@ class TargetExtractor {
     defOnly.split("import\\s+").toList drop (1) map {
       case each => {
         val toImport = each.trim.split("\\s+").toList.head
+        // e.g. import java.io.{InputStream, OutputStream}
         if (toImport.contains("{")) toImport.split("\\{").toList.head + "_" else toImport
       }
     }
