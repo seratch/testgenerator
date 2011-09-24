@@ -4,11 +4,15 @@
 
 This is the sbt plugin for testgen. testgen is a Scala unit test generator.
 
-## How to use
+## How to use?
 
 ### prepare xsbt 0.10.1
 
+    https://github.com/harrah/xsbt/wiki/Setup
+
 ### mkdir -p {root}/project/plugins
+
+if not exist.
 
 ### vim {root}/project/plugins/testgen.sbt
 
@@ -32,6 +36,7 @@ This is the sbt plugin for testgen. testgen is a Scala unit test generator.
     > testgen src/main/scala/com/example/MyApp.scala
     > MyAppSuite is created.
 
-Happy testing! :)
+### then Happy testing! :)
 
+Have fun!
 
