@@ -98,6 +98,7 @@ class TestGenerator(val config: Config) {
     code += CRLF
     code += "}" += CRLF
     new Test(
+      config = config,
       fullPackageName = target.fullPackageName,
       testClassName = testClassName,
       sourceCode = code.toString

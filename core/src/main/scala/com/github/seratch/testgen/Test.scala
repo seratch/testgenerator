@@ -17,10 +17,14 @@ package com.github.seratch.testgen
 
 import java.io.{OutputStreamWriter, FileOutputStream, File}
 
-case class Test(fullPackageName: String, testClassName: String, sourceCode: String) {
+case class Test(config: Config,
+                fullPackageName: String,
+                testClassName: String,
+                sourceCode: String) {
 
   def createFileIfNotExist(): Unit = {
-    val file = new File("src/test/scala/" + fullPackageName.replaceAll("\\.", "/") + "/" + testClassName + ".scala")
+    val filepath = config.srcTestDir + "/" + fullPackageName.replaceAll("\\.", "/") + "/" + testClassName + ".scala"
+    val file = new File(filepath)
     if (file.exists) {
       println(testClassName + " is already in being.")
     } else {
