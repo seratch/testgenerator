@@ -21,8 +21,8 @@ object Command {
 
     val env_srcDir = System.getProperty("testgen.srcDir")
     val env_srcTestDir = System.getProperty("testgen.srcTestDir")
-    val srcDir = if (env_srcDir.isEmpty) "src/main/scala" else env_srcDir
-    val srcTestDir = if (env_srcTestDir.isEmpty) "src/test/scala" else env_srcTestDir
+    val srcDir = if (env_srcDir == null) "src/main/scala" else env_srcDir
+    val srcTestDir = if (env_srcTestDir == null) "src/test/scala" else env_srcTestDir
     val config = new Config(
       srcDir = srcDir,
       srcTestDir = srcTestDir
