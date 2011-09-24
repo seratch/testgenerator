@@ -21,27 +21,29 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   type P[T] = Parser[T]
 
-  def value = "\\w+".r
+  def variableName = "\\w+".r
 
-  def argsWithDefaultValue = ident ~ ":" ~ ident <~ "=" <~ argDefaultValue <~ ","
+  def typeName = (variableName <~ "[" <~ rep(variableName | ",") <~ "]") | variableName
 
-  def argsWithNoDefaultValue = ident ~ ":" ~ ident <~ ","
+  def argsWithDefaultValue = variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
 
-  def args = rep(argsWithDefaultValue | argsWithNoDefaultValue) ^^ {
+  def argsWithoutDefaultValue = variableName ~ ":" ~ typeName <~ ","
+
+  def args = rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
     case argList => argList map {
-      case name ~ ":" ~ typeName => (name.toString, typeName)
+      case name ~ ":" ~ typeName => (name, typeName)
     }
   }
 
   def literal = "[\\w\"']+".r
 
-  def newLiteral: P[Any] = rep(value) ~ "(" ~ argsInNewLiteral ~ ")"
+  def newLiteral: P[Any] = rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")"
 
   def argsInNewLiteral = rep(((newLiteral | literal) ~ ",") | newLiteral | literal)
 
   def argDefaultValue = newLiteral | literal
 
-  def classDef = "class" ~> value ^^ {
+  def classDef = "class" ~> typeName ^^ {
     name => {
       new Target(
         fullPackageName = fullPackageName,
@@ -52,7 +54,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def classWithConstructorDef = "class" ~> value ~ "(" ~ args <~ ")" ^^ {
+  def classWithConstructorDef = "class" ~> typeName ~ "(" ~ args <~ ")" ^^ {
     case name ~ "(" ~ args => {
       new Target(
         fullPackageName = fullPackageName,
@@ -66,7 +68,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def traitDef = "trait" ~> value ^^ {
+  def traitDef = "trait" ~> typeName ^^ {
     name => new Target(
       fullPackageName = fullPackageName,
       importList = importList,
@@ -75,7 +77,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def objectDef = "object" ~> value ^^ {
+  def objectDef = "object" ~> typeName ^^ {
     name => new Target(
       fullPackageName = fullPackageName,
       importList = importList,
@@ -87,7 +89,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   def allDef = classWithConstructorDef | classDef | traitDef | objectDef
 
   def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
-    parseAll(rep(t),input.replaceAll("([^,])\\s*\\)","$1,)"))
+    // e.g. class Person(arg: Name(f:String = "", l:String), age:Int,)
+    parseAll(rep(t), input.replaceAll("([^,])\\s*\\)", "$1,)"))
   }
 
   def parse(input: String): ParseResult[List[Target]] = parse(allDef, input)
