@@ -17,7 +17,7 @@ package com.github.seratch.testgen
 
 import java.lang.StringBuilder
 
-class TestGenerator {
+class TestGenerator(val config: Config) {
 
   private val CRLF = "\r\n"
 
@@ -52,7 +52,10 @@ class TestGenerator {
     code += CRLF
     code += "@RunWith(classOf[JUnitRunner])" += CRLF
     // TODO
-    val toExtend = "extends FunSuite with ShouldMatchers"
+    val toExtend = config.testTemplate match {
+      case TestTemplate.FunSuite => "extends FunSuite with ShouldMatchers"
+      case _ => throw new UnsupportedOperationException
+    }
     val suffix = "Suite"
     val testClassName = target.typeName + suffix
     code += "class " += testClassName += " " += toExtend += " {" += CRLF

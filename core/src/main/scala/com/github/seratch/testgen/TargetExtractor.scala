@@ -18,12 +18,12 @@ package com.github.seratch.testgen
 import io.Source
 import java.io.File
 
-class TargetExtractor {
+class TargetExtractor(val config: Config) {
 
-  // TODO directory specified
-
-  def extract(path: String): List[Target] = {
-    val lines = readLines(path)
+  def extract(pathOrPackage: String): List[Target] = {
+    // TODO package specified
+    // TODO directory specified
+    val lines = readLines(pathOrPackage)
     val defOnly = extractDefOnly(lines)
     extractFromDefOnly(defOnly)
   }

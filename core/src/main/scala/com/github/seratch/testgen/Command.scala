@@ -18,9 +18,20 @@ package com.github.seratch.testgen
 object Command {
 
   def main(args: Array[String]) {
-    val path = args(0)
-    val generator = new TestGenerator
-    val targets = new TargetExtractor().extract(path)
+
+    val env_srcDir = System.getProperty("testgen.srcDir")
+    val env_srcTestDir = System.getProperty("testgen.srcTestDir")
+    val srcDir = if (env_srcDir.isEmpty) "src/main/scala" else env_srcDir
+    val srcTestDir = if (env_srcTestDir.isEmpty) "src/test/scala" else env_srcTestDir
+    val config = new Config(
+      srcDir = srcDir,
+      srcTestDir = srcTestDir
+    )
+
+    val generator = new TestGenerator(config)
+
+    val pathOrPackage = args(0)
+    val targets = new TargetExtractor(config).extract(pathOrPackage)
     targets match {
       case Nil => {
         println("Cannot find the targets to generate test...")

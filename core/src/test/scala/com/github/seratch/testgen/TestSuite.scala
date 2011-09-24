@@ -10,8 +10,9 @@ class TestSuite extends FunSuite with ShouldMatchers {
 
   type ? = this.type
 
-  val extractor = new TargetExtractor
-  val generator = new TestGenerator
+  val config = new Config
+  val extractor = new TargetExtractor(config)
+  val generator = new TestGenerator(config)
 
   test("createIfNotExist (no arg)") {
     val targets = extractor.extract("src/test/scala/com/example/noargs.scala")

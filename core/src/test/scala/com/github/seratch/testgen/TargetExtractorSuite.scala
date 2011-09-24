@@ -10,7 +10,8 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
 
   type ? = this.type
 
-  val extractor = new TargetExtractor
+  val config = new Config
+  val extractor = new TargetExtractor(config)
 
   test("extract the list to import") {
     val result = extractor.extractImportList(
