@@ -99,7 +99,8 @@ class TargetExtractor {
       case each => {
         val toImport = each.trim.split("\\s+").toList.head
         // e.g. import java.io.{InputStream, OutputStream}
-        if (toImport.contains("{")) toImport.split("\\{").toList.head + "_" else toImport
+        if (toImport.contains("{")) toImport.split("\\{").toList.head + "_"
+        else toImport
       }
     }
   }

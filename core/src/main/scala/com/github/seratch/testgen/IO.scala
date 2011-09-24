@@ -20,13 +20,15 @@ object IO {
   /**
    * Loan Pattern (invoke close method safely)
    */
-  def using[CLOSABLE <: {def close() : Unit}, RETURNED](resource: CLOSABLE)(func: CLOSABLE => RETURNED): RETURNED = {
+  def using[Closable <: {def close() : Unit}, Result](closable: Closable)(function: Closable => Result): Result = {
     try {
-      func(resource)
+      function(closable)
     } finally {
-      resource match {
+      closable match {
         case null =>
-        case _ => try resource.close() catch {
+        case _ => try {
+          closable.close()
+        } catch {
           case _ =>
         }
       }
