@@ -26,7 +26,7 @@ case class Test(config: Config,
     val filepath = config.srcTestDir + "/" + fullPackageName.replaceAll("\\.", "/") + "/" + testClassName + ".scala"
     val file = new File(filepath)
     if (file.exists) {
-      println(testClassName + " is already in being.")
+      println("\"" + fullPackageName + "." + testClassName + "\"" + " is already in being.")
     } else {
       if (!file.getParentFile.exists) {
         file.getParentFile.mkdir()
@@ -34,7 +34,7 @@ case class Test(config: Config,
       IO.using(new OutputStreamWriter(new FileOutputStream(file))) {
         writer => {
           writer.write(sourceCode)
-          println(testClassName + " is created.")
+          println("\"" + fullPackageName + "." + testClassName + "\"" + " is created.")
         }
       }
     }
