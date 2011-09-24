@@ -19,24 +19,29 @@ import util.parsing.combinator.JavaTokenParsers
 
 case class TargetParser(fullPackageName: String, importList: List[String]) extends JavaTokenParsers {
 
-  object white {
-    val rep = "\\s+"
-    val maybeRep = "\\s*"
-  }
-
   type P[T] = Parser[T]
 
-  def typeName: P[String] = white.maybeRep.r ~> ident <~ white.maybeRep.r
+  def value = "\\w+".r
 
-  // TODO default value
+  def argsWithDefaultValue = ident ~ ":" ~ ident <~ "=" <~ argDefaultValue <~ ","
 
-  def args = repsep(ident ~ ":" ~ ident, ",") ^^ {
+  def argsWithNoDefaultValue = ident ~ ":" ~ ident <~ ","
+
+  def args = rep(argsWithDefaultValue | argsWithNoDefaultValue) ^^ {
     case argList => argList map {
-      case name ~ ":" ~ typeName => (name, typeName)
+      case name ~ ":" ~ typeName => (name.toString, typeName)
     }
   }
 
-  def classDef = ("class" + white.rep).r ~> typeName ^^ {
+  def literal = "[\\w\"']+".r
+
+  def newLiteral: P[Any] = rep(value) ~ "(" ~ argsInNewLiteral ~ ")"
+
+  def argsInNewLiteral = rep(((newLiteral | literal) ~ ",") | newLiteral | literal)
+
+  def argDefaultValue = newLiteral | literal
+
+  def classDef = "class" ~> value ^^ {
     name => {
       new Target(
         fullPackageName = fullPackageName,
@@ -47,7 +52,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def classWithConstructorDef = ("class" + white.rep).r ~> typeName ~ "(" ~ args <~ ")" ^^ {
+  def classWithConstructorDef = "class" ~> value ~ "(" ~ args <~ ")" ^^ {
     case name ~ "(" ~ args => {
       new Target(
         fullPackageName = fullPackageName,
@@ -61,7 +66,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def traitDef = ("trait" + white.rep).r ~> typeName ^^ {
+  def traitDef = "trait" ~> value ^^ {
     name => new Target(
       fullPackageName = fullPackageName,
       importList = importList,
@@ -70,7 +75,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def objectDef = ("object" + white.rep).r ~> typeName ^^ {
+  def objectDef = "object" ~> value ^^ {
     name => new Target(
       fullPackageName = fullPackageName,
       importList = importList,
@@ -81,8 +86,10 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def allDef = classWithConstructorDef | classDef | traitDef | objectDef
 
-  def parse(t: P[Target], input: String): ParseResult[List[Target]] = parseAll(rep(t), input)
+  def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
+    parseAll(rep(t),input.replaceAll("([^,])\\s*\\)","$1,)"))
+  }
 
-  def parse(input: String): ParseResult[List[Target]] = parseAll(rep(allDef), input)
+  def parse(input: String): ParseResult[List[Target]] = parse(allDef, input)
 
 }
