@@ -21,9 +21,16 @@ object Command {
     val path = args(0)
     val generator = new TestGenerator
     val targets = new TargetExtractor().extract(path)
-    targets foreach {
-      case target => {
-        generator.generate(target).createFileIfNotExist()
+    targets match {
+      case Nil => {
+        println("Cannot find the targets to generate test...")
+      }
+      case all => {
+        all foreach {
+          case target => {
+            generator.generate(target).createFileIfNotExist()
+          }
+        }
       }
     }
   }
