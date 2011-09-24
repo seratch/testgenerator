@@ -13,6 +13,11 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   val config = new Config
   val extractor = new TargetExtractor(config)
 
+  test("extract package") {
+    val targets = extractor.extract("com.github.seratch")
+    targets.size should be > 0
+  }
+
   test("extract directory") {
     val targets = extractor.extract("src/main/scala/com/github/seratch")
     targets.size should be > 0
