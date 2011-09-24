@@ -1,8 +1,10 @@
 # testgen sbt-plugin
 
+"testgen" is a Scala unit test code generator.
+
 ## What's this?
 
-This is the sbt plugin for testgen. testgen is a Scala unit test generator.
+This is the sbt plugin for "testgen".
 
 ## How to use?
 
