@@ -64,7 +64,7 @@ class TargetExtractor(val config: Config) {
     }
   }
 
-  def readLines(path: String, encoding: String = "UTF-8"): List[String] = {
+  def readLines(path: String, encoding: String = config.encoding): List[String] = {
     Source.fromFile(new File(path), encoding).getLines.toList
   }
 

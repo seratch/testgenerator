@@ -16,6 +16,7 @@ package com.github.seratch.testgen
  * governing permissions and limitations under the License. 
  */
 
-case class Config(srcDir: String = "src/main/scala",
+case class Config(encoding: String = "UTF-8",
+                  srcDir: String = "src/main/scala",
                   srcTestDir: String = "src/test/scala",
                   testTemplate: TestTemplate = TestTemplate.FunSuite)

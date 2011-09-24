@@ -15,26 +15,40 @@
  */
 package com.github.seratch.testgen
 
+/**
+ * Command interface
+ *
+ * System.property
+ *  -Dtestgen.srcDir
+ *  -Dtestgen.srcTestDir
+ *  -Dtestgen.encoding
+ *
+ */
 object Command {
 
   def main(args: Array[String]) {
 
     val env_srcDir = System.getProperty("testgen.srcDir")
     val env_srcTestDir = System.getProperty("testgen.srcTestDir")
-    val srcDir = if (env_srcDir == null) "src/main/scala" else env_srcDir
-    val srcTestDir = if (env_srcTestDir == null) "src/test/scala" else env_srcTestDir
+    val env_encoding = System.getProperty("testgen.encoding")
+
+    val defaultConfig = new Config
+    val srcDir = if (env_srcDir == null) defaultConfig.srcDir else env_srcDir
+    val srcTestDir = if (env_srcTestDir == null) defaultConfig.srcTestDir else env_srcTestDir
+    val encoding = if (env_encoding == null) defaultConfig.encoding else env_encoding
+
     val config = new Config(
+      encoding = encoding,
       srcDir = srcDir,
       srcTestDir = srcTestDir
     )
 
-    val generator = new TestGenerator(config)
-
     val pathOrPackage = args(0)
     val targets = new TargetExtractor(config).extract(pathOrPackage)
+    val generator = new TestGenerator(config)
     targets match {
       case Nil => {
-        println("Cannot find the targets to generate test...")
+        println("Cannot find the targets to generate test for \"" + pathOrPackage + "\"")
       }
       case all => {
         all foreach {
@@ -44,6 +58,7 @@ object Command {
         }
       }
     }
+
   }
 
 }

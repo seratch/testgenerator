@@ -36,7 +36,11 @@ if not exist.
 
     sbt
     > testgen src/main/scala/com/example/MyApp.scala
-    > MyAppSuite is created.
+    > "com.example.MyAppSuite" is created.
+    
+    sbt
+    > testgen com.example.MyApp
+    > "com.example.MyAppSuite" is created.
 
 ### then Happy testing! :)
 
