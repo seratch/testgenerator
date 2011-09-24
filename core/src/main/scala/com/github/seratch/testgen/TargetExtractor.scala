@@ -25,6 +25,10 @@ class TargetExtractor {
   def extract(path: String): List[Target] = {
     val lines = readLines(path)
     val defOnly = extractDefOnly(lines)
+    extractFromDefOnly(defOnly)
+  }
+
+  def extractFromDefOnly(defOnly: String): List[Target] = {
     defOnly.split("package").toList flatMap {
       case eachDefOnly => {
         val fullPackageName = eachDefOnly.trim.split("\\s+").toList.head
@@ -35,18 +39,18 @@ class TargetExtractor {
           case toImport => defOnlyToParse = defOnlyToParse.replaceAll(
             "\\s*import\\s+" + toImport + "\\s*", "")
         }
-        val parserResult = parser.parse(defOnlyToParse)
-        parserResult.getOrElse(Nil)
+        parser.parse(defOnlyToParse).getOrElse(Nil)
       }
     }
   }
 
-  // TODO configure encoding
-  def readLines(path: String): List[String] = Source.fromFile(new File(path), "UTF-8").getLines.toList
+  def readLines(path: String, encoding: String = "UTF-8"): List[String] = {
+    Source.fromFile(new File(path), encoding).getLines.toList
+  }
 
-  // TODO package block
   def extractDefOnly(lines: List[String]): String = {
     var isComment = false
+    var isInsideOfTarget = false
     var blockDepth = 0
     (lines map {
       line => {

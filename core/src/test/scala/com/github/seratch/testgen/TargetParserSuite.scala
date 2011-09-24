@@ -13,13 +13,15 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
   val importList = List("util._", "com.example.bean.SampleBean")
 
   test("extract class defined no arg") {
-    val input = "class MyClass    class MyClass2   "
-    val parser = new TargetParser("com.example", importList)
-    val result = parser.parse(parser.classDef, input)
-    println(result)
-    result.get.size should equal(2)
-    result.get(0).typeName should equal("MyClass")
-    result.get(1).typeName should equal("MyClass2")
+    {
+      val input = "class MyClass    class MyClass2   "
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.classDef, input)
+      println(result)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyClass")
+      result.get(1).typeName should equal("MyClass2")
+    }
   }
 
   test("extract class(with args)") {
