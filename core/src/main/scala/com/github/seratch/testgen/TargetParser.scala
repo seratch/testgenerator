@@ -43,6 +43,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def argDefaultValue = newLiteral | literal
 
+  def caseClassDef = "case" ~> classDef
+
   def classDef = "class" ~> typeName ^^ {
     name => {
       new Target(
@@ -53,6 +55,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
       )
     }
   }
+
+  def caseClassWithConstructorDef = "case" ~> classWithConstructorDef
 
   def classWithConstructorDef = "class" ~> typeName ~ "(" ~ args <~ ")" ^^ {
     case name ~ "(" ~ args => {
@@ -86,7 +90,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def allDef = classWithConstructorDef | classDef | traitDef | objectDef
+  def allDef = caseClassWithConstructorDef | caseClassDef | classWithConstructorDef | classDef | traitDef | objectDef
 
   def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
     // e.g. class Person(arg: Name(f:String = "", l:String), age:Int,)
