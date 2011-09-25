@@ -91,7 +91,15 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class defined args(with default typeName)") {
+  test("extract class defined args(with default value)") {
+    {
+      val input = """class MyClass(name: String = "foo") class MyClass2(name: Bean = new Bean()) """
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyClass")
+      result.get(1).typeName should equal("MyClass2")
+    }
     {
       val input = """class MyClass(name: String = "foo") class MyClass2(name: String = new String("var"), age:Int = 123) """
       val parser = new TargetParser("com.example", importList)

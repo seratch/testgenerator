@@ -43,9 +43,14 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def literal = "[\\w\"']+".r
 
-  def newLiteral: P[Any] = rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")"
+  def newLiteral: P[Any] = {
+    (rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")")
+  }
 
-  def argsInNewLiteral = rep(((newLiteral | literal) ~ ",") | newLiteral | literal)
+  // e.g. new Something() is converted to new Something(,)
+  def argsInNewLiteral = {
+    rep("," | ((newLiteral | literal) ~ ",") | newLiteral | literal)
+  }
 
   def argDefaultValue = newLiteral | literal
 
@@ -127,8 +132,9 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   }
 
   def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
-    // e.g. class Person(arg: Name(f:String = "", l:String), age:Int,)
-    parseAll(rep(t), input.replaceAll("([^,])\\s*\\)", "$1,)"))
+    // e.g. class Person(arg: Name(f:String = "", l:String), age: Bean = new Bean(,),)
+    val replacedInput = input.replaceAll("\\(\\s*\\)", "(,)").replaceAll("([^,])\\s*\\)", "$1,)")
+    parseAll(rep(t), replacedInput)
   }
 
   def parse(input: String): ParseResult[List[Target]] = parse(allDef, input)
