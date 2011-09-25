@@ -267,5 +267,23 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     targets.size should equal(6)
   }
 
+  test("extract class with type parameters from defOnly") {
+    val defOnly = "package example.typeparameters " +
+      "class WithTypeParameters[T] " +
+      "class StructuralType[Foo <: ] " +
+      "class CoVariant[+T] " +
+      "class ContraVariant[-T] " +
+      "class UpperBound[T <: Any] " +
+      "class LowerBound[T >: TraversableOnce[String]]" +
+      "trait WithTypeParametersTrait[T] " +
+      "trait StructuralTypeTrait[Foo <: ] " +
+      "trait CoVariantTrait[+T] " +
+      "trait ContraVariantTrait[-T] " +
+      "trait UpperBoundTrait[T <: Any] " +
+      "trait LowerBoundTrait[T >: TraversableOnce[String]]"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(12)
+  }
 
 }

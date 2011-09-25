@@ -129,5 +129,32 @@ class TestSuite extends FunSuite with ShouldMatchers {
     }
   }
 
+  test("createIfNotExist (Companion)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extract("src/test/scala/example/Companion.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
+  }
+
+  test("createIfNotExist (WithTypeParameters)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extract("src/test/scala/example/typeparameters/WithTypeParameters.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
+  }
 
 }

@@ -25,7 +25,9 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def packageName = "[\\w\\.]+".r
 
-  def typeName = (variableName <~ "[" <~ rep(variableName | ",") <~ "]") | variableName
+  def typeParametersName: P[Any] = "[" <~ rep(variableName | ">:" | "<:" | "+" | "-" | "," | typeParametersName) <~ "]"
+
+  def typeName = (variableName <~ typeParametersName) | variableName
 
   def argsWithDefaultValue = variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
 
@@ -106,16 +108,20 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def prefixOfClass = rep(packagePrivateDef | protectedDef | caseDef | finalDef)
 
-  def prefixOfObject = prefixOfClass
+  def suffixOfClass = rep(typeParametersName)
+
+  def prefixOfObject = rep(packagePrivateDef | protectedDef | caseDef | finalDef)
 
   def prefixOfTrait = rep(packagePrivateDef | protectedDef)
 
+  def suffixOfTrait = rep(typeParametersName)
+
   def allDef = {
     importDef |
-      (prefixOfClass ~> classWithConstructorDef) |
-      (prefixOfClass ~> classDef) |
+      (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
+      (prefixOfClass ~> classDef <~ suffixOfClass) |
       (prefixOfObject ~> objectDef) |
-      (prefixOfTrait ~> traitDef)
+      (prefixOfTrait ~> traitDef <~ suffixOfTrait)
   }
 
   def parse(t: P[Target], input: String): ParseResult[List[Target]] = {

@@ -22,33 +22,36 @@ class TargetExtractor(val config: Config) {
 
   def extract(pathOrPackage: String): List[Target] = {
     val path_ = pathOrPackage.replaceAll("\\.", "/").replaceFirst("/scala$", ".scala")
-    if (!path_.startsWith(config.srcDir)) extractFile(new File(config.srcDir + "/" + path_))
-    else extractFile(new File(path_))
-  }
-
-  def extractFile(file: File): List[Target] = {
-
-    var file_ = file
-    val fileWithDotScala = new File(file.getPath + ".scala")
-    if (!file.exists && fileWithDotScala.exists) file_ = fileWithDotScala
-
-    if (file_.isDirectory) {
-      file_.listFiles.toList flatMap {
-        case child if child.isDirectory => extractFile(child)
-        case child => {
-          val lines = readLines(child.getPath)
-          val defOnly = extractDefOnly(lines)
-          extractFromDefOnly(defOnly)
-        }
-      }
+    if (!path_.startsWith(config.srcDir)) {
+      extractAllFilesRecursively(new File(config.srcDir + "/" + path_))
     } else {
-      val lines = readLines(file_.getPath)
-      val defOnly = extractDefOnly(lines)
-      extractFromDefOnly(defOnly)
+      extractAllFilesRecursively(new File(path_))
     }
   }
 
-  def extractFromDefOnly(defOnly: String): List[Target] = {
+  def extractAllFilesRecursively(file: File): List[Target] = {
+    var file_ = file
+    val fileWithDotScala = new File(file.getPath + ".scala")
+    if (!file.exists && fileWithDotScala.exists) {
+      file_ = fileWithDotScala
+    }
+    if (file_.isDirectory) {
+      file_.listFiles.toList flatMap {
+        case child if child.isDirectory => extractAllFilesRecursively(child)
+        case child => readFileAndExtractTargets(child)
+      }
+    } else {
+      readFileAndExtractTargets(file_)
+    }
+  }
+
+  def readFileAndExtractTargets(file: File): List[Target] = {
+    val lines = readLines(file.getPath)
+    val defOnly = extractDefOnly(lines)
+    extractFromDefOnly(defOnly)
+  }
+
+  private[testgen] def extractFromDefOnly(defOnly: String): List[Target] = {
     defOnly.split("package").toList flatMap {
       case eachDefOnly => {
         val fullPackageName = eachDefOnly.trim.split("\\s+").toList.head
@@ -66,11 +69,11 @@ class TargetExtractor(val config: Config) {
     }
   }
 
-  def readLines(path: String, encoding: String = config.encoding): List[String] = {
+  private[testgen] def readLines(path: String, encoding: String = config.encoding): List[String] = {
     Source.fromFile(new File(path), encoding).getLines.toList
   }
 
-  def extractDefOnly(lines: List[String]): String = {
+  private[testgen] def extractDefOnly(lines: List[String]): String = {
     var isComment = false
     var blockDepth = 0
     (lines map {
@@ -98,20 +101,27 @@ class TargetExtractor(val config: Config) {
           } else {
             val startCount = line_.count(c => c == '{')
             val endCount = line_.count(c => c == '}')
-            if (blockDepth == 0 && startCount > 0) {
+            if (blockDepth == 0) {
               blockDepth = blockDepth + startCount - endCount
-              line_.split("\\{")(0)
+              if (blockDepth < 0) blockDepth = 0
+              if (startCount == 0 && endCount == 0) {
+                line_
+              } else {
+                var prefix = ""
+                if (startCount > 0) {
+                  prefix = line_.split("\\{")(0)
+                }
+                var suffix = ""
+                if (endCount > 0) {
+                  val arr = line_.split("\\}")
+                  suffix = if (arr.length > 1) arr.last else ""
+                }
+                prefix + suffix
+              }
             } else {
               blockDepth = blockDepth + startCount - endCount
               if (blockDepth < 0) blockDepth = 0
-              if (blockDepth == 0) {
-                if (endCount > 0) {
-                  val arr = line_.split("\\}")
-                  if (arr.length > 0) arr(arr.length - 1) else ""
-                } else line_
-              } else {
-                ""
-              }
+              ""
             }
           }
         }
@@ -119,7 +129,7 @@ class TargetExtractor(val config: Config) {
     }).mkString(" ")
   }
 
-  def extractImportList(defOnly: String): List[String] = {
+  private[testgen] def extractImportList(defOnly: String): List[String] = {
     defOnly.split("import\\s+").toList drop (1) map {
       case each => {
         val toImport = each.trim.split("\\s+").toList.head
