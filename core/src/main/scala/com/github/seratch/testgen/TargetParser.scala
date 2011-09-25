@@ -23,6 +23,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def variableName = "\\w+".r
 
+  def packageName = "[\\w\\.]+".r
+
   def typeName = (variableName <~ "[" <~ rep(variableName | ",") <~ "]") | variableName
 
   def argsWithDefaultValue = variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
@@ -43,8 +45,6 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def argDefaultValue = newLiteral | literal
 
-  def caseClassDef = "case" ~> classDef
-
   def classDef = "class" ~> typeName ^^ {
     name => {
       new Target(
@@ -55,8 +55,6 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
       )
     }
   }
-
-  def caseClassWithConstructorDef = "case" ~> classWithConstructorDef
 
   def classWithConstructorDef = "class" ~> typeName ~ "(" ~ args <~ ")" ^^ {
     case name ~ "(" ~ args => {
@@ -90,7 +88,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def importDef = "import" ~> "[\\w\\.]+".r ^^ {
+  def importDef = "import" ~> packageName ^^ {
     name => new Target(
       fullPackageName = fullPackageName,
       defType = DefType.Import,
@@ -98,14 +96,26 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
+  def finalDef = "final"
+
+  def caseDef = "case"
+
+  def packagePrivateDef = "private[" ~> packageName ~> "]"
+
+  def protectedDef = "protected"
+
+  def prefixOfClass = rep(packagePrivateDef | protectedDef | caseDef | finalDef)
+
+  def prefixOfObject = prefixOfClass
+
+  def prefixOfTrait = rep(packagePrivateDef | protectedDef)
+
   def allDef = {
     importDef |
-      caseClassWithConstructorDef |
-      caseClassDef |
-      classWithConstructorDef |
-      classDef |
-      traitDef |
-      objectDef
+      (prefixOfClass ~> classWithConstructorDef) |
+      (prefixOfClass ~> classDef) |
+      (prefixOfObject ~> objectDef) |
+      (prefixOfTrait ~> traitDef)
   }
 
   def parse(t: P[Target], input: String): ParseResult[List[Target]] = {

@@ -52,7 +52,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     result(1) should equal("java.io._")
   }
 
-  test("read the file and extact only the code which defines class/trait/object") {
+  test("read the file and extact only the code which defines class/trait/object (=defOnly)") {
     val lines = extractor.readLines("src/test/scala/com/example/noargs.scala")
     val result = extractor.extractDefOnly(lines)
     val expected = "package com.example\\s+" +
@@ -65,7 +65,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     result.matches(expected) should equal(true)
   }
 
-  test("extract only the code which defines class/trait/object") {
+  test("extract only the code which defines class/trait/object (=defOnly)") {
     {
       val lines = List(
         "package com.example ",
@@ -114,7 +114,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract all the targets from the code which defines class/trait/object") {
+  test("extract all the targets from defOnly") {
     val defOnly = "package com.example " +
       "trait Example " +
       "package com.github " +
@@ -162,5 +162,110 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     result(5).typeName should equal("MyObject2")
     result(5).defType should equal(DefType.Object)
   }
+
+  test("extract case class from defOnly") {
+    val defOnly = "package example    class Logger     case class Log(logger:Logger)"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(2)
+    targets(0).typeName should equal("Logger")
+    targets(1).typeName should equal("Log")
+  }
+
+  test("extract case object from defOnly") {
+    val defOnly = "package example    case object CaseObject"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(1)
+    targets(0).typeName should equal("CaseObject")
+  }
+
+  test("extract final class from defOnly") {
+    val defOnly = "package example    final class Final"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(1)
+    targets(0).typeName should equal("Final")
+  }
+
+  test("extract final object from defOnly") {
+    val defOnly = "package example    final object Final"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(1)
+    targets(0).typeName should equal("Final")
+  }
+
+  test("extract package private class/trait/object from defOnly") {
+    {
+      val defOnly = "package example    private[example] class PackagePrivate"
+      val extractor = new TargetExtractor(config)
+      val targets = extractor.extractFromDefOnly(defOnly)
+      targets.size should equal(1)
+      targets(0).typeName should equal("PackagePrivate")
+    }
+    {
+      val defOnly = "package example    private[example] object PackagePrivate"
+      val extractor = new TargetExtractor(config)
+      val targets = extractor.extractFromDefOnly(defOnly)
+      targets.size should equal(1)
+      targets(0).typeName should equal("PackagePrivate")
+    }
+    {
+      val defOnly = "package example    private[example] trait PackagePrivate"
+      val extractor = new TargetExtractor(config)
+      val targets = extractor.extractFromDefOnly(defOnly)
+      targets.size should equal(1)
+      targets(0).typeName should equal("PackagePrivate")
+    }
+  }
+
+  test("extract package protected class/trait/object from defOnly") {
+    {
+      val defOnly = "package example    protected class Protected"
+      val extractor = new TargetExtractor(config)
+      val targets = extractor.extractFromDefOnly(defOnly)
+      targets.size should equal(1)
+      targets(0).typeName should equal("Protected")
+    }
+    {
+      val defOnly = "package example    protected object Protected"
+      val extractor = new TargetExtractor(config)
+      val targets = extractor.extractFromDefOnly(defOnly)
+      targets.size should equal(1)
+      targets(0).typeName should equal("Protected")
+    }
+    {
+      val defOnly = "package example    protected trait Protected"
+      val extractor = new TargetExtractor(config)
+      val targets = extractor.extractFromDefOnly(defOnly)
+      targets.size should equal(1)
+      targets(0).typeName should equal("Protected")
+    }
+  }
+
+  test("extract import def before the target def from defOnly") {
+    val defOnly = "package example    import java.io.     object IO"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(1)
+    targets(0).typeName should equal("IO")
+  }
+
+  test("extract scoped class/object/trait from defOnly") {
+    // no need to support private class/object/trait
+    // because it should be package private, maybe..
+    val defOnly = "package example  " +
+      "private[example] class PackagePrivateScopeClass  " +
+      "protected class ProtectedScopeClass  " +
+      "private[example] object PackagePrivateScopeObject  " +
+      "protected object ProtectedScopeObject  " +
+      "private[example] trait PackagePrivateScopeTrait  " +
+      "protected trait ProtectedScopeTrait  "
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(6)
+  }
+
 
 }

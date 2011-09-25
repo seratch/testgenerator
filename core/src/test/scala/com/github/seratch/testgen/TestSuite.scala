@@ -72,6 +72,7 @@ class TestSuite extends FunSuite with ShouldMatchers {
       }
     }
   }
+
   test("createIfNotExist (IO)") {
     val config = new Config(
       srcDir = "src/test/scala"
@@ -86,21 +87,47 @@ class TestSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract case class") {
-    val defOnly = "package example    class Logger     case class Log(logger:Logger)"
+  test("createIfNotExist (Scope)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
-    targets.size should equal(2)
-    targets(0).typeName should equal("Logger")
-    targets(1).typeName should equal("Log")
+    val targets = extractor.extract("src/test/scala/example/Scope.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
   }
 
-  test("extract import def before class def") {
-    val defOnly = "package example    import java.io.     object IO"
+  test("createIfNotExist (Case)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
-    targets.size should equal(1)
-    targets(0).typeName should equal("IO")
+    val targets = extractor.extract("src/test/scala/example/Case.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
   }
+
+  test("createIfNotExist (Final)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extract("src/test/scala/example/Final.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
+  }
+
 
 }
