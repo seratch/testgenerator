@@ -1,6 +1,91 @@
 # "testgen": A Scala unit test code generator
 
-You can use "testgen" as a sbt 0.10.x plugin or maven plugin.
+"testgen" is a Scala unit test code generator.
+
+You can use "testgen" as a sbt 0.10.x plugin or a maven plugin.
+
+## output example
+
+Currently only support "FunSuite with ShouldMathcers".
+
+### Name
+
+    package example
+    case class Name(first: String, last: String)
+
+### NameSuite
+
+    package example
+    
+    import org.scalatest._
+    import org.scalatest.matchers._
+    import org.junit.runner.RunWith
+    import org.scalatest.junit.JUnitRunner
+    
+    @RunWith(classOf[JUnitRunner])
+    class NameSuite extends FunSuite with ShouldMatchers {
+    
+      type ? = this.type
+    
+      test("available") {
+        val first: String = null
+        val last: String = null
+        val instance = new Name(first,last)
+        instance should not be null
+      }
+    
+    }
+
+### MyObject
+
+    package com.example
+    object MyObject
+
+### MyObjectSuite
+
+    package com.example
+    
+    import org.scalatest._
+    import org.scalatest.matchers._
+    import org.junit.runner.RunWith
+    import org.scalatest.junit.JUnitRunner
+
+    @RunWith(classOf[JUnitRunner])
+    class MyObjectSuite extends FunSuite with ShouldMatchers {
+    
+      type ? = this.type
+    
+      test("available") {
+        MyObject.isInstanceOf[Singleton] should equal(true)
+      }
+    
+    }
+
+### MyTrait
+
+    package com.example
+    trait MyTrait
+
+### MyTraitSuite
+
+    package com.example
+    
+    import org.scalatest._
+    import org.scalatest.matchers._
+    import org.junit.runner.RunWith
+    import org.scalatest.junit.JUnitRunner
+
+    @RunWith(classOf[JUnitRunner])
+    class MyTraitSuite extends FunSuite with ShouldMatchers {
+    
+      type ? = this.type
+    
+      test("available") {
+        val mixined = new Object with MyTrait
+        mixined should not be null
+      }
+    
+    }
 
 ## sbt 0.10.x plugin
 
@@ -89,6 +174,8 @@ Have fun!
     </build>
  
 ### maven testgen:run -Dtarget=com.exmaple.MyApp
+
+### then Happy testing! :)
 
 Have fun!
 
