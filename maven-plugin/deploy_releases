@@ -1,0 +1,6 @@
+#!/bin/sh
+cd ~
+HOME_DIR=`pwd`
+cd -
+mvn clean -DaltDeploymentRepository=release-repo::default::file:${HOME_DIR}/github/seratch.github.com/mvn-repo/releases clean deploy
+
