@@ -47,6 +47,7 @@ class TestGenerator(val config: Config) {
     code += "package " += target.fullPackageName += CRLF
     code += CRLF
     toImportList foreach {
+      case toImport if toImport.endsWith(".") => code += "import " += toImport + "_" += CRLF
       case toImport => code += "import " += toImport += CRLF
     }
     code += CRLF

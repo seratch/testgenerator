@@ -124,6 +124,7 @@ class TargetExtractor(val config: Config) {
         val toImport = each.trim.split("\\s+").toList.head
         // e.g. import java.io.{InputStream, OutputStream}
         if (toImport.contains("{")) toImport.split("\\{").toList.head + "_"
+        else if (toImport.endsWith(".")) toImport + "_"
         else toImport
       }
     }
