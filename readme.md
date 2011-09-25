@@ -171,10 +171,6 @@ package name:
     > "com.example.MyAppSuite" is created.
     > "com.example.MyApp2Suite" is created.
 
-### then Happy testing! :)
-
-Have fun!
-
 ## maven plugin
 
 ### pom.xml
@@ -202,9 +198,11 @@ Have fun!
       </plugins>
     </build>
  
-### maven testgen:run -Dtarget=com.exmaple.MyApp
+### run "testgen" goal
 
-### then Happy testing! :)
+    maven testgen:run -Dtarget=com.exmaple.MyApp
+
+## then Happy testing! :)
 
 Have fun!
 
