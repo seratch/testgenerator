@@ -36,13 +36,13 @@ Currently only support "FunSuite with ShouldMathcers".
     
     }
 
-### MyHolder
+### BeanHolder
 
     package com.example
     import com.exmaple.bean.Bean
-    class MyHolder(bean: Bean)
+    class BeanHolder(bean: Bean)
 
-### MyHolderSuite
+### BeanHolderSuite
 
     package example
 
@@ -53,24 +53,24 @@ Currently only support "FunSuite with ShouldMathcers".
     import com.example.bean.Bean
 
     @RunWith(classOf[JUnitRunner])
-    class MyHolderSuite extends FunSuite with ShouldMatchers {
+    class BeanHolderSuite extends FunSuite with ShouldMatchers {
 
       type ? = this.type
 
       test("available") {
         val bean: Bean = null
-        val instance = new MyHolder(bean)
+        val instance = new BeanHolder(bean)
         instance should not be null
       }
 
     }
 
-### MyObject
+### Util
 
     package com.example
-    object MyObject
+    object Util
 
-### MyObjectSuite
+### UtilSuite
 
     package com.example
     
@@ -80,22 +80,22 @@ Currently only support "FunSuite with ShouldMathcers".
     import org.scalatest.junit.JUnitRunner
 
     @RunWith(classOf[JUnitRunner])
-    class MyObjectSuite extends FunSuite with ShouldMatchers {
+    class UtilSuite extends FunSuite with ShouldMatchers {
     
       type ? = this.type
     
       test("available") {
-        MyObject.isInstanceOf[Singleton] should equal(true)
+        Util.isInstanceOf[Singleton] should equal(true)
       }
     
     }
 
-### MyTrait
+### Writable
 
     package com.example
-    trait MyTrait
+    trait Writable
 
-### MyTraitSuite
+### WritableSuite
 
     package com.example
     
@@ -105,13 +105,13 @@ Currently only support "FunSuite with ShouldMathcers".
     import org.scalatest.junit.JUnitRunner
 
     @RunWith(classOf[JUnitRunner])
-    class MyTraitSuite extends FunSuite with ShouldMatchers {
+    class WritableSuite extends FunSuite with ShouldMatchers {
     
       type ? = this.type
     
       test("available") {
-        val mixined = new Object with MyTrait
-        mixined should not be null
+        val mixedin = new Object with Writable
+        mixedin should not be null
       }
     
     }
@@ -209,6 +209,8 @@ For example, "com.example.MyApp" will be translated as "src/main/scala/com/examp
     </build>
  
 ### run "testgen" goal
+
+The usage is same as sbt plugin.
 
     maven testgen:run -Dtarget=com.exmaple.MyApp
 
