@@ -1,12 +1,8 @@
-# testgen sbt-plugin
+# "testgen": A Scala unit test code generator
 
-"testgen" is a Scala unit test code generator.
+You can use "testgen" as a sbt 0.10.x plugin or maven plugin.
 
-## What's this?
-
-This is the sbt plugin for "testgen".
-
-## How to use?
+## sbt 0.10.x plugin
 
 ### prepare xsbt 0.10.1
 
@@ -62,6 +58,37 @@ package name:
     > "com.example.MyApp2Suite" is created.
 
 ### then Happy testing! :)
+
+Have fun!
+
+## maven plugin
+
+### pom.xml
+
+    <pluginRepositories>
+      <pluginRepository>
+        <id>seratch.github.com releases</id>
+        <name>seratch.github.com releases</name>
+        <url>http://seratch.github.com/mvn-repo/releases</url>
+      </pluginRepository>
+      <pluginRepository>
+        <id>seratch.github.com snapshots</id>
+        <name>seratch.github.com snapshots</name>
+        <url>http://seratch.github.com/mvn-repo/snapshots</url>
+      </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>com.github.seratch</groupId>
+          <artifactId>maven-testgen-plugin</artifactId>
+          <version>0.1-SNAPSHOT</version>
+        </plugin>
+      </plugins>
+    </build>
+ 
+### maven testgen:run -Dtarget=com.exmaple.MyApp
 
 Have fun!
 
