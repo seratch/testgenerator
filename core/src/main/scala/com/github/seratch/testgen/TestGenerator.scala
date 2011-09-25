@@ -71,10 +71,38 @@ class TestGenerator(val config: Config) {
             code += INDENT * 2 += "val instance = new " += target.typeName += "()" += CRLF
           }
           case params => {
+            val indentAndValDef = INDENT * 2 + "val "
             params foreach {
-              case param => {
-                code += INDENT * 2 += "val " += param.name += ": " += param.typeName += " = null" += CRLF
-              }
+              case p if p.typeName == "Byte" || p.typeName == "Int" || p.typeName == "Short" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = 0" += CRLF
+              case p if p.typeName == "Long" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = 0L" += CRLF
+              case p if p.typeName == "Double" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = 0D" += CRLF
+              case p if p.typeName == "Float" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = 0F" += CRLF
+              case p if p.typeName == "Boolean" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = false" += CRLF
+              case p if p.typeName == "Char" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = ' '" += CRLF
+              case p if p.typeName == "String" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = \"\"" += CRLF
+              case p if p.typeName == "Seq" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_] = Nil" += CRLF
+              case p if p.typeName == "Set" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_] = Set()" += CRLF
+              case p if p.typeName == "List" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_] = Nil" += CRLF
+              case p if p.typeName == "Array" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_] = Array()" += CRLF
+              case p if p.typeName == "Stream" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_] = Stream()" += CRLF
+              case p if p.typeName == "Map" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_, _] = Map()" += CRLF
+              case p if p.typeName == "Option" =>
+                code += indentAndValDef += p.name += ": " += p.typeName += "[_] = None" += CRLF
+              case p =>
+                code += indentAndValDef += p.name += ": " += p.typeName += " = null" += CRLF
             }
             code += INDENT * 2 += "val instance = new " += target.typeName += "("
             val paramArea = new CodeBuilder
