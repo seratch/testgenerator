@@ -36,6 +36,35 @@ Currently only support "FunSuite with ShouldMathcers".
     
     }
 
+### MyHolder
+
+    package com.example
+    import com.exmaple.bean.Bean
+    class MyHolder(bean: Bean)
+
+### MyHolderSuite
+
+    package example
+
+    import org.scalatest._
+    import org.scalatest.matchers._
+    import org.junit.runner.RunWith
+    import org.scalatest.junit.JUnitRunner
+    import com.example.bean.Bean
+
+    @RunWith(classOf[JUnitRunner])
+    class MyHolderSuite extends FunSuite with ShouldMatchers {
+
+      type ? = this.type
+
+      test("available") {
+        val bean: Bean = null
+        val instance = new MyHolder(bean)
+        instance should not be null
+      }
+
+    }
+
 ### MyObject
 
     package com.example
