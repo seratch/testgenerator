@@ -58,6 +58,17 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
+  test("extract class with value") {
+    {
+      val input = "case class MyClass(val value: String)"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+      result.get(0).parameters(0).name should equal("value")
+    }
+  }
+
   test("extract class annotated") {
     {
       val input = "@scala.annotation.tailrec class MyClass object MyObject"

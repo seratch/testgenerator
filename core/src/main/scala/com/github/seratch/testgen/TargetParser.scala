@@ -31,9 +31,9 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def typeName = (variableName <~ typeParametersName) | variableName
 
-  def argsWithDefaultValue = rep(annotationValue | "val" | "var") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
+  def argsWithDefaultValue = rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
 
-  def argsWithoutDefaultValue = rep(annotationValue | "val" | "var") ~> variableName ~ ":" ~ typeName <~ ","
+  def argsWithoutDefaultValue = rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ ","
 
   def args = rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
     case argList => argList map {
