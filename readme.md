@@ -28,8 +28,8 @@ Currently only support "FunSuite with ShouldMathcers".
       type ? = this.type
     
       test("available") {
-        val first: String = null
-        val last: String = null
+        val first: String = ""
+        val last: String = ""
         val instance = new Name(first,last)
         instance should not be null
       }
