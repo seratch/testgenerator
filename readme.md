@@ -152,24 +152,34 @@ Currently possbile by system properties.
 
 ### run sbt and "testgen" command
 
-file path or directory:
+* File or directory 
+
+"src/main/scala" is omissible. 
 
     sbt
-    > testgen src/main/scala/com/example/MyApp.scala
-    > "com.example.MyAppSuite" is created.
+    > testgen src/main/scala/com/example/models.scala
+    > "com.example.StaffSuite" is already in being.
+    > "com.example.CompanySuite" is already in being.
+    > "com.example.StockSuite" is created.
 
-class name:
+* Class name 
+
+When you specify a class name, the name should be the name of the source file. 
+
+For example, "com.example.MyApp" will be translated as "src/main/scala/com/example/MyApp.scala".
 
     sbt
     > testgen com.example.MyApp
     > "com.example.MyAppSuite" is created.
 
-package name:
+* Package name 
+
+"testgen" will search targets recursively under the directory.
 
     sbt
     > testgen com.example
     > "com.example.MyAppSuite" is created.
-    > "com.example.MyApp2Suite" is created.
+    > "com.example.util.MyUtilSuite" is created.
 
 ## maven plugin
 
