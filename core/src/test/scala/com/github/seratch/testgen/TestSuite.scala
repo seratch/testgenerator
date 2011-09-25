@@ -72,6 +72,19 @@ class TestSuite extends FunSuite with ShouldMatchers {
       }
     }
   }
+  test("createIfNotExist (IO)") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extract("src/test/scala/example/IO.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
+  }
 
   test("extract case class") {
     val defOnly = "package example    class Logger     case class Log(logger:Logger)"
@@ -80,6 +93,14 @@ class TestSuite extends FunSuite with ShouldMatchers {
     targets.size should equal(2)
     targets(0).typeName should equal("Logger")
     targets(1).typeName should equal("Log")
+  }
+
+  test("extract import def before class def") {
+    val defOnly = "package example    import java.io.     object IO"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(1)
+    targets(0).typeName should equal("IO")
   }
 
 }

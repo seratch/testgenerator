@@ -90,7 +90,23 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def allDef = caseClassWithConstructorDef | caseClassDef | classWithConstructorDef | classDef | traitDef | objectDef
+  def importDef = "import" ~> "[\\w\\.]+".r ^^ {
+    name => new Target(
+      fullPackageName = fullPackageName,
+      defType = DefType.Import,
+      typeName = name
+    )
+  }
+
+  def allDef = {
+    importDef |
+      caseClassWithConstructorDef |
+      caseClassDef |
+      classWithConstructorDef |
+      classDef |
+      traitDef |
+      objectDef
+  }
 
   def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
     // e.g. class Person(arg: Name(f:String = "", l:String), age:Int,)

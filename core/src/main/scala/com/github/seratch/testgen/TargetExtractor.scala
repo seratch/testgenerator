@@ -59,7 +59,9 @@ class TargetExtractor(val config: Config) {
           case toImport => defOnlyToParse = defOnlyToParse.replaceAll(
             "\\s*import\\s+" + toImport + "\\s*", "")
         }
-        parser.parse(defOnlyToParse).getOrElse(Nil)
+        parser.parse(defOnlyToParse).getOrElse(Nil) filter {
+          each => each.defType != DefType.Import
+        }
       }
     }
   }
@@ -70,12 +72,11 @@ class TargetExtractor(val config: Config) {
 
   def extractDefOnly(lines: List[String]): String = {
     var isComment = false
-    var isInsideOfTarget = false
     var blockDepth = 0
     (lines map {
       line => {
         // mutable line string
-        var line_ = line.replaceAll("\\s*:\\s*", ":")
+        var line_ = line
         if (line_.matches("\\s*//\\s*.*")) {
           // line comment
           ""

@@ -25,4 +25,6 @@ object DefType {
 
   val Trait = DefType("trait")
 
+  val Import = DefType("import")
+
 }

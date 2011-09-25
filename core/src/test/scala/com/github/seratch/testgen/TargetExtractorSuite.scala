@@ -85,7 +85,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       val result = extractor.extractDefOnly(lines)
       val expected = "package com.example\\s+" +
         "import com.example.util._\\s+" +
-        "class Sample\\(name:String = \"\"\\)\\s+" +
+        "class Sample\\(name: String = \"\"\\)\\s+" +
         "class Sample2\\s+" +
         "class Sample3\\s+"
       result.matches(expected) should equal(true)
