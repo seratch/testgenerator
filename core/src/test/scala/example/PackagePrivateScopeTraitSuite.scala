@@ -11,8 +11,8 @@ class PackagePrivateScopeTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with PackagePrivateScopeTrait
-    mixined should not be null
+    val mixedin = new Object with PackagePrivateScopeTrait
+    mixedin should not be null
   }
 
 }

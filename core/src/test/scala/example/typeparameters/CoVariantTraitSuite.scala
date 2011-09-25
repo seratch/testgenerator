@@ -11,8 +11,8 @@ class CoVariantTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with CoVariantTrait[String]
-    mixined should not be null
+    val mixedin = new Object with CoVariantTrait[String]
+    mixedin should not be null
   }
 
 }

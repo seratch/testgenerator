@@ -11,8 +11,8 @@ class ProtectedScopeTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with ProtectedScopeTrait
-    mixined should not be null
+    val mixedin = new Object with ProtectedScopeTrait
+    mixedin should not be null
   }
 
 }

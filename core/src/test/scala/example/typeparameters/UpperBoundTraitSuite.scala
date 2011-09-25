@@ -11,8 +11,8 @@ class UpperBoundTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with UpperBoundTrait[List[String]]
-    mixined should not be null
+    val mixedin = new Object with UpperBoundTrait[List[String]]
+    mixedin should not be null
   }
 
 }

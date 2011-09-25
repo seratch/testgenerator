@@ -11,8 +11,8 @@ class StructuralTypeTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with StructuralTypeTrait[String]
-    mixined should not be null
+    val mixedin = new Object with StructuralTypeTrait[String]
+    mixedin should not be null
   }
 
 }

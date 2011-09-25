@@ -90,8 +90,8 @@ class TestGenerator(val config: Config) {
         code += INDENT * 2 += target.typeName += ".isInstanceOf[Singleton] should equal(true)" += CRLF
       }
       case DefType.Trait => {
-        code += INDENT * 2 += "val mixined = new Object with " += target.typeName += CRLF
-        code += INDENT * 2 += "mixined should not be null" += CRLF
+        code += INDENT * 2 += "val mixedin = new Object with " += target.typeName += CRLF
+        code += INDENT * 2 += "mixedin should not be null" += CRLF
       }
       case _ =>
     }

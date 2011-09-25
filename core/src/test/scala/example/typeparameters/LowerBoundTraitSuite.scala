@@ -11,8 +11,8 @@ class LowerBoundTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with LowerBoundTrait[Any]
-    mixined should not be null
+    val mixedin = new Object with LowerBoundTrait[Any]
+    mixedin should not be null
   }
 
 }

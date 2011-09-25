@@ -10,8 +10,8 @@ class WithTypeParametersTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with WithTypeParametersTrait[List[String]]
-    mixined should not be null
+    val mixedin = new Object with WithTypeParametersTrait[List[String]]
+    mixedin should not be null
   }
 
 }

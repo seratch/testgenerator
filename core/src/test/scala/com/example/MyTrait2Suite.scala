@@ -11,8 +11,8 @@ class MyTrait2Suite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with MyTrait2
-    mixined should not be null
+    val mixedin = new Object with MyTrait2
+    mixedin should not be null
   }
 
 }

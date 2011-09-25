@@ -11,8 +11,8 @@ class ContraVariantTraitSuite extends FunSuite with ShouldMatchers {
   type ? = this.type
 
   test("available") {
-    val mixined = new Object with ContraVariantTrait[String]
-    mixined should not be null
+    val mixedin = new Object with ContraVariantTrait[String]
+    mixedin should not be null
   }
 
 }
