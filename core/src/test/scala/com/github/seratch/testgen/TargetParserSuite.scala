@@ -48,13 +48,43 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("MyClass")
       result.get(1).typeName should equal("MyClass2")
     }
+    {
+      val input = "class MyClass(name: String) class MyClass2(name: String, age:Int) "
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.classWithConstructorDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyClass")
+      result.get(1).typeName should equal("MyClass2")
+    }
+  }
+
+  test("extract class annotated") {
+    {
+      val input = "@scala.annotation.tailrec class MyClass object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyClass")
+      result.get(1).typeName should equal("MyObject")
+    }
+  }
+
+  test("extract class (with args annotated)") {
+    {
+      val input = "class MyClass(@reflect.BeanProperty name: String) class MyClass2(@BeanProperty val name: String, age:Int) "
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyClass")
+      result.get(1).typeName should equal("MyClass2")
+    }
   }
 
   test("extract class defined args(with default typeName)") {
     {
       val input = """class MyClass(name: String = "foo") class MyClass2(name: String = new String("var"), age:Int = 123) """
       val parser = new TargetParser("com.example", importList)
-      val result = parser.parse(parser.classWithConstructorDef, input)
+      val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
       result.get(0).typeName should equal("MyClass")
       result.get(1).typeName should equal("MyClass2")
@@ -62,7 +92,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     {
       val input = """class MyClass(name: String = "foo") class MyClass2(name: F = new F(1,2), age:Int = 123) """
       val parser = new TargetParser("com.example", importList)
-      val result = parser.parse(parser.classWithConstructorDef, input)
+      val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
       result.get(0).typeName should equal("MyClass")
       result.get(1).typeName should equal("MyClass2")

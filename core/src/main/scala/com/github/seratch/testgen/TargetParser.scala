@@ -25,13 +25,15 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def packageName = "[\\w\\.]+".r
 
+  def annotationValue = "@" ~ packageName
+
   def typeParametersName: P[Any] = "[" <~ rep(variableName | ">:" | "<:" | "+" | "-" | "," | typeParametersName) <~ "]"
 
   def typeName = (variableName <~ typeParametersName) | variableName
 
-  def argsWithDefaultValue = rep("var" | "val") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
+  def argsWithDefaultValue = rep(annotationValue | "val" | "var") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
 
-  def argsWithoutDefaultValue = rep("var" | "val") ~> variableName ~ ":" ~ typeName <~ ","
+  def argsWithoutDefaultValue = rep(annotationValue | "val" | "var") ~> variableName ~ ":" ~ typeName <~ ","
 
   def args = rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
     case argList => argList map {
@@ -106,13 +108,13 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def protectedDef = "protected"
 
-  def prefixOfClass = rep(packagePrivateDef | protectedDef | caseDef | finalDef)
+  def prefixOfClass = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
 
   def suffixOfClass = rep(typeParametersName)
 
-  def prefixOfObject = rep(packagePrivateDef | protectedDef | caseDef | finalDef)
+  def prefixOfObject = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
 
-  def prefixOfTrait = rep(packagePrivateDef | protectedDef)
+  def prefixOfTrait = rep(annotationValue | packagePrivateDef | protectedDef)
 
   def suffixOfTrait = rep(typeParametersName)
 
