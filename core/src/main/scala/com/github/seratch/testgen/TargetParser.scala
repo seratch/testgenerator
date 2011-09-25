@@ -29,9 +29,9 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def typeName = (variableName <~ typeParametersName) | variableName
 
-  def argsWithDefaultValue = variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
+  def argsWithDefaultValue = rep("var" | "val") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
 
-  def argsWithoutDefaultValue = variableName ~ ":" ~ typeName <~ ","
+  def argsWithoutDefaultValue = rep("var" | "val") ~> variableName ~ ":" ~ typeName <~ ","
 
   def args = rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
     case argList => argList map {

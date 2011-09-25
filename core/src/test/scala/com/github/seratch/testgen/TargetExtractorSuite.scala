@@ -65,6 +65,19 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     result.matches(expected) should equal(true)
   }
 
+  test("extract case class in several lines") {
+    val lines = List(
+      "case class HttpResponse(val statusCode: Int, ",
+      "  val headers: Map[String, List[String]],",
+      "  val content: String)"
+    )
+    val result = extractor.extractDefOnly(lines)
+    val expected = "case class HttpResponse\\(val statusCode: Int,\\s+" +
+      "val headers: Map\\[String, List\\[String\\]\\],\\s+" +
+      "val content: String\\)"
+    result.matches(expected) should equal(true)
+  }
+
   test("extract only the code which defines class/trait/object (=defOnly)") {
     {
       val lines = List(
@@ -242,6 +255,16 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       targets.size should equal(1)
       targets(0).typeName should equal("Protected")
     }
+  }
+
+  test("extract case class (HttpResponse)") {
+    val defOnly = "case class HttpResponse(val statusCode: Int," +
+      "    val headers: Map[String, List[String]]," +
+      "    val content: String)"
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extractFromDefOnly(defOnly)
+    targets.size should equal(1)
+    targets(0).typeName should equal("HttpResponse")
   }
 
   test("extract import def before the target def from defOnly") {
