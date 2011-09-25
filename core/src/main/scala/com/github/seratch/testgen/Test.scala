@@ -28,9 +28,7 @@ case class Test(config: Config,
     if (file.exists) {
       println("\"" + fullPackageName + "." + testClassName + "\"" + " is already in being.")
     } else {
-      if (!file.getParentFile.exists) {
-        file.getParentFile.mkdir()
-      }
+      mkdir_p(file.getParentFile)
       IO.using(new OutputStreamWriter(new FileOutputStream(file))) {
         writer => {
           writer.write(sourceCode)
@@ -38,6 +36,11 @@ case class Test(config: Config,
         }
       }
     }
+  }
+
+  def mkdir_p(file: File): Unit = {
+    if (!file.getParentFile.exists) mkdir_p(file.getParentFile)
+    if (!file.exists) file.mkdir()
   }
 
 }

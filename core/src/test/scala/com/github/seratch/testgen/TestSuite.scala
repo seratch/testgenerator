@@ -4,6 +4,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
+import java.io.File
 
 @RunWith(classOf[JUnitRunner])
 class TestSuite extends FunSuite with ShouldMatchers {
@@ -25,6 +26,23 @@ class TestSuite extends FunSuite with ShouldMatchers {
         test.createFileIfNotExist()
       }
     }
+  }
+
+  test("createIfNotExist depth") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val extractor = new TargetExtractor(config)
+    val targets = extractor.extract("src/test/scala/example/depthtest.scala")
+    targets foreach {
+      case target => {
+        val test = generator.generate(target)
+        test.createFileIfNotExist()
+      }
+    }
+    new File("src/test/scala/example/depth/depth/SampleSuite.scala").delete()
+    new File("src/test/scala/example/depth/depth/").delete()
+    new File("src/test/scala/example/depth/").delete()
   }
 
   test("createIfNotExist (with args)") {

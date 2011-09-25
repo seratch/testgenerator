@@ -1,5 +1,4 @@
 package example
 
-class Name(first: String, last: String) {
+class Name(first: String, last: String)
 
-}
