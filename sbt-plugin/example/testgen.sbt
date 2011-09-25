@@ -8,7 +8,6 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "testgen-core" % "0.1-SNAPSHOT",
   "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
 )
 

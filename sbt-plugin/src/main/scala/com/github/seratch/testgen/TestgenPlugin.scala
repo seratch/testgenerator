@@ -17,7 +17,7 @@ package com.github.seratch.testgen
 
 import sbt.{Command => SbtCommand}
 import sbt._
-import Keys._
+import sbt.Keys._
 import com.github.seratch.testgen.{Command => TestgenCommand}
 
 object TestgenPlugin extends Plugin {

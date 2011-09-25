@@ -12,5 +12,4 @@ libraryDependencies ++= Seq(
   "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test"
 )
 
-//seq(com.github.seratch.testgen.TestgenPlugin.settings: _*)
 

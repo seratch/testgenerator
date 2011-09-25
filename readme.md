@@ -28,25 +28,33 @@ Create the directory if it doesn't exist yet.
     )
 
     libraryDependencies ++= Seq(
-      "com.github.seratch" %% "testgen-core" % "0.1-SNAPSHOT",
       "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
     )
 
+### configure testgen
+
+Currently possbile by system properties.
+
+    java -jar sbt-launch.jar \
+    -Dtestgen.srcDir=src/main/scala \
+    -Dtestgen.srcTestDir=src/test/scala \
+    -Dtestgen.encoding=UTF-8
+
 ### run sbt and "testgen" command
 
-File path or directory:
+file path or directory:
 
     sbt
     > testgen src/main/scala/com/example/MyApp.scala
     > "com.example.MyAppSuite" is created.
 
-Class:
+class name:
 
     sbt
     > testgen com.example.MyApp
     > "com.example.MyAppSuite" is created.
 
-Package:
+package name:
 
     sbt
     > testgen com.example
