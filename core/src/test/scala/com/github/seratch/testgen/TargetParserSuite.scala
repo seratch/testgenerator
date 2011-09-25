@@ -109,6 +109,17 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("MyClass2")
     }
     {
+      val input = "case class SolrAddRequest(" +
+        "@BeanProperty var core: SolrCore = new SolrCore(),                       " +
+        "var documents: List[String] = Nil,                       " +
+        "@BeanProperty var writerType: WriterType = WriterType.Standard,                       " +
+        "@BeanProperty var additionalQueryString: String = \"\")"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("SolrAddRequest")
+    }
+    {
       val input = """class MyClass(name: String = "foo") class MyClass2(name: F = new F(1,2), age:Int = 123) """
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)

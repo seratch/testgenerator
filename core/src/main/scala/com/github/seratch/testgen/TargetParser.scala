@@ -31,6 +31,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def typeName = (variableName <~ typeParametersName) | variableName
 
+  def argDefaultValue = newLiteral | literal
+
   def argsWithDefaultValue = rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
 
   def argsWithoutDefaultValue = rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ ","
@@ -41,7 +43,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def literal = "[\\w\"']+".r
+  def literal = "[\\w\\.\"']+".r
 
   def newLiteral: P[Any] = {
     (rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")")
@@ -51,8 +53,6 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     // e.g. new Something() is converted to new Something(,)
     rep("," | ((newLiteral | literal) ~ ",") | newLiteral | literal)
   }
-
-  def argDefaultValue = newLiteral | literal
 
   def classDef = "class" ~> typeName ^^ {
     name => {
