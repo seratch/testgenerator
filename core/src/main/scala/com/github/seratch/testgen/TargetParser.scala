@@ -47,8 +47,8 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     (rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")")
   }
 
-  // e.g. new Something() is converted to new Something(,)
   def argsInNewLiteral = {
+    // e.g. new Something() is converted to new Something(,)
     rep("," | ((newLiteral | literal) ~ ",") | newLiteral | literal)
   }
 
