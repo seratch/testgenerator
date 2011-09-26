@@ -37,12 +37,34 @@ class TestGenerator(val config: Config) {
   }
 
   def generate(target: Target): Test = {
-    val toImportList = List(
-      "org.scalatest._",
-      "org.scalatest.matchers._",
-      "org.junit.runner.RunWith",
-      "org.scalatest.junit.JUnitRunner"
-    ) ::: target.importList
+
+    val isScalaTest = config.testTemplate != TestTemplate.SpecsSpecification &&
+      config.testTemplate != TestTemplate.Specs2Specification
+
+    val toImportList = (config.testTemplate match {
+      case TestTemplate.SpecsSpecification => List(
+        "org.specs.Specification",
+        "org.junit.runner.RunWith",
+        "org.scalatest.junit.JUnitRunner"
+      )
+      case TestTemplate.Specs2Specification => List(
+        "org.specs2.mutable.Specification",
+        "org.junit.runner.RunWith",
+        "org.scalatest.junit.JUnitRunner"
+      )
+      case TestTemplate.ScalaTestAssertions => List(
+        "org.scalatest._",
+        "org.scalatest.matchers._",
+        "org.junit.Test"
+      )
+      case _ => List(
+        "org.scalatest._",
+        "org.scalatest.matchers._",
+        "org.junit.runner.RunWith",
+        "org.scalatest.junit.JUnitRunner"
+      )
+    }) ::: target.importList
+
     val code = new CodeBuilder
     code += "package " += target.fullPackageName += CRLF
     code += CRLF
@@ -51,27 +73,89 @@ class TestGenerator(val config: Config) {
       case toImport => code += "import " += toImport += CRLF
     }
     code += CRLF
-    code += "@RunWith(classOf[JUnitRunner])" += CRLF
-    // TODO
+    config.testTemplate match {
+      case TestTemplate.ScalaTestAssertions =>
+      case _ => code += "@RunWith(classOf[JUnitRunner])" += CRLF
+    }
     val toExtend = config.testTemplate match {
-      case TestTemplate.FunSuite => "extends FunSuite with ShouldMatchers"
+      case TestTemplate.ScalaTestFunSuite => "extends FunSuite"
+      case TestTemplate.ScalaTestAssertions => "extends Assertions"
+      case TestTemplate.ScalaTestSpec => "extends Spec"
+      case TestTemplate.ScalaTestWordSpec => "extends WordSpec"
+      case TestTemplate.ScalaTestFlatSpec => "extends FlatSpec"
+      case TestTemplate.ScalaTestFeatureSpec => "extends FeatureSpec"
+      case TestTemplate.SpecsSpecification => "extends Specification"
+      case TestTemplate.Specs2Specification => "extends Specification"
       case _ => throw new UnsupportedOperationException
     }
-    val suffix = "Suite"
+    val toMixIn = if (isScalaTest) {
+      config.scalaTestMatchers match {
+        case ScalaTestMatchers.Should => " with ShouldMatchers"
+        case ScalaTestMatchers.Must => " with MustMatchers"
+        case _ => ""
+      }
+    } else ""
+
+    val suffix = config.testTemplate match {
+      case TestTemplate.ScalaTestFunSuite | TestTemplate.ScalaTestAssertions => "Suite"
+      case _ => "Spec"
+    }
     val testClassName = target.typeName + suffix
-    code += "class " += testClassName += " " += toExtend += " {" += CRLF
+    code += "class " += testClassName += " " += toExtend += toMixIn += " {" += CRLF
+    if (isScalaTest) {
+      code += CRLF
+      code += INDENT += "type ? = this.type // for IntelliJ IDEA" += CRLF
+    }
     code += CRLF
-    code += INDENT += "type ? = this.type" += CRLF
-    code += CRLF
-    code += INDENT += """test("available") {""" += CRLF
+
+    var depth = 1
+    config.testTemplate match {
+      case TestTemplate.ScalaTestFunSuite => {
+        code += INDENT * depth += """test("available") {""" += CRLF
+        depth += 1
+      }
+      case TestTemplate.ScalaTestAssertions => {
+        code += INDENT * depth += "@Test def available {" += CRLF
+        depth += 1
+      }
+      case TestTemplate.ScalaTestSpec => {
+        code += INDENT * depth += "describe(\"" + target.typeName + "\") {" += CRLF
+        depth += 1
+        code += INDENT * depth += "it(\"should be available\") {" += CRLF
+        depth += 1
+      }
+      case TestTemplate.ScalaTestWordSpec => {
+        code += INDENT += "\"" + target.typeName + "\" should {" += CRLF
+        depth += 1
+        code += INDENT * depth += "\"be available\" in {" += CRLF
+        depth += 1
+      }
+      case TestTemplate.ScalaTestFlatSpec => {
+        code += INDENT * depth += "\"" + target.typeName + "\" should \"be available\" in {" += CRLF
+        depth += 1
+      }
+      case TestTemplate.ScalaTestFeatureSpec => {
+        code += INDENT * depth += "feature(\"" + target.typeName + "\") {" += CRLF
+        depth += 1
+        code += INDENT * depth += "scenario(\"it is prepared\") {" += CRLF
+        depth += 1
+      }
+      case TestTemplate.SpecsSpecification | TestTemplate.Specs2Specification => {
+        code += INDENT * depth += "\"" + target.typeName + "\" should {" += CRLF
+        depth += 1
+        code += INDENT * depth += "\"be available\" in {" += CRLF
+        depth += 1
+      }
+    }
+
     target.defType match {
       case DefType.Class => {
         target.parameters match {
           case Nil => {
-            code += INDENT * 2 += "val instance = new " += target.typeName += "()" += CRLF
+            code += INDENT * depth += "val instance = new " += target.typeName += "()" += CRLF
           }
           case params => {
-            val indentAndValDef = INDENT * 2 + "val "
+            val indentAndValDef = INDENT * depth + "val "
             params foreach {
               case p if p.typeName == "Byte" || p.typeName == "Int" || p.typeName == "Short" =>
                 code += indentAndValDef += p.name += ": " += p.typeName += " = 0" += CRLF
@@ -104,7 +188,7 @@ class TestGenerator(val config: Config) {
               case p =>
                 code += indentAndValDef += p.name += ": " += p.typeName += " = null" += CRLF
             }
-            code += INDENT * 2 += "val instance = new " += target.typeName += "("
+            code += INDENT * depth += "val instance = new " += target.typeName += "("
             val paramArea = new CodeBuilder
             params foreach {
               case param => paramArea += param.name += ","
@@ -112,18 +196,96 @@ class TestGenerator(val config: Config) {
             code += paramArea.toString.replaceFirst(",$", "") += ")" += CRLF
           }
         }
-        code += INDENT * 2 += "instance should not be null" += CRLF
+        if (isScalaTest) {
+          config.scalaTestMatchers match {
+            case ScalaTestMatchers.Should => code += INDENT * depth += "instance should not be null" += CRLF
+            case ScalaTestMatchers.Must => code += INDENT * depth += "instance must not be null" += CRLF
+            case _ => code += INDENT * depth += "assert(instance != null)" += CRLF
+          }
+        } else {
+          config.testTemplate match {
+            case TestTemplate.SpecsSpecification => {
+              code += INDENT * depth += "instance must notBeNull" += CRLF
+            }
+            case TestTemplate.Specs2Specification => {
+              code += INDENT * depth += "instance must not beNull" += CRLF
+            }
+          }
+        }
       }
       case DefType.Object => {
-        code += INDENT * 2 += target.typeName += ".isInstanceOf[Singleton] should equal(true)" += CRLF
+        if (isScalaTest) {
+          config.scalaTestMatchers match {
+            case ScalaTestMatchers.Should => {
+              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] should equal(true)" += CRLF
+            }
+            case ScalaTestMatchers.Must => {
+              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] must equal(true)" += CRLF
+            }
+            case _ => {
+              code += INDENT * depth += "assert(" += target.typeName += ".isInstanceOf[Singleton])" += CRLF
+            }
+          }
+        } else {
+          config.testTemplate match {
+            case TestTemplate.SpecsSpecification => {
+              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] must beEqual(true)" += CRLF
+            }
+            case TestTemplate.Specs2Specification => {
+              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] must beEqual(true)" += CRLF
+            }
+          }
+        }
       }
       case DefType.Trait => {
-        code += INDENT * 2 += "val mixedin = new Object with " += target.typeName += CRLF
-        code += INDENT * 2 += "mixedin should not be null" += CRLF
+        code += INDENT * depth += "val mixedin = new Object with " += target.typeName += CRLF
+        if (isScalaTest) {
+          config.scalaTestMatchers match {
+            case ScalaTestMatchers.Should => code += INDENT * depth += "mixedin should not be null" += CRLF
+            case ScalaTestMatchers.Must => code += INDENT * depth += "mixedin must not be null" += CRLF
+            case _ => code += INDENT * depth += "assert(mixedin != null)" += CRLF
+          }
+        } else {
+          config.testTemplate match {
+            case TestTemplate.SpecsSpecification => {
+              code += INDENT * depth += "mixedin must notBeNull" += CRLF
+            }
+            case TestTemplate.Specs2Specification => {
+              code += INDENT * depth += "mixedin must not beNull" += CRLF
+            }
+          }
+        }
       }
       case _ =>
     }
-    code += INDENT += """}""" += CRLF
+
+    config.testTemplate match {
+      case TestTemplate.ScalaTestFunSuite => {
+        code += INDENT += "}" += CRLF
+      }
+      case TestTemplate.ScalaTestAssertions => {
+        code += INDENT += "}" += CRLF
+      }
+      case TestTemplate.ScalaTestSpec => {
+        code += INDENT * 2 += "}" += CRLF
+        code += INDENT += "}" += CRLF
+      }
+      case TestTemplate.ScalaTestWordSpec => {
+        code += INDENT * 2 += "}" += CRLF
+        code += INDENT += "}" += CRLF
+      }
+      case TestTemplate.ScalaTestFlatSpec => {
+        code += INDENT += "}" += CRLF
+      }
+      case TestTemplate.ScalaTestFeatureSpec => {
+        code += INDENT * 2 += "}" += CRLF
+        code += INDENT += "}" += CRLF
+      }
+      case TestTemplate.SpecsSpecification | TestTemplate.Specs2Specification => {
+        code += INDENT * 2 += "}" += CRLF
+        code += INDENT += "}" += CRLF
+      }
+    }
     code += CRLF
     code += "}" += CRLF
     new Test(

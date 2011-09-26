@@ -19,4 +19,5 @@ package com.github.seratch.testgen
 case class Config(encoding: String = "UTF-8",
                   srcDir: String = "src/main/scala",
                   srcTestDir: String = "src/test/scala",
-                  testTemplate: TestTemplate = TestTemplate.FunSuite)
+                  testTemplate: TestTemplate = TestTemplate.ScalaTestFunSuite,
+                  scalaTestMatchers: ScalaTestMatchers = ScalaTestMatchers.Should)

@@ -14,4 +14,10 @@ class CommandSuite extends FunSuite with ShouldMatchers {
     Command.isInstanceOf[Singleton] should equal(true)
   }
 
+  test("specify -Dtestgen.testTemplate") {
+    System.setProperty("testgen.testTemplate", "scalatest.Spec")
+    System.setProperty("testgen.scalatest.Matchers", "MustMatchers")
+    Command.main(Array("com.github.seratch.testgen.Command.scala"))
+  }
+
 }

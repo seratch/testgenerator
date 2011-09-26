@@ -16,14 +16,14 @@ package com.github.seratch.testgen
  * governing permissions and limitations under the License. 
  */
 
-case class ScalaTestMatcher(name: String)
+case class ScalaTestMatchers(name: String)
 
-object ScalaTestMatcher {
+object ScalaTestMatchers {
 
-  val Should = new ScalaTestMatcher("ShouldMatchers")
+  val Should = new ScalaTestMatchers("ShouldMatchers")
 
-  val Must = new ScalaTestMatcher("MustMatchers")
+  val Must = new ScalaTestMatchers("MustMatchers")
 
-  val None = new ScalaTestMatcher("")
+  val None = new ScalaTestMatchers("")
 
 }

@@ -31,16 +31,22 @@ object Command {
     val env_srcDir = System.getProperty("testgen.srcDir")
     val env_srcTestDir = System.getProperty("testgen.srcTestDir")
     val env_encoding = System.getProperty("testgen.encoding")
+    val env_testTemplate = System.getProperty("testgen.testTemplate")
+    val env_scalaTestMatcher = System.getProperty("testgen.scalatest.Matchers")
 
     val defaultConfig = new Config
     val srcDir = if (env_srcDir == null) defaultConfig.srcDir else env_srcDir
     val srcTestDir = if (env_srcTestDir == null) defaultConfig.srcTestDir else env_srcTestDir
     val encoding = if (env_encoding == null) defaultConfig.encoding else env_encoding
+    val testTemplate = if (env_testTemplate == null) defaultConfig.testTemplate.name else env_testTemplate
+    val scalaTestMatcher = if (env_scalaTestMatcher == null) defaultConfig.scalaTestMatchers.name else env_scalaTestMatcher
 
     val config = new Config(
       encoding = encoding,
       srcDir = srcDir,
-      srcTestDir = srcTestDir
+      srcTestDir = srcTestDir,
+      testTemplate = new TestTemplate(testTemplate),
+      scalaTestMatchers = new ScalaTestMatchers(scalaTestMatcher)
     )
 
     val pathOrPackage = args(0)

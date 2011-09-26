@@ -20,6 +20,20 @@ case class TestTemplate(name: String)
 
 object TestTemplate {
 
-  val FunSuite = TestTemplate("FunSuite")
+  val ScalaTestFunSuite = TestTemplate("scalatest.FunSuite")
+
+  val ScalaTestAssertions = TestTemplate("scalatest.Assertions")
+
+  val ScalaTestSpec = TestTemplate("scalatest.Spec")
+
+  val ScalaTestWordSpec = TestTemplate("scalatest.WordSpec")
+
+  val ScalaTestFlatSpec = TestTemplate("scalatest.FlatSpec")
+
+  val ScalaTestFeatureSpec = TestTemplate("scalatest.FeatureSpec")
+
+  val SpecsSpecification = TestTemplate("specs.Specification")
+
+  val Specs2Specification = TestTemplate("specs2.Specification")
 
 }

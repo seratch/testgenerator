@@ -171,7 +171,6 @@ class TestSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-
   test("createIfNotExist (WithTypeParameters)") {
     val config = new Config(
       srcDir = "src/test/scala"
@@ -183,6 +182,110 @@ class TestSuite extends FunSuite with ShouldMatchers {
         val test = generator.generate(target)
         test.createFileIfNotExist()
       }
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/ScalaTestAssertions)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestAssertions
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/ScalaTestFeatureSpec)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestFeatureSpec
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/ScalaTestFlatSpec)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestFlatSpec
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/ScalaTestFunSuite)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestFunSuite
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/ScalaTestSpec)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestSpec
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/ScalaTestWordSpec)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestWordSpec
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/SpecsSpecification)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.SpecsSpecification
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
+    }
+  }
+
+  test("createIfNotExist (ScalaTestOrSpecs/Specs2Specification)") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.Specs2Specification
+    )
+    val extractor = new TargetExtractor(config)
+    val generator = new TestGenerator(config)
+    val targets = extractor.extract("src/test/scala/example/ScalaTestOrSpecs.scala")
+    targets foreach {
+      case target => generator.generate(target).createFileIfNotExist()
     }
   }
 

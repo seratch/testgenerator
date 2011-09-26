@@ -8,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TestGeneratorSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
+  type ? = this.type // for IntelliJ IDEA
 
   val config = new Config
   val generator = new TestGenerator(config)
@@ -68,6 +68,337 @@ class TestGeneratorSuite extends FunSuite with ShouldMatchers {
     test.sourceCode.contains("opt: Option[_] = None") should be(true)
     test.sourceCode.contains("map: Map[_, _] = Map()") should be(true)
     test.sourceCode.contains("stringValue: String = \"\"") should be(true)
+  }
+
+  test("generate ScalaTestFunSuite") {
+    val config = new Config(
+      srcDir = "src/test/scala"
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSuite extends FunSuite with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  test("available") {
+    val instance = new Sample()
+    instance should not be null
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFunSuite with MustMatcher") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      scalaTestMatchers = ScalaTestMatchers.Must
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSuite extends FunSuite with MustMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  test("available") {
+    val instance = new Sample()
+    instance must not be null
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFunSuite without Matcher") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      scalaTestMatchers = ScalaTestMatchers.None
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSuite extends FunSuite {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  test("available") {
+    val instance = new Sample()
+    assert(instance != null)
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestAssertions") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestAssertions
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.Test
+
+class SampleSuite extends Assertions with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  @Test def available {
+    val instance = new Sample()
+    instance should not be null
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestSpec") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestSpec
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSpec extends Spec with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  describe("Sample") {
+    it("should be available") {
+      val instance = new Sample()
+      instance should not be null
+    }
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestWordSpec") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestWordSpec
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSpec extends WordSpec with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  "Sample" should {
+    "be available" in {
+      val instance = new Sample()
+      instance should not be null
+    }
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFlatSpec") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestFlatSpec
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSpec extends FlatSpec with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  "Sample" should "be available" in {
+    val instance = new Sample()
+    instance should not be null
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFeatureSpec") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.ScalaTestFeatureSpec
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSpec extends FeatureSpec with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  feature("Sample") {
+    scenario("it is prepared") {
+      val instance = new Sample()
+      instance should not be null
+    }
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate SpecsSpecification") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.SpecsSpecification
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.specs.Specification
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSpec extends Specification {
+
+  "Sample" should {
+    "be available" in {
+      val instance = new Sample()
+      instance must notBeNull
+    }
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate Specs2Specification") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      testTemplate = TestTemplate.Specs2Specification
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.specs2.mutable.Specification
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSpec extends Specification {
+
+  "Sample" should {
+    "be available" in {
+      val instance = new Sample()
+      instance must not beNull
+    }
+  }
+
+}
+""".replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
   }
 
 }
