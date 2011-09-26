@@ -27,6 +27,15 @@ public class RunMojo extends AbstractMojo {
    */
   protected String srcTestDir = "src/test/scala";
 
+  /**
+   * @parameter
+   */
+  protected String testTemplate = "scalatest.FunSuite";
+
+  /**
+   * @parameter
+   */
+  protected String scalatest_Matchers = "ShouldMatchers";
 
   public void execute() throws MojoExecutionException {
 
@@ -34,6 +43,8 @@ public class RunMojo extends AbstractMojo {
     System.setProperty("testgen.encoding", encoding);
     System.setProperty("testgen.srcDir", srcDir);
     System.setProperty("testgen.srcTestDir", srcTestDir);
+    System.setProperty("testgen.testTemplate", testTemplate);
+    System.setProperty("testgen.scalatest.Matchers", scalatest_Matchers);
 
     // target paramter
     String target = System.getProperty("target");
@@ -44,7 +55,7 @@ public class RunMojo extends AbstractMojo {
     try {
       Command.main(new String[] { target });
     } catch (Exception e) {
-      throw new MojoExecutionException("testgen execute error..", e);
+      throw new MojoExecutionException("testgen execute error...", e);
     }
 
   }
