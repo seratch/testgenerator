@@ -40,7 +40,7 @@ Currently only support "FunSuite with ShouldMathcers".
 
     package com.example
     import com.exmaple.bean.Bean
-    class BeanHolder(bean: Bean)
+    class BeanHolder(bean: Bean) extends AbstractHolder
 
 ### BeanHolderSuite
 
