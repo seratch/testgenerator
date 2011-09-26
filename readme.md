@@ -4,7 +4,7 @@ You can use "testgen" as a sbt 0.10.x plugin or a maven plugin.
 
 ## Overview
 
-The default template is "FunSuite with ShouldMathcers", but it's also possible to specify other templates of ScalaTest or specs/specs2.
+The default template is "FunSuite with ShouldMathcers", but it's also possible to specify the other templates of ScalaTest or specs/specs2.
 
 ### Class
 
@@ -295,13 +295,11 @@ Currently possbile by system properties.
       </plugins>
     </build>
  
-### run "testgen" goal
+### Run "testgen" goal
 
 The rule to specify targets is same as sbt plugin.
 
     maven testgen:run -Dtarget=com.exmaple.MyApp
 
-## then Happy testing! :)
-
-Have fun!
+## Happy Testing! :)
 
