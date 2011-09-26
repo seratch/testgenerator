@@ -46,7 +46,7 @@ Also for classes with type-import:
 
     package com.example
     import entity.Bean
-    class BeanHolder(bean: Bean) extends AbstractHolder
+    class BeanHolder(val bean: Bean) extends AbstractHolder
 
 Run "testgen":
 
