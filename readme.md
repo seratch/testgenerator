@@ -159,9 +159,9 @@ Following will be generated:
 
 Create the directory if it doesn't exist yet.
 
-### Addd project/plugins/plugins.sbt
+### put project/plugins/plugins.sbt
 
-vim ${projectRoot}/project/plugins/plugins.sbt
+Edit project/plugins/plugins.sbt as follows:
 
     scalaVersion := "2.8.1"
 
@@ -184,15 +184,24 @@ See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/
 
 #### Specify a filename
 
-    sbt
+src/main/scala/com/example/models.scala:
+
+    package com.example
+    case class Staff(id: Long, name: String, ...)
+    case class Company(id: Long, name: String, ...)
+    case class Stock(id: Long, itemId: Long, ...)
+
+And specify the above file:
+
+    $ sbt
     > testgen src/main/scala/com/example/models.scala
-    > "com.example.StaffSuite" is already in being.
-    > "com.example.CompanySuite" is already in being.
-    > "com.example.StockSuite" is created.
+    "com.example.StaffSuite" is already in being.
+    "com.example.CompanySuite" is already in being.
+    "com.example.StockSuite" is created.
 
 "src/main/scala" is omissible.
 
-    sbt
+    $ sbt
     > testgen com/example/models.scala
 
 #### Specify a class name
@@ -201,25 +210,25 @@ If you specify a class name, it must be the name of the source file.
 
 "com.example.MyApp" will be translated as "src/main/scala/com/example/MyApp.scala".
 
-    sbt
+    $ sbt
     > testgen com.example.MyApp
-    > "com.example.MyAppSuite" is created.
+    "com.example.MyAppSuite" is created.
 
 #### Specify a directory
 
 "testgen" will search targets recursively under the directory.
 
-    sbt
+    $ sbt
     > testgen src/main/scala/com/example
 
 #### Specify a package name
 
 As same as specifying a directory.
 
-    sbt
+    $ sbt
     > testgen com.example
-    > "com.example.MyAppSuite" is created.
-    > "com.example.util.MyUtilSuite" is created.
+    "com.example.MyAppSuite" is created.
+    "com.example.util.MyUtilSuite" is created.
 
 
 ### Configurations
@@ -288,7 +297,7 @@ Currently possbile by system properties.
  
 ### run "testgen" goal
 
-The rule to specify a target is same as sbt plugin.
+The rule to specify targets is same as sbt plugin.
 
     maven testgen:run -Dtarget=com.exmaple.MyApp
 
