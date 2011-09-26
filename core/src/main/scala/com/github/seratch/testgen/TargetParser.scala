@@ -115,7 +115,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def extendsDef = "extends" ~ packageName
 
-  def withDef = "with" ~ rep(packageName)
+  def withDef = rep("with" ~ packageName)
 
   def prefixOfClass = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
 
