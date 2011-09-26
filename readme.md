@@ -1,21 +1,27 @@
-# "testgen": A Scala unit test code generator
+# "testgen": A Scala unit test template generator
 
-"testgen" is a Scala unit test code generator.
+"testgen" is a Scala unit test template generator.
 
 You can use "testgen" as a sbt 0.10.x plugin or a maven plugin.
 
 ## output example
 
-Currently only support "FunSuite with ShouldMathcers".
+The default template is "FunSuite with ShouldMathcers", but it's possible to specify other ScalaTest templates or specs/specs2.
 
-### Name
+### Class
 
-    package example
+    package com.example
     case class Name(first: String, last: String)
 
-### NameSuite
+When you run "testgen" via sbt:
 
-    package example
+    sbt
+    > testgen com.example.Name
+    > "com.example.NameSuite" is created.
+
+And following will be generated:
+
+    package com.example
     
     import org.scalatest._
     import org.scalatest.matchers._
@@ -25,7 +31,7 @@ Currently only support "FunSuite with ShouldMathcers".
     @RunWith(classOf[JUnitRunner])
     class NameSuite extends FunSuite with ShouldMatchers {
     
-      type ? = this.type
+      type ? = this.type // for IntelliJ IDEA
     
       test("available") {
         val first: String = ""
@@ -36,41 +42,68 @@ Currently only support "FunSuite with ShouldMathcers".
     
     }
 
-### BeanHolder
+Also for classes with type-import:
 
     package com.example
-    import com.exmaple.bean.Bean
+    import entity.Bean
     class BeanHolder(bean: Bean) extends AbstractHolder
 
-### BeanHolderSuite
+Run "testgen":
 
-    package example
+    sbt
+    > testgen com.example.BeanHolder
+    > "com.example.BeanHolderSuite" is created.
+
+entity.Bean will be imported in the generated test:
+
+    package com.example
 
     import org.scalatest._
     import org.scalatest.matchers._
     import org.junit.runner.RunWith
     import org.scalatest.junit.JUnitRunner
-    import com.example.bean.Bean
+    import entity.Bean
 
     @RunWith(classOf[JUnitRunner])
-    class BeanHolderSuite extends FunSuite with ShouldMatchers {
+    class BeanHolderSpec extends FlatSpec with MustMatchers {
 
-      type ? = this.type
+      type ? = this.type // for IntelliJ IDEA
 
-      test("available") {
+      "BeanHolder" should "be available" in {
         val bean: Bean = null
         val instance = new BeanHolder(bean)
-        instance should not be null
+        instance must not be null
       }
 
     }
 
-### Util
+Following is an example with specs/specs2:
+
+    @RunWith(classOf[JUnitRunner])
+    class BeanHolderSpec extends Specification {
+    
+      "BeanHolder" should {
+        "be available" in {
+          val instance = new Sample()
+          instance must notBeNull
+          // (specs2) instance must not beNull 
+        }
+      }
+     
+    }
+
+### Object
 
     package com.example
     object Util
 
-### UtilSuite
+Run "testgen" via sbt:
+
+    sbt
+    > testgen com.example.Util
+    > "com.example.UtilSuite" is created.
+
+Following will be generated:
 
     package com.example
     
@@ -82,7 +115,7 @@ Currently only support "FunSuite with ShouldMathcers".
     @RunWith(classOf[JUnitRunner])
     class UtilSuite extends FunSuite with ShouldMatchers {
     
-      type ? = this.type
+      type ? = this.type // for IntelliJ IDEA
     
       test("available") {
         Util.isInstanceOf[Singleton] should equal(true)
@@ -90,12 +123,18 @@ Currently only support "FunSuite with ShouldMathcers".
     
     }
 
-### Writable
+### Trait
 
     package com.example
     trait Writable
 
-### WritableSuite
+Run "testgen" via sbt:
+
+    sbt
+    > testgen com.example.Writable
+    > "com.example.WritableSuite" is created.
+
+Following will be generated:
 
     package com.example
     
@@ -107,7 +146,7 @@ Currently only support "FunSuite with ShouldMathcers".
     @RunWith(classOf[JUnitRunner])
     class WritableSuite extends FunSuite with ShouldMatchers {
     
-      type ? = this.type
+      type ? = this.type // for IntelliJ IDEA
     
       test("available") {
         val mixedin = new Object with Writable
@@ -141,14 +180,33 @@ Create the directory if it doesn't exist yet.
       "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
     )
 
-### configure testgen
+### configurations
 
 Currently possbile by system properties.
 
     java -jar sbt-launch.jar \
-    -Dtestgen.srcDir=src/main/scala \
-    -Dtestgen.srcTestDir=src/test/scala \
-    -Dtestgen.encoding=UTF-8
+      -Dtestgen.srcDir=src/main/scala \
+      -Dtestgen.srcTestDir=src/test/scala \
+      -Dtestgen.encoding=UTF-8 \
+      -Dtestgen.testTemplate=scalatest.FunSuite \
+      -Dtestgen.scalagtest.Matchers=ShouldMatchers
+
+### configuration ("testgen.testTemplate")
+
+* "scalatest.FunSuite(default)"
+* "scalatest.Assertions"
+* "scalatest.Spec"
+* "scalatest.WordSpec"
+* "scalatest.FlatSpec"
+* "scalatest.FeatureSpec"
+* "specs.Specification"
+* "specs2.Specification"
+
+### configuration ("testgen.scalatest.Matchers")
+
+* "ShouldMatchers"
+* "MustMatchers"
+* ""(empty)
 
 ### run sbt and "testgen" command
 
@@ -204,6 +262,15 @@ For example, "com.example.MyApp" will be translated as "src/main/scala/com/examp
           <groupId>com.github.seratch</groupId>
           <artifactId>maven-testgen-plugin</artifactId>
           <version>0.1-SNAPSHOT</version>
+          <!-- If you need
+          <configuration>
+            <srcDir>src/main/scala</srcDir>
+            <srcTestDir>src/test/scala</srcTestDir>
+            <encoding>UTF-8</encoding>
+            <testTemplate>scalatest.FunSuite</testTemplate>
+            <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
+          </configuration>
+          -->
         </plugin>
       </plugins>
     </build>
