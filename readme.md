@@ -13,11 +13,11 @@ The default template is "FunSuite with ShouldMathcers", but it's also possible t
 
 When you run "testgen" via sbt:
 
-    sbt
+    $ sbt
     > testgen com.example.Name
-    > "com.example.NameSuite" is created.
+    "com.example.NameSuite" is created.
 
-And following will be generated:
+Following will be generated:
 
     package com.example
     
@@ -48,11 +48,11 @@ Also for classes with type-import:
 
 Run "testgen":
 
-    sbt
+    $ sbt
     > testgen com.example.BeanHolder
-    > "com.example.BeanHolderSuite" is created.
+    "com.example.BeanHolderSuite" is created.
 
-entity.Bean will be imported in the generated test:
+"entity.Bean" will be imported in the generated test:
 
     package com.example
 
@@ -97,9 +97,9 @@ Following is an example with specs/specs2:
 
 Run "testgen" via sbt:
 
-    sbt
+    $ sbt
     > testgen com.example.Util
-    > "com.example.UtilSuite" is created.
+    "com.example.UtilSuite" is created.
 
 Following will be generated:
 
@@ -128,9 +128,9 @@ Following will be generated:
 
 Run "testgen" via sbt:
 
-    sbt
+    $ sbt
     > testgen com.example.Writable
-    > "com.example.WritableSuite" is created.
+    "com.example.WritableSuite" is created.
 
 Following will be generated:
 
