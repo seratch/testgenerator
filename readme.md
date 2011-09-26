@@ -193,7 +193,7 @@ Currently possbile by system properties.
 
 ### configuration ("testgen.testTemplate")
 
-* "scalatest.FunSuite(default)"
+* "scalatest.FunSuite" : default
 * "scalatest.Assertions"
 * "scalatest.Spec"
 * "scalatest.WordSpec"
@@ -204,9 +204,9 @@ Currently possbile by system properties.
 
 ### configuration ("testgen.scalatest.Matchers")
 
-* "ShouldMatchers"
+* "ShouldMatchers" : default
 * "MustMatchers"
-* ""(empty)
+* "" (=empty)
 
 ### run sbt and "testgen" command
 
