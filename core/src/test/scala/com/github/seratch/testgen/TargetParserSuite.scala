@@ -91,6 +91,53 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
+  test("extract class which extends something") {
+    {
+      val input = """class MyClass(name: String = "foo") extends SomeTrait"""
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+    }
+    {
+      val input = "class ExtendedSomething extends Something  class ReadableSomething extends Something with Readable"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("ExtendedSomething")
+      result.get(1).typeName should equal("ReadableSomething")
+    }
+    {
+      val input = """class MyClass(name: String = "foo") extends SomeTrait with AnotherTrait"""
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+    }
+  }
+
+  test("extract object which extends something") {
+    {
+      val input = "object ExtendedSomething extends Something  object ReadableSomething extends Something with Readable"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("ExtendedSomething")
+      result.get(1).typeName should equal("ReadableSomething")
+    }
+  }
+
+  test("extract trait which extends something") {
+    {
+      val input = "trait ExtendedSomething extends Something  trait ReadableSomething extends Something with Readable"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("ExtendedSomething")
+      result.get(1).typeName should equal("ReadableSomething")
+    }
+  }
+
   test("extract class defined args(with default value)") {
     {
       val input = """class MyClass(name: String = "foo") class MyClass2(name: Bean = new Bean()) """

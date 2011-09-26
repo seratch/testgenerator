@@ -113,21 +113,27 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def protectedDef = "protected"
 
+  def extendsDef = "extends" ~ packageName
+
+  def withDef = "with" ~ rep(packageName)
+
   def prefixOfClass = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
 
-  def suffixOfClass = rep(typeParametersName)
+  def suffixOfClass = rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
 
   def prefixOfObject = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
 
+  def suffixOfObject = rep((extendsDef ~ withDef) | extendsDef)
+
   def prefixOfTrait = rep(annotationValue | packagePrivateDef | protectedDef)
 
-  def suffixOfTrait = rep(typeParametersName)
+  def suffixOfTrait = rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
 
   def allDef = {
     importDef |
       (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
       (prefixOfClass ~> classDef <~ suffixOfClass) |
-      (prefixOfObject ~> objectDef) |
+      (prefixOfObject ~> objectDef <~ suffixOfObject) |
       (prefixOfTrait ~> traitDef <~ suffixOfTrait)
   }
 
