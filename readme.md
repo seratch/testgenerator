@@ -1,12 +1,10 @@
-# "testgen": A Scala unit test template generator
-
-"testgen" is a Scala unit test template generator.
+# "testgen" : Scala unit test template generator
 
 You can use "testgen" as a sbt 0.10.x plugin or a maven plugin.
 
-## output example
+## Overview
 
-The default template is "FunSuite with ShouldMathcers", but it's possible to specify other ScalaTest templates or specs/specs2.
+The default template is "FunSuite with ShouldMathcers", but it's also possible to specify other templates of ScalaTest or specs/specs2.
 
 ### Class
 
@@ -155,19 +153,15 @@ Following will be generated:
     
     }
 
-## sbt 0.10.x plugin
+## Usage with sbt
 
-### prepare xsbt 0.10.1
-
-See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
-
-### mkdir -p {root}/project/plugins
+### mkdir -p project/plugins
 
 Create the directory if it doesn't exist yet.
 
-### vim {root}/project/plugins/testgen.sbt
+### Addd project/plugins/plugins.sbt
 
-    // *** Put this under project/plugins/ ***
+vim ${projectRoot}/project/plugins/plugins.sbt
 
     scalaVersion := "2.8.1"
 
@@ -180,7 +174,55 @@ Create the directory if it doesn't exist yet.
       "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
     )
 
-### configurations
+### Run sbt
+
+#### xsbt 0.10.x
+
+"testgen" requires xsbt 0.10.x (sorry, sbt 0.7.x is not supported). 
+
+See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
+
+#### Specify a filename
+
+    sbt
+    > testgen src/main/scala/com/example/models.scala
+    > "com.example.StaffSuite" is already in being.
+    > "com.example.CompanySuite" is already in being.
+    > "com.example.StockSuite" is created.
+
+"src/main/scala" is omissible.
+
+    sbt
+    > testgen com/example/models.scala
+
+#### Specify a class name
+
+If you specify a class name, it must be the name of the source file.
+
+"com.example.MyApp" will be translated as "src/main/scala/com/example/MyApp.scala".
+
+    sbt
+    > testgen com.example.MyApp
+    > "com.example.MyAppSuite" is created.
+
+#### Specify a directory
+
+"testgen" will search targets recursively under the directory.
+
+    sbt
+    > testgen src/main/scala/com/example
+
+#### Specify a package name
+
+As same as specifying a directory.
+
+    sbt
+    > testgen com.example
+    > "com.example.MyAppSuite" is created.
+    > "com.example.util.MyUtilSuite" is created.
+
+
+### Configurations
 
 Currently possbile by system properties.
 
@@ -191,7 +233,7 @@ Currently possbile by system properties.
       -Dtestgen.testTemplate=scalatest.FunSuite \
       -Dtestgen.scalagtest.Matchers=ShouldMatchers
 
-### configuration ("testgen.testTemplate")
+#### Configuration: "testgen.testTemplate"
 
 * "scalatest.FunSuite" : default
 * "scalatest.Assertions"
@@ -202,44 +244,13 @@ Currently possbile by system properties.
 * "specs.Specification"
 * "specs2.Specification"
 
-### configuration ("testgen.scalatest.Matchers")
+#### Configuration: "testgen.scalatest.Matchers"
 
 * "ShouldMatchers" : default
 * "MustMatchers"
-* "" (=empty)
+* "" (empty string)
 
-### run sbt and "testgen" command
-
-* File or directory 
-
-"src/main/scala" is omissible. 
-
-    sbt
-    > testgen src/main/scala/com/example/models.scala
-    > "com.example.StaffSuite" is already in being.
-    > "com.example.CompanySuite" is already in being.
-    > "com.example.StockSuite" is created.
-
-* Class name 
-
-When you specify a class name, the name should be the name of the source file. 
-
-For example, "com.example.MyApp" will be translated as "src/main/scala/com/example/MyApp.scala".
-
-    sbt
-    > testgen com.example.MyApp
-    > "com.example.MyAppSuite" is created.
-
-* Package name 
-
-"testgen" will search targets recursively under the directory.
-
-    sbt
-    > testgen com.example
-    > "com.example.MyAppSuite" is created.
-    > "com.example.util.MyUtilSuite" is created.
-
-## maven plugin
+## Usage with maven 
 
 ### pom.xml
 
@@ -277,7 +288,7 @@ For example, "com.example.MyApp" will be translated as "src/main/scala/com/examp
  
 ### run "testgen" goal
 
-The usage is same as sbt plugin.
+The rule to specify a target is same as sbt plugin.
 
     maven testgen:run -Dtarget=com.exmaple.MyApp
 
