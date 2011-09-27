@@ -72,6 +72,21 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       result.matches(expected) should equal(true)
       importList.size should equal(1)
     }
+    {
+      val lines = List(
+        "package com.example",
+        "import java.io._ ",
+        "case class MyClass1(v: String = \" this is a string literal. \\\"package\\\" string.literal class MyClassX \")",
+        "case class MyClass2(v: String)"
+      )
+      val (result, importList) = extractor.getDefOnlyAndImportedList(lines)
+      println(result)
+      val expected = "package com.example\\s+" +
+        "case class MyClass1\\(v: String = \"\"\\)\\s+" +
+        "case class MyClass2\\(v: String\\)\\s*"
+      result.matches(expected) should equal(true)
+      importList.size should equal(1)
+    }
   }
 
   test("extract from the code which contains here document") {
