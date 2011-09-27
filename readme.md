@@ -8,150 +8,176 @@ The default template is "FunSuite with ShouldMathcers", but it's also possible t
 
 ### Class
 
-    package com.example
-    case class Name(first: String, last: String)
+```scala
+package com.example
+case class Name(first: String, last: String)
+```
 
 When you run "testgen" via sbt:
 
-    $ sbt
-    > testgen com.example.Name
-    "com.example.NameSuite" is created.
+```sh
+$ sbt
+> testgen com.example.Name
+"com.example.NameSuite" is created.
+```
 
 Following will be generated:
 
-    package com.example
-    
-    import org.scalatest._
-    import org.scalatest.matchers._
-    import org.junit.runner.RunWith
-    import org.scalatest.junit.JUnitRunner
-    
-    @RunWith(classOf[JUnitRunner])
-    class NameSuite extends FunSuite with ShouldMatchers {
-    
-      type ? = this.type // for IntelliJ IDEA
-    
-      test("available") {
-        val first: String = ""
-        val last: String = ""
-        val instance = new Name(first,last)
-        instance should not be null
-      }
-    
-    }
+```scala
+package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class NameSuite extends FunSuite with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  test("available") {
+    val first: String = ""
+    val last: String = ""
+    val instance = new Name(first,last)
+    instance should not be null
+  }
+
+}
+```
 
 Also for classes with type-import:
 
-    package com.example
-    import entity.Bean
-    class BeanHolder(val bean: Bean) extends AbstractHolder
+```scala
+package com.example
+import entity.Bean
+class BeanHolder(val bean: Bean) extends AbstractHolder
+```
 
 Run "testgen":
 
-    $ sbt
-    > testgen com.example.BeanHolder
-    "com.example.BeanHolderSuite" is created.
+```sh
+$ sbt
+> testgen com.example.BeanHolder
+"com.example.BeanHolderSuite" is created.
+```
 
 "entity.Bean" will be imported in the generated test:
 
-    package com.example
+```scala
+package com.example
 
-    import org.scalatest._
-    import org.scalatest.matchers._
-    import org.junit.runner.RunWith
-    import org.scalatest.junit.JUnitRunner
-    import entity.Bean
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import entity.Bean
 
-    @RunWith(classOf[JUnitRunner])
-    class BeanHolderSpec extends FlatSpec with MustMatchers {
+@RunWith(classOf[JUnitRunner])
+class BeanHolderSpec extends FlatSpec with MustMatchers {
 
-      type ? = this.type // for IntelliJ IDEA
+  type ? = this.type // for IntelliJ IDEA
 
-      "BeanHolder" should "be available" in {
-        val bean: Bean = null
-        val instance = new BeanHolder(bean)
-        instance must not be null
-      }
+  "BeanHolder" should "be available" in {
+    val bean: Bean = null
+    val instance = new BeanHolder(bean)
+    instance must not be null
+  }
 
-    }
+}
+```
 
 Following is an example with specs/specs2:
 
-    @RunWith(classOf[JUnitRunner])
-    class BeanHolderSpec extends Specification {
-    
-      "BeanHolder" should {
-        "be available" in {
-          val instance = new Sample()
-          instance must notBeNull
-          // (specs2) instance must not beNull 
-        }
-      }
-     
+```scala
+@RunWith(classOf[JUnitRunner])
+class BeanHolderSpec extends Specification {
+
+  "BeanHolder" should {
+    "be available" in {
+      val instance = new Sample()
+      instance must notBeNull
+      // (specs2) instance must not beNull 
     }
+  }
+ 
+}
+```
 
 ### Object
 
-    package com.example
-    object Util
+```scala
+package com.example
+object Util
+```
 
 Run "testgen" via sbt:
 
-    $ sbt
-    > testgen com.example.Util
-    "com.example.UtilSuite" is created.
+```sh
+$ sbt
+> testgen com.example.Util
+"com.example.UtilSuite" is created.
+```
 
 Following will be generated:
 
-    package com.example
-    
-    import org.scalatest._
-    import org.scalatest.matchers._
-    import org.junit.runner.RunWith
-    import org.scalatest.junit.JUnitRunner
+```scala
+package com.example
 
-    @RunWith(classOf[JUnitRunner])
-    class UtilSuite extends FunSuite with ShouldMatchers {
-    
-      type ? = this.type // for IntelliJ IDEA
-    
-      test("available") {
-        Util.isInstanceOf[Singleton] should equal(true)
-      }
-    
-    }
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class UtilSuite extends FunSuite with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  test("available") {
+    Util.isInstanceOf[Singleton] should equal(true)
+  }
+
+}
+```
 
 ### Trait
 
-    package com.example
-    trait Writable
+```scala
+package com.example
+trait Writable
+```
 
 Run "testgen" via sbt:
 
-    $ sbt
-    > testgen com.example.Writable
-    "com.example.WritableSuite" is created.
+```sh
+$ sbt
+> testgen com.example.Writable
+"com.example.WritableSuite" is created.
+```
 
 Following will be generated:
 
-    package com.example
-    
-    import org.scalatest._
-    import org.scalatest.matchers._
-    import org.junit.runner.RunWith
-    import org.scalatest.junit.JUnitRunner
+```scala
+package com.example
 
-    @RunWith(classOf[JUnitRunner])
-    class WritableSuite extends FunSuite with ShouldMatchers {
-    
-      type ? = this.type // for IntelliJ IDEA
-    
-      test("available") {
-        val mixedin = new Object with Writable
-        mixedin should not be null
-      }
-    
-    }
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class WritableSuite extends FunSuite with ShouldMatchers {
+
+  type ? = this.type // for IntelliJ IDEA
+
+  test("available") {
+    val mixedin = new Object with Writable
+    mixedin should not be null
+  }
+
+}
+```
 
 ## Usage with sbt
 
@@ -163,16 +189,18 @@ Create the directory if it doesn't exist yet.
 
 Edit project/plugins/plugins.sbt as follows:
 
-    scalaVersion := "2.8.1"
+```scala
+scalaVersion := "2.8.1"
 
-    resolvers ++= Seq(
-      "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases",
-      "seratch.github.com snapshots" at "http://seratch.github.com/mvn-repo/snapshots"
-    )
+resolvers ++= Seq(
+  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases",
+  "seratch.github.com snapshots" at "http://seratch.github.com/mvn-repo/snapshots"
+)
 
-    libraryDependencies ++= Seq(
-      "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
-    )
+libraryDependencies ++= Seq(
+  "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
+)
+```
 
 ### Run sbt
 
@@ -186,23 +214,29 @@ See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/
 
 src/main/scala/com/example/models.scala:
 
-    package com.example
-    case class Staff(id: Long, name: String, ...)
-    case class Company(id: Long, name: String, ...)
-    case class Stock(id: Long, itemId: Long, ...)
+```scala
+package com.example
+case class Staff(id: Long, name: String, ...)
+case class Company(id: Long, name: String, ...)
+case class Stock(id: Long, itemId: Long, ...)
+```
 
 And specify the above file:
 
-    $ sbt
-    > testgen src/main/scala/com/example/models.scala
-    "com.example.StaffSuite" is already in being.
-    "com.example.CompanySuite" is already in being.
-    "com.example.StockSuite" is created.
+```sh
+$ sbt
+> testgen src/main/scala/com/example/models.scala
+"com.example.StaffSuite" is already in being.
+"com.example.CompanySuite" is already in being.
+"com.example.StockSuite" is created.
+```
 
 "src/main/scala" is omissible.
 
-    $ sbt
-    > testgen com/example/models.scala
+```sh
+$ sbt
+> testgen com/example/models.scala
+```
 
 #### Specify a class name
 
@@ -210,37 +244,44 @@ If you specify a class name, it must be the name of the source file.
 
 "com.example.MyApp" will be translated as "src/main/scala/com/example/MyApp.scala".
 
-    $ sbt
-    > testgen com.example.MyApp
-    "com.example.MyAppSuite" is created.
+```sh
+$ sbt
+> testgen com.example.MyApp
+"com.example.MyAppSuite" is created.
+```
 
 #### Specify a directory
 
 "testgen" will search targets recursively under the directory.
 
-    $ sbt
-    > testgen src/main/scala/com/example
+```sh
+$ sbt
+> testgen src/main/scala/com/example
+```
 
 #### Specify a package name
 
 As same as specifying a directory.
 
-    $ sbt
-    > testgen com.example
-    "com.example.MyAppSuite" is created.
-    "com.example.util.MyUtilSuite" is created.
-
+```sh
+$ sbt
+> testgen com.example
+"com.example.MyAppSuite" is created.
+"com.example.util.MyUtilSuite" is created.
+```
 
 ### Configurations
 
 Currently possbile by system properties.
 
-    java -jar sbt-launch.jar \
-      -Dtestgen.srcDir=src/main/scala \
-      -Dtestgen.srcTestDir=src/test/scala \
-      -Dtestgen.encoding=UTF-8 \
-      -Dtestgen.testTemplate=scalatest.FunSuite \
-      -Dtestgen.scalagtest.Matchers=ShouldMatchers
+```sh
+java -jar sbt-launch.jar \
+  -Dtestgen.srcDir=src/main/scala \
+  -Dtestgen.srcTestDir=src/test/scala \
+  -Dtestgen.encoding=UTF-8 \
+  -Dtestgen.testTemplate=scalatest.FunSuite \
+  -Dtestgen.scalagtest.Matchers=ShouldMatchers
+```
 
 #### Configuration: "testgen.testTemplate"
 
@@ -263,6 +304,7 @@ Currently possbile by system properties.
 
 ### pom.xml
 
+```xml
     <pluginRepositories>
       <pluginRepository>
         <id>seratch.github.com releases</id>
@@ -294,12 +336,15 @@ Currently possbile by system properties.
         </plugin>
       </plugins>
     </build>
- 
+```
+
 ### Run "testgen" goal
 
 The rule to specify targets is same as sbt plugin.
 
-    maven testgen:run -Dtarget=com.exmaple.MyApp
+```sh
+maven testgen:run -Dtarget=com.exmaple.MyApp
+```
 
 ## Happy Testing! :)
 
