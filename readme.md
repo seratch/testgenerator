@@ -1,6 +1,4 @@
-# "testgen" : Scala unit test template generator
-
-You can use "testgen" as a sbt 0.10.x plugin or a maven plugin.
+# testgen : Scala unit test template generator
 
 ## Overview
 
