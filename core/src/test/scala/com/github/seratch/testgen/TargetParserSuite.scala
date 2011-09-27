@@ -113,6 +113,14 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("MyController")
       result.get(1).typeName should equal("MyObject")
     }
+    {
+      val input = "@Path(\"\"\"ssss\"\"\") class MyController object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyController")
+      result.get(1).typeName should equal("MyObject")
+    }
   }
 
   test("extract class annotated - name and value") {

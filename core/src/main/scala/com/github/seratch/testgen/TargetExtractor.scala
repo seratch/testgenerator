@@ -141,6 +141,9 @@ class TargetExtractor(val config: Config) {
         }
       }
     }).mkString(" ")
+      .replaceAll("\"{3}[^(\"{3})]+?\"{3}", "\"\"") // here document
+      .replaceAll("\"[^\"]+?\"", "\"\"") // string literal
+
     (defOnly, importedList.toList)
   }
 
