@@ -132,6 +132,14 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("Foo")
       result.get(1).typeName should equal("MyObject")
     }
+    {
+      val input = "@Foo(c = 'c') class Foo object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("Foo")
+      result.get(1).typeName should equal("MyObject")
+    }
   }
 
 
