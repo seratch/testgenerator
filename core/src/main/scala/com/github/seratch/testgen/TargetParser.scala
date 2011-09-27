@@ -21,35 +21,43 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   type P[T] = Parser[T]
 
+  // --- main ---
+
+  def allDef = {
+    (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
+      (prefixOfClass ~> classDef <~ suffixOfClass) |
+      (prefixOfObject ~> objectDef <~ suffixOfObject) |
+      (prefixOfTrait ~> traitDef <~ suffixOfTrait)
+  }
+
+  def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
+    // e.g. class Person(arg: Name(f:String = "", l:String), age: Bean = new Bean(,),)
+    val replacedInput = input.replaceAll("\\(\\s*\\)", "(,)").replaceAll("([^,])\\s*\\)", "$1,)")
+    parseAll(rep(t), replacedInput)
+  }
+
+  def parse(input: String): ParseResult[List[Target]] = parse(allDef, input)
+
+  // --- basic ---
+
   def variableName = "\\w+".r
 
   def packageName = "[\\w\\.]+".r
 
-  def annotationValue = keyAndValueAnnotationValue | valueOnlyAnnotationValue | noArgAnnotationValue
+  def literal = {
+    // stringLiteral does not work for string contains backslash, etc..
+    "\"[^(\")]+\"".r | stringLiteral | packageName
+  }
 
-  def noArgAnnotationValue = "@" ~ packageName
-
-  def valueOnlyAnnotationValue = "@" ~ packageName ~ "(" ~ argsInNewLiteral ~ ")"
-
-  def keyAndValueAnnotationValue = "@" ~ packageName ~ "(" ~ rep("," | (packageName ~ "=" ~ (literal | newLiteral))) ~ ")"
-
-  def typeParametersName: P[Any] = "[" <~ rep(variableName | ">:" | "<:" | "+" | "-" | "," | typeParametersName) <~ "]"
+  // --- type def ---
 
   def typeName = (variableName <~ typeParametersName) | variableName
 
-  def argDefaultValue = newLiteral | literal
-
-  def argsWithDefaultValue = rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
-
-  def argsWithoutDefaultValue = rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ ","
-
-  def args = rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
-    case argList => argList map {
-      case name ~ ":" ~ typeName => (name, typeName)
-    }
+  def typeParametersName: P[Any] = {
+    "[" <~ rep(variableName | ">:" | "<:" | "+" | "-" | "," | typeParametersName) <~ "]"
   }
 
-  def literal = "[\\w\\./\"'\\\\]+".r
+  // --- constructor and args ---
 
   def newLiteral: P[Any] = {
     (rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")")
@@ -58,6 +66,66 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   def argsInNewLiteral = {
     // e.g. new Something() is converted to new Something(,)
     rep("," | ((newLiteral | literal) ~ ",") | newLiteral | literal)
+  }
+
+  def args = {
+
+    def argDefaultValue = newLiteral | literal
+
+    def argsWithDefaultValue = {
+      rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
+    }
+
+    def argsWithoutDefaultValue = {
+      rep(annotationValue | "val " | "var ") ~> variableName ~ ":" ~ typeName <~ ","
+    }
+
+    rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
+      case argList => argList map {
+        case name ~ ":" ~ typeName => (name, typeName)
+      }
+    }
+  }
+
+  // --- modifier ---
+
+  def annotationValue = {
+
+    def noArg = {
+      "@" ~ packageName
+    }
+
+    def valueOnly = {
+      "@" ~ packageName ~ "(" ~ argsInNewLiteral ~ ")"
+    }
+
+    def keyAndValue = {
+      "@" ~ packageName ~ "(" ~ rep("," | (packageName ~ "=" ~ (newLiteral | literal))) ~ ")"
+    }
+
+    keyAndValue | valueOnly | noArg
+  }
+
+  def finalDef = "final"
+
+  def caseDef = "case"
+
+  def packagePrivateDef = "private[" ~> packageName ~> "]"
+
+  def protectedDef = "protected"
+
+  def extendsDef = "extends" ~ packageName
+
+  def withDef = rep("with" ~ packageName)
+
+  // --- class ---
+
+  def prefixOfClass = {
+    rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
+  }
+
+  def suffixOfClass = {
+    rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
   }
 
   def classDef = "class" ~> typeName ^^ {
@@ -85,13 +153,14 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def traitDef = "trait" ~> typeName ^^ {
-    name => new Target(
-      fullPackageName = fullPackageName,
-      importList = importList,
-      defType = DefType.Trait,
-      typeName = name
-    )
+  // --- object ---
+
+  def prefixOfObject = {
+    rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
+  }
+
+  def suffixOfObject = {
+    rep((extendsDef ~ withDef) | extendsDef)
   }
 
   def objectDef = "object" ~> typeName ^^ {
@@ -103,43 +172,23 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def finalDef = "final"
+  // --- trait ---
 
-  def caseDef = "case"
-
-  def packagePrivateDef = "private[" ~> packageName ~> "]"
-
-  def protectedDef = "protected"
-
-  def extendsDef = "extends" ~ packageName
-
-  def withDef = rep("with" ~ packageName)
-
-  def prefixOfClass = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
-
-  def suffixOfClass = rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
-
-  def prefixOfObject = rep(annotationValue | packagePrivateDef | protectedDef | caseDef | finalDef)
-
-  def suffixOfObject = rep((extendsDef ~ withDef) | extendsDef)
-
-  def prefixOfTrait = rep(annotationValue | packagePrivateDef | protectedDef)
-
-  def suffixOfTrait = rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
-
-  def allDef = {
-    (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
-      (prefixOfClass ~> classDef <~ suffixOfClass) |
-      (prefixOfObject ~> objectDef <~ suffixOfObject) |
-      (prefixOfTrait ~> traitDef <~ suffixOfTrait)
+  def prefixOfTrait = {
+    rep(annotationValue | packagePrivateDef | protectedDef)
   }
 
-  def parse(t: P[Target], input: String): ParseResult[List[Target]] = {
-    // e.g. class Person(arg: Name(f:String = "", l:String), age: Bean = new Bean(,),)
-    val replacedInput = input.replaceAll("\\(\\s*\\)", "(,)").replaceAll("([^,])\\s*\\)", "$1,)")
-    parseAll(rep(t), replacedInput)
+  def suffixOfTrait = {
+    rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
   }
 
-  def parse(input: String): ParseResult[List[Target]] = parse(allDef, input)
+  def traitDef = "trait" ~> typeName ^^ {
+    name => new Target(
+      fullPackageName = fullPackageName,
+      importList = importList,
+      defType = DefType.Trait,
+      typeName = name
+    )
+  }
 
 }

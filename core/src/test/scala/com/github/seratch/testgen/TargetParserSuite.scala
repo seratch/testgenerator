@@ -117,7 +117,15 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
 
   test("extract class annotated - name and value") {
     {
-      val input = "@Foo(name = \"/baz\", key = \"\\ddd\\\") class Foo object MyObject"
+      val input = "@Foo(name = \"/baz\", key = \"ddd\") class Foo object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("Foo")
+      result.get(1).typeName should equal("MyObject")
+    }
+    {
+      val input = "@Foo(name = \"\\xxx\\\") class Foo object MyObject"
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
