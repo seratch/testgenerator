@@ -58,13 +58,7 @@ class TargetExtractor(val config: Config) {
         val importList = extractImportList(defOnly)
         val parser = new TargetParser(fullPackageName, importList)
         var defOnlyToParse = eachDefOnly.replaceFirst(fullPackageName, "")
-        importList foreach {
-          case toImport => defOnlyToParse = defOnlyToParse.replaceAll(
-            "\\s*import\\s+" + toImport + "\\s*", "")
-        }
-        parser.parse(defOnlyToParse).getOrElse(Nil) filter {
-          each => each.defType != DefType.Import
-        }
+        parser.parse(defOnlyToParse).getOrElse(Nil)
       }
     }
   }
@@ -80,6 +74,8 @@ class TargetExtractor(val config: Config) {
       line => {
         // mutable line string
         var line_ = line
+        // remove type-import
+        line_ = line_.replaceFirst("import\\s+.+$", "")
         if (line_.matches("\\s*//\\s*.*")) {
           // line comment
           ""

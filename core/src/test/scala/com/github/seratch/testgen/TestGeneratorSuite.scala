@@ -98,7 +98,7 @@ class SampleSuite extends FunSuite with ShouldMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -131,7 +131,7 @@ class SampleSuite extends FunSuite with MustMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -164,7 +164,7 @@ class SampleSuite extends FunSuite {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -195,7 +195,7 @@ class SampleSuite extends Assertions with ShouldMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -230,7 +230,7 @@ class SampleSpec extends Spec with ShouldMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -265,7 +265,7 @@ class SampleSpec extends WordSpec with ShouldMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -298,7 +298,7 @@ class SampleSpec extends FlatSpec with ShouldMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -333,7 +333,7 @@ class SampleSpec extends FeatureSpec with ShouldMatchers {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -365,7 +365,7 @@ class SampleSpec extends Specification {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 
@@ -397,7 +397,7 @@ class SampleSpec extends Specification {
   }
 
 }
-""".replaceAll("\n", "\r\n")
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
     test.sourceCode should equal(expected)
   }
 

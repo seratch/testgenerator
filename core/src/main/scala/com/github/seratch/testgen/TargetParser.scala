@@ -97,14 +97,6 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     )
   }
 
-  def importDef = "import" ~> packageName ^^ {
-    name => new Target(
-      fullPackageName = fullPackageName,
-      defType = DefType.Import,
-      typeName = name
-    )
-  }
-
   def finalDef = "final"
 
   def caseDef = "case"
@@ -130,7 +122,6 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   def suffixOfTrait = rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
 
   def allDef = {
-    importDef |
       (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
       (prefixOfClass ~> classDef <~ suffixOfClass) |
       (prefixOfObject ~> objectDef <~ suffixOfObject) |

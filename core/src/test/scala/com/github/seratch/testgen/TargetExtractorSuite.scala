@@ -82,7 +82,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     {
       val lines = List(
         "package com.example ",
-        "import com.example.util._",
+        "import com.example.util.{InputStream, OutputStream}",
         "",
         "class Sample(name: String = \"\") {",
         "  def doSomething() = println(\"foo\")",
@@ -97,7 +97,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       )
       val result = extractor.extractDefOnly(lines)
       val expected = "package com.example\\s+" +
-        "import com.example.util._\\s+" +
+        "\\s+" +
         "class Sample\\(name: String = \"\"\\)\\s+" +
         "class Sample2\\s+" +
         "class Sample3\\s+"
@@ -268,7 +268,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   }
 
   test("extract import def before the target def from defOnly") {
-    val defOnly = "package example    import java.io.     object IO"
+    val defOnly = "package example         object IO"
     val extractor = new TargetExtractor(config)
     val targets = extractor.extractFromDefOnly(defOnly)
     targets.size should equal(1)
