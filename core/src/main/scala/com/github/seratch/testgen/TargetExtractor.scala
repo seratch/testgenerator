@@ -91,6 +91,9 @@ class TargetExtractor(val config: Config) {
             line_ = line_.replaceFirst("import\\s+.+$", "")
           }
         }
+        // remove semicolon
+        line_ = line_.replaceAll(";", "")
+
         if (line_.matches("\\s*//\\s*.*")) {
           // line comment
           ""

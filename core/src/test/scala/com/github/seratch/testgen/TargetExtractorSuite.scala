@@ -303,4 +303,20 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     targets.size should equal(12)
   }
 
+  test("extract from the code which contains semicolon") {
+    val lines = List(
+      "package com.example",
+      "import com.example.util._",
+      "class Sample1;",
+      "class Sample2(name: String = \"\") {",
+      "  def doSomething() = println(\"foo\")",
+      "}"
+    )
+    val (result, _) = extractor.getDefOnlyAndImportedList(lines)
+    val expected = "package com.example\\s+" +
+      "class Sample1\\s+" +
+      "class Sample2\\(name: String = \"\"\\)\\s*"
+    result.matches(expected) should equal(true)
+  }
+
 }
