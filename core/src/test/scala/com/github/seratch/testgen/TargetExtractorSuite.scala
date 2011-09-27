@@ -43,18 +43,9 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     targets.size should be > 0
   }
 
-  test("extract the list to import") {
-    val result = extractor.extractImportList(
-      "package com.exemple import hoge._ import java.io.{InputStream, OutputStream}"
-    )
-    result.size should equal(2)
-    result(0) should equal("hoge._")
-    result(1) should equal("java.io._")
-  }
-
   test("read the file and extact only the code which defines class/trait/object (=defOnly)") {
     val lines = extractor.readLines("src/test/scala/com/example/noargs.scala")
-    val result = extractor.extractDefOnly(lines)
+    val (result, importedList) = extractor.getDefOnlyAndImportedList(lines)
     val expected = "package com.example\\s+" +
       "class MyClass1\\s+" +
       "class MyClass2\\s+" +
@@ -71,7 +62,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "  val headers: Map[String, List[String]],",
       "  val content: String)"
     )
-    val result = extractor.extractDefOnly(lines)
+    val (result, importedList) = extractor.getDefOnlyAndImportedList(lines)
     val expected = "case class HttpResponse\\(val statusCode: Int,\\s+" +
       "val headers: Map\\[String, List\\[String\\]\\],\\s+" +
       "val content: String\\)"
@@ -82,7 +73,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     {
       val lines = List(
         "package com.example ",
-        "import com.example.util.{InputStream, OutputStream}",
+        "import com.example.util.{IOUtil, StringUtil}",
         "",
         "class Sample(name: String = \"\") {",
         "  def doSomething() = println(\"foo\")",
@@ -95,13 +86,16 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "}",
         "class Sample3 { }"
       )
-      val result = extractor.extractDefOnly(lines)
+      val (defOnly, importedList) = extractor.getDefOnlyAndImportedList(lines)
       val expected = "package com.example\\s+" +
         "\\s+" +
         "class Sample\\(name: String = \"\"\\)\\s+" +
         "class Sample2\\s+" +
         "class Sample3\\s+"
-      result.matches(expected) should equal(true)
+      defOnly.matches(expected) should equal(true)
+      importedList should equal(List(
+        "com.example.util._"
+      ))
     }
     {
       val lines = List(
@@ -120,7 +114,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "  }",
         "}"
       )
-      val result = extractor.extractDefOnly(lines)
+      val (result, importedList) = extractor.getDefOnlyAndImportedList(lines)
       // TODO currently nested package is not supported
       val expected = "package com\\s+"
       result.matches(expected) should equal(true)
@@ -133,7 +127,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "package com.github " +
       "object GitHub " +
       "class WithArgs(name: String = \"foo\", age: Int)"
-    val result = extractor.extractFromDefOnly(defOnly)
+    val result = extractor.extractFromDefOnly(defOnly, Nil)
     result.size should equal(3)
     result(0).fullPackageName should equal("com.example")
     result(0).typeName should equal("Example")
@@ -179,7 +173,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   test("extract case class from defOnly") {
     val defOnly = "package example    class Logger     case class Log(logger:Logger)"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(2)
     targets(0).typeName should equal("Logger")
     targets(1).typeName should equal("Log")
@@ -188,7 +182,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   test("extract case object from defOnly") {
     val defOnly = "package example    case object CaseObject"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(1)
     targets(0).typeName should equal("CaseObject")
   }
@@ -196,7 +190,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   test("extract final class from defOnly") {
     val defOnly = "package example    final class Final"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(1)
     targets(0).typeName should equal("Final")
   }
@@ -204,7 +198,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   test("extract final object from defOnly") {
     val defOnly = "package example    final object Final"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(1)
     targets(0).typeName should equal("Final")
   }
@@ -213,21 +207,21 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     {
       val defOnly = "package example    private[example] class PackagePrivate"
       val extractor = new TargetExtractor(config)
-      val targets = extractor.extractFromDefOnly(defOnly)
+      val targets = extractor.extractFromDefOnly(defOnly, Nil)
       targets.size should equal(1)
       targets(0).typeName should equal("PackagePrivate")
     }
     {
       val defOnly = "package example    private[example] object PackagePrivate"
       val extractor = new TargetExtractor(config)
-      val targets = extractor.extractFromDefOnly(defOnly)
+      val targets = extractor.extractFromDefOnly(defOnly, Nil)
       targets.size should equal(1)
       targets(0).typeName should equal("PackagePrivate")
     }
     {
       val defOnly = "package example    private[example] trait PackagePrivate"
       val extractor = new TargetExtractor(config)
-      val targets = extractor.extractFromDefOnly(defOnly)
+      val targets = extractor.extractFromDefOnly(defOnly, Nil)
       targets.size should equal(1)
       targets(0).typeName should equal("PackagePrivate")
     }
@@ -237,21 +231,21 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
     {
       val defOnly = "package example    protected class Protected"
       val extractor = new TargetExtractor(config)
-      val targets = extractor.extractFromDefOnly(defOnly)
+      val targets = extractor.extractFromDefOnly(defOnly, Nil)
       targets.size should equal(1)
       targets(0).typeName should equal("Protected")
     }
     {
       val defOnly = "package example    protected object Protected"
       val extractor = new TargetExtractor(config)
-      val targets = extractor.extractFromDefOnly(defOnly)
+      val targets = extractor.extractFromDefOnly(defOnly, Nil)
       targets.size should equal(1)
       targets(0).typeName should equal("Protected")
     }
     {
       val defOnly = "package example    protected trait Protected"
       val extractor = new TargetExtractor(config)
-      val targets = extractor.extractFromDefOnly(defOnly)
+      val targets = extractor.extractFromDefOnly(defOnly, Nil)
       targets.size should equal(1)
       targets(0).typeName should equal("Protected")
     }
@@ -262,7 +256,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "    val headers: Map[String, List[String]]," +
       "    val content: String)"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(1)
     targets(0).typeName should equal("HttpResponse")
   }
@@ -270,7 +264,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   test("extract import def before the target def from defOnly") {
     val defOnly = "package example         object IO"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(1)
     targets(0).typeName should equal("IO")
   }
@@ -286,7 +280,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "private[example] trait PackagePrivateScopeTrait  " +
       "protected trait ProtectedScopeTrait  "
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(6)
   }
 
@@ -305,7 +299,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "trait UpperBoundTrait[T <: Any] " +
       "trait LowerBoundTrait[T >: TraversableOnce[String]]"
     val extractor = new TargetExtractor(config)
-    val targets = extractor.extractFromDefOnly(defOnly)
+    val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(12)
   }
 

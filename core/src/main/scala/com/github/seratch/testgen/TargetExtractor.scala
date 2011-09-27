@@ -47,17 +47,16 @@ class TargetExtractor(val config: Config) {
 
   def readFileAndExtractTargets(file: File): List[Target] = {
     val lines = readLines(file.getPath)
-    val defOnly = extractDefOnly(lines)
-    extractFromDefOnly(defOnly)
+    val (defOnly, importedList) = getDefOnlyAndImportedList(lines)
+    extractFromDefOnly(defOnly, importedList)
   }
 
-  private[testgen] def extractFromDefOnly(defOnly: String): List[Target] = {
+  private[testgen] def extractFromDefOnly(defOnly: String, importedList: List[String]): List[Target] = {
     defOnly.split("package").toList flatMap {
       case eachDefOnly => {
         val fullPackageName = eachDefOnly.trim.split("\\s+").toList.head
-        val importList = extractImportList(defOnly)
-        val parser = new TargetParser(fullPackageName, importList)
-        var defOnlyToParse = eachDefOnly.replaceFirst(fullPackageName, "")
+        val parser = new TargetParser(fullPackageName, importedList)
+        val defOnlyToParse = eachDefOnly.replaceFirst(fullPackageName, "")
         parser.parse(defOnlyToParse).getOrElse(Nil)
       }
     }
@@ -67,15 +66,31 @@ class TargetExtractor(val config: Config) {
     Source.fromFile(new File(path), encoding).getLines.toList
   }
 
-  private[testgen] def extractDefOnly(lines: List[String]): String = {
+  private[testgen] def getDefOnlyAndImportedList(lines: List[String]): (String, List[String]) = {
+
+    object Pattern {
+      val importedType = java.util.regex.Pattern.compile("import\\s+([\\w\\.]+)")
+    }
+
+    val importedList = new collection.mutable.ListBuffer[String]
     var isComment = false
     var blockDepth = 0
-    (lines map {
+    val defOnly = (lines map {
       line => {
         // mutable line string
         var line_ = line
-        // remove type-import
-        line_ = line_.replaceFirst("import\\s+.+$", "")
+        if (line_.matches("\\s*import\\s+.+$")) {
+          val matcher = Pattern.importedType.matcher(line_)
+          if (matcher.find) {
+            val importedType = {
+              if (matcher.group(1).endsWith(".")) matcher.group(1) + "_"
+              else matcher.group(1)
+            }
+            importedList.append(importedType)
+            // remove type-import
+            line_ = line_.replaceFirst("import\\s+.+$", "")
+          }
+        }
         if (line_.matches("\\s*//\\s*.*")) {
           // line comment
           ""
@@ -123,18 +138,7 @@ class TargetExtractor(val config: Config) {
         }
       }
     }).mkString(" ")
-  }
-
-  private[testgen] def extractImportList(defOnly: String): List[String] = {
-    defOnly.split("import\\s+").toList drop (1) map {
-      case each => {
-        val toImport = each.trim.split("\\s+").toList.head
-        // e.g. import java.io.{InputStream, OutputStream}
-        if (toImport.contains("{")) toImport.split("\\{").toList.head + "_"
-        else if (toImport.endsWith(".")) toImport + "_"
-        else toImport
-      }
-    }
+    (defOnly, importedList.toList)
   }
 
 }
