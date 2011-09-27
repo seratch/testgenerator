@@ -25,7 +25,13 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def packageName = "[\\w\\.]+".r
 
-  def annotationValue = "@" ~ packageName
+  def annotationValue = keyAndValueAnnotationValue | valueOnlyAnnotationValue | noArgAnnotationValue
+
+  def noArgAnnotationValue = "@" ~ packageName
+
+  def valueOnlyAnnotationValue = "@" ~ packageName ~ "(" ~ argsInNewLiteral ~ ")"
+
+  def keyAndValueAnnotationValue = "@" ~ packageName ~ "(" ~ rep("," | (packageName ~ "=" ~ (literal | newLiteral))) ~ ")"
 
   def typeParametersName: P[Any] = "[" <~ rep(variableName | ">:" | "<:" | "+" | "-" | "," | typeParametersName) <~ "]"
 
@@ -43,7 +49,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
     }
   }
 
-  def literal = "[\\w\\.\"']+".r
+  def literal = "[\\w\\./\"'\\\\]+".r
 
   def newLiteral: P[Any] = {
     (rep(variableName) ~ "(" ~ argsInNewLiteral ~ ")")
@@ -122,7 +128,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   def suffixOfTrait = rep(typeParametersName | (extendsDef ~ withDef) | extendsDef)
 
   def allDef = {
-      (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
+    (prefixOfClass ~> classWithConstructorDef <~ suffixOfClass) |
       (prefixOfClass ~> classDef <~ suffixOfClass) |
       (prefixOfObject ~> objectDef <~ suffixOfObject) |
       (prefixOfTrait ~> traitDef <~ suffixOfTrait)

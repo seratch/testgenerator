@@ -69,7 +69,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class annotated") {
+  test("extract class annotated - no arg") {
     {
       val input = "@scala.annotation.tailrec class MyClass object MyObject"
       val parser = new TargetParser("com.example", importList)
@@ -78,7 +78,54 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("MyClass")
       result.get(1).typeName should equal("MyObject")
     }
+    {
+      val input = "@Path() class MyController object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyController")
+      result.get(1).typeName should equal("MyObject")
+    }
   }
+
+  test("extract class annotated - value only") {
+    {
+      val input = "@Path(foo) class MyController object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyController")
+      result.get(1).typeName should equal("MyObject")
+    }
+    {
+      val input = "@Path(\"foo\") class MyController object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyController")
+      result.get(1).typeName should equal("MyObject")
+    }
+    {
+      val input = "@Path(\"/foo\") class MyController object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("MyController")
+      result.get(1).typeName should equal("MyObject")
+    }
+  }
+
+  test("extract class annotated - name and value") {
+    {
+      val input = "@Foo(name = \"/baz\", key = \"\\ddd\\\") class Foo object MyObject"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+      result.get(0).typeName should equal("Foo")
+      result.get(1).typeName should equal("MyObject")
+    }
+  }
+
 
   test("extract class (with args annotated)") {
     {
