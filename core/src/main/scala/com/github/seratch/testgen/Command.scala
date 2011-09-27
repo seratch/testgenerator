@@ -22,6 +22,8 @@ package com.github.seratch.testgen
  *  -Dtestgen.srcDir
  *  -Dtestgen.srcTestDir
  *  -Dtestgen.encoding
+ *  -Dtestgen.testTemplate
+ *  -Dtestgen.scalatest.Matchers
  *
  */
 object Command {
