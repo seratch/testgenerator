@@ -57,7 +57,7 @@ Run "testgen":
 ```sh
 $ sbt
 > testgen com.example.BeanHolder
-"com.example.BeanHolderSuite" is created.
+"com.example.BeanHolderSpec" is created.
 ```
 
 "entity.Bean" will be imported in the generated test:
