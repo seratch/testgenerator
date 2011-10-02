@@ -76,14 +76,14 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
     def varDef = "var\\s".r
 
-    def  annotationOrValOrVar = rep(annotationValue | valDef | varDef )
+    def annotationOrValOrVarDef = rep(annotationValue | valDef | varDef)
 
     def argsWithDefaultValue = {
-      annotationOrValOrVar ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
+      annotationOrValOrVarDef ~> variableName ~ ":" ~ typeName <~ "=" <~ argDefaultValue <~ ","
     }
 
     def argsWithoutDefaultValue = {
-      annotationOrValOrVar ~> variableName ~ ":" ~ typeName <~ ","
+      annotationOrValOrVarDef ~> variableName ~ ":" ~ typeName <~ ","
     }
 
     rep(argsWithDefaultValue | argsWithoutDefaultValue) ^^ {
