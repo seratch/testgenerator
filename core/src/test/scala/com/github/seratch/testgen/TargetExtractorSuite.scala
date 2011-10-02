@@ -65,7 +65,6 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "case class MyClass2(v: String)"
       )
       val (result, importList) = extractor.getDefOnlyAndImportedList(lines)
-      println(result)
       val expected = "package com.example\\s+" +
         "case class MyClass1\\(v: String = \"\"\\)\\s+" +
         "case class MyClass2\\(v: String\\)\\s*"
@@ -80,7 +79,6 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "case class MyClass2(v: String)"
       )
       val (result, importList) = extractor.getDefOnlyAndImportedList(lines)
-      println(result)
       val expected = "package com.example\\s+" +
         "case class MyClass1\\(v: String = \"\"\\)\\s+" +
         "case class MyClass2\\(v: String\\)\\s*"
@@ -98,7 +96,6 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "case class MyClass2(v: String)"
       )
       val (result, importList) = extractor.getDefOnlyAndImportedList(lines)
-      println(result)
       val expected = "package com.example\\s+" +
         "case class MyClass1\\(v: String = \"\"\\)\\s+" +
         "case class MyClass2\\(v: String\\)\\s*"
@@ -173,25 +170,40 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   }
 
   test("extract all the targets from defOnly") {
-    val defOnly = "package com.example " +
-      "trait Example " +
-      "package com.github " +
-      "object GitHub " +
-      "class WithArgs(name: String = \"foo\", age: Int)"
-    val result = extractor.extractFromDefOnly(defOnly, Nil)
-    result.size should equal(3)
-    result(0).fullPackageName should equal("com.example")
-    result(0).typeName should equal("Example")
-    result(0).defType should equal(DefType.Trait)
-    result(0).parameters should equal(Nil)
-    result(1).fullPackageName should equal("com.github")
-    result(1).typeName should equal("GitHub")
-    result(1).defType should equal(DefType.Object)
-    result(1).parameters should equal(Nil)
-    result(2).fullPackageName should equal("com.github")
-    result(2).typeName should equal("WithArgs")
-    result(2).defType should equal(DefType.Class)
-    result(2).parameters should equal(List(TargetParameter("name", "String"), TargetParameter("age", "Int")))
+    {
+      val lines = List(
+        "package com.github.seratch.testgen",
+        "case class Config(encoding: String = \"UTF-8\",",
+        "srcDir: String = \"src/main/scala\",",
+        "srcTestDir: String = \"src/test/scala\",",
+        "testTemplate: TestTemplate = TestTemplate.ScalaTestFunSuite,",
+        "scalaTestMatchers: ScalaTestMatchers = ScalaTestMatchers.Should)"
+      )
+      val (defOnly, importedList) = extractor.getDefOnlyAndImportedList(lines)
+      val targets = extractor.extractFromDefOnly(defOnly, importedList)
+      targets.size should equal(1)
+    }
+    {
+      val defOnly = "package com.example " +
+        "trait Example " +
+        "package com.github " +
+        "object GitHub " +
+        "class WithArgs(name: String = \"foo\", age: Int)"
+      val result = extractor.extractFromDefOnly(defOnly, Nil)
+      result.size should equal(3)
+      result(0).fullPackageName should equal("com.example")
+      result(0).typeName should equal("Example")
+      result(0).defType should equal(DefType.Trait)
+      result(0).parameters should equal(Nil)
+      result(1).fullPackageName should equal("com.github")
+      result(1).typeName should equal("GitHub")
+      result(1).defType should equal(DefType.Object)
+      result(1).parameters should equal(Nil)
+      result(2).fullPackageName should equal("com.github")
+      result(2).typeName should equal("WithArgs")
+      result(2).defType should equal(DefType.Class)
+      result(2).parameters should equal(List(TargetParameter("name", "String"), TargetParameter("age", "Int")))
+    }
   }
 
   test("extract all the targets from the target file") {

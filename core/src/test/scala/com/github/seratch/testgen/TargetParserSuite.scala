@@ -67,6 +67,23 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("MyClass")
       result.get(0).parameters(0).name should equal("value")
     }
+    {
+      val input = """case class Config(encoding: String = "UTF-8",
+                  srcDir: String = "src/main/scala",
+                  srcTestDir: String = "src/test/scala",
+                  testTemplate: TestTemplate = TestTemplate.ScalaTestFunSuite,
+                  scalaTestMatchers: ScalaTestMatchers = ScalaTestMatchers.Should)
+      """
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("Config")
+      result.get(0).parameters(0).name should equal("encoding")
+      result.get(0).parameters(1).name should equal("srcDir")
+      result.get(0).parameters(2).name should equal("srcTestDir")
+      result.get(0).parameters(3).name should equal("testTemplate")
+      result.get(0).parameters(4).name should equal("scalaTestMatchers")
+    }
   }
 
   test("extract class annotated - no arg") {
