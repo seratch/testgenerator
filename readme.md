@@ -183,9 +183,9 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 Create the directory if it doesn't yet exist.
 
-### put project/plugins/plugins.sbt
+### put project/plugins/build.sbt
 
-Edit project/plugins/plugins.sbt as follows:
+Edit project/plugins/build.sbt as follows:
 
 ```scala
 scalaVersion := "2.8.1"
@@ -303,37 +303,37 @@ java -jar sbt-launch.jar \
 ### pom.xml
 
 ```xml
-    <pluginRepositories>
-      <pluginRepository>
-        <id>seratch.github.com releases</id>
-        <name>seratch.github.com releases</name>
-        <url>http://seratch.github.com/mvn-repo/releases</url>
-      </pluginRepository>
-      <pluginRepository>
-        <id>seratch.github.com snapshots</id>
-        <name>seratch.github.com snapshots</name>
-        <url>http://seratch.github.com/mvn-repo/snapshots</url>
-      </pluginRepository>
-    </pluginRepositories>
+<pluginRepositories>
+  <pluginRepository>
+    <id>seratch.github.com releases</id>
+    <name>seratch.github.com releases</name>
+    <url>http://seratch.github.com/mvn-repo/releases</url>
+  </pluginRepository>
+  <pluginRepository>
+    <id>seratch.github.com snapshots</id>
+    <name>seratch.github.com snapshots</name>
+    <url>http://seratch.github.com/mvn-repo/snapshots</url>
+  </pluginRepository>
+</pluginRepositories>
 
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>com.github.seratch</groupId>
-          <artifactId>maven-testgen-plugin</artifactId>
-          <version>0.1-SNAPSHOT</version>
-          <!-- If you need
-          <configuration>
-            <srcDir>src/main/scala</srcDir>
-            <srcTestDir>src/test/scala</srcTestDir>
-            <encoding>UTF-8</encoding>
-            <testTemplate>scalatest.FunSuite</testTemplate>
-            <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
-          </configuration>
-          -->
-        </plugin>
-      </plugins>
-    </build>
+<build>
+  <plugins>
+    <plugin>
+      <groupId>com.github.seratch</groupId>
+      <artifactId>maven-testgen-plugin</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <!-- If you need
+      <configuration>
+        <srcDir>src/main/scala</srcDir>
+        <srcTestDir>src/test/scala</srcTestDir>
+        <encoding>UTF-8</encoding>
+        <testTemplate>scalatest.FunSuite</testTemplate>
+        <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
+      </configuration>
+      -->
+    </plugin>
+  </plugins>
+</build>
 ```
 
 ### Run "testgen" goal
