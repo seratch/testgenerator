@@ -2,7 +2,7 @@
 
 ## Overview
 
-The default template is "FunSuite with ShouldMathcers", but it's also possible to specify the other templates of ScalaTest or specs/specs2.
+The default template is "FunSuite with ShouldMatchers", but it's also possible to specify other templates, such as ScalaTest or specs/specs2.
 
 ### Class
 
@@ -16,10 +16,10 @@ When you run "testgen" via sbt:
 ```sh
 $ sbt
 > testgen com.example.Name
-"com.example.NameSuite" is created.
+"com.example.NameSuite" created.
 ```
 
-Following will be generated:
+the following code will be generated:
 
 ```scala
 package com.example
@@ -44,7 +44,7 @@ class NameSuite extends FunSuite with ShouldMatchers {
 }
 ```
 
-Also for classes with type-import:
+Also for classes which import other types:
 
 ```scala
 package com.example
@@ -57,7 +57,7 @@ Run "testgen":
 ```sh
 $ sbt
 > testgen com.example.BeanHolder
-"com.example.BeanHolderSpec" is created.
+"com.example.BeanHolderSpec" created.
 ```
 
 "entity.Bean" will be imported in the generated test:
@@ -114,10 +114,10 @@ Run "testgen" via sbt:
 ```sh
 $ sbt
 > testgen com.example.Util
-"com.example.UtilSuite" is created.
+"com.example.UtilSuite" created.
 ```
 
-Following will be generated:
+The following code will be generated:
 
 ```scala
 package com.example
@@ -151,10 +151,10 @@ Run "testgen" via sbt:
 ```sh
 $ sbt
 > testgen com.example.Writable
-"com.example.WritableSuite" is created.
+"com.example.WritableSuite" created.
 ```
 
-Following will be generated:
+The following code will be generated:
 
 ```scala
 package com.example
@@ -181,7 +181,7 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 ### mkdir -p project/plugins
 
-Create the directory if it doesn't exist yet.
+Create the directory if it doesn't yet exist.
 
 ### put project/plugins/plugins.sbt
 
@@ -224,9 +224,9 @@ And specify the above file:
 ```sh
 $ sbt
 > testgen src/main/scala/com/example/models.scala
-"com.example.StaffSuite" is already in being.
-"com.example.CompanySuite" is already in being.
-"com.example.StockSuite" is created.
+"com.example.StaffSuite" already exists.
+"com.example.CompanySuite" already exists.
+"com.example.StockSuite" created.
 ```
 
 "src/main/scala" is omissible.
@@ -245,7 +245,7 @@ If you specify a class name, it must be the name of the source file.
 ```sh
 $ sbt
 > testgen com.example.MyApp
-"com.example.MyAppSuite" is created.
+"com.example.MyAppSuite" created.
 ```
 
 #### Specify a directory
@@ -259,18 +259,18 @@ $ sbt
 
 #### Specify a package name
 
-As same as specifying a directory.
+The same as specifying a directory.
 
 ```sh
 $ sbt
 > testgen com.example
-"com.example.MyAppSuite" is created.
-"com.example.util.MyUtilSuite" is created.
+"com.example.MyAppSuite" created.
+"com.example.util.MyUtilSuite" created.
 ```
 
-### Configurations
+### Configuration
 
-Currently possbile by system properties.
+Currently configurable using system properties.
 
 ```sh
 java -jar sbt-launch.jar \
@@ -338,7 +338,7 @@ java -jar sbt-launch.jar \
 
 ### Run "testgen" goal
 
-The rule to specify targets is same as sbt plugin.
+The rule to specify targets is the same as with the sbt plugin.
 
 ```sh
 maven testgen:run -Dtarget=com.exmaple.MyApp
