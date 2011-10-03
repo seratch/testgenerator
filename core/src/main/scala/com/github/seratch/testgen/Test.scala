@@ -26,13 +26,13 @@ case class Test(config: Config,
     val filepath = config.srcTestDir + "/" + fullPackageName.replaceAll("\\.", "/") + "/" + testClassName + ".scala"
     val file = new File(filepath)
     if (file.exists) {
-      println("\"" + fullPackageName + "." + testClassName + "\"" + " is already in being.")
+      println("\"" + fullPackageName + "." + testClassName + "\"" + " already exists.")
     } else {
       mkdir_p(file.getParentFile)
       IO.using(new OutputStreamWriter(new FileOutputStream(file))) {
         writer => {
           writer.write(sourceCode)
-          println("\"" + fullPackageName + "." + testClassName + "\"" + " is created.")
+          println("\"" + fullPackageName + "." + testClassName + "\"" + " created.")
         }
       }
     }
