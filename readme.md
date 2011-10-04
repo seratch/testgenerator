@@ -278,7 +278,7 @@ java -jar sbt-launch.jar \
   -Dtestgen.srcTestDir=src/test/scala \
   -Dtestgen.encoding=UTF-8 \
   -Dtestgen.testTemplate=scalatest.FunSuite \
-  -Dtestgen.scalagtest.Matchers=ShouldMatchers
+  -Dtestgen.scalatest.Matchers=ShouldMatchers
 ```
 
 #### Configuration: "testgen.testTemplate"
