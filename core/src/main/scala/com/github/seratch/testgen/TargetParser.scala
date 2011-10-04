@@ -46,7 +46,7 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def literal = {
     // stringLiteral does not work for string contains backslash, etc..
-    "'.{1}'".r | "\"[^(\")]+\"".r | stringLiteral | packageName
+    "'.{1}'".r | "\"[^(\")]+\"".r | floatingPointNumber | stringLiteral | packageName
   }
 
   // --- type def ---

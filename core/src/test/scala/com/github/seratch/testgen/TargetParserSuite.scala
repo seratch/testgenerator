@@ -12,7 +12,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
 
   val importList = List("util._", "com.example.bean.SampleBean")
 
-  test("extract class defined no arg") {
+  test("extract classes defined no arg") {
     {
       val input = "class MyClass    class MyClass2   "
       val parser = new TargetParser("com.example", importList)
@@ -23,7 +23,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class(with args)") {
+  test("extract classes defined with args") {
     {
       val input = "class MyClass(name: String) class MyClass2(name: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
@@ -58,7 +58,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class with value") {
+  test("extract clasess defined args with default values") {
     {
       val input = "case class MyClass(val value: String)"
       val parser = new TargetParser("com.example", importList)
@@ -86,7 +86,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class annotated - no arg") {
+  test("extract classes annotated(the annotaion has no arg)") {
     {
       val input = "@scala.annotation.tailrec class MyClass object MyObject"
       val parser = new TargetParser("com.example", importList)
@@ -105,7 +105,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class annotated - value only") {
+  test("extract classes annotated(the annotation has value only)") {
     {
       val input = "@Path(foo) class MyController object MyObject"
       val parser = new TargetParser("com.example", importList)
@@ -140,7 +140,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class annotated - name and value") {
+  test("extract classes annotated(the annotation has name and value)") {
     {
       val input = "@Foo(name = \"/baz\", key = \"ddd\") class Foo object MyObject"
       val parser = new TargetParser("com.example", importList)
@@ -168,7 +168,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
   }
 
 
-  test("extract class (with args annotated)") {
+  test("extract classes defined with args annotated)") {
     {
       val input = "class MyClass(@reflect.BeanProperty name: String) class MyClass2(@BeanProperty val name: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
@@ -179,7 +179,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class which extends something") {
+  test("extract classes which extend something") {
     {
       val input = """class MyClass(name: String = "foo") extends SomeTrait"""
       val parser = new TargetParser("com.example", importList)
@@ -204,7 +204,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract object which extends something") {
+  test("extract objects which extends something") {
     {
       val input = "object ExtendedSomething extends Something  object ReadableSomething extends Something with Readable"
       val parser = new TargetParser("com.example", importList)
@@ -215,7 +215,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract trait which extends something") {
+  test("extract traits which extends something") {
     {
       val input = "trait ExtendedSomething extends Something  trait ReadableSomething extends Something with Readable"
       val parser = new TargetParser("com.example", importList)
@@ -226,7 +226,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract class defined args(with default value)") {
+  test("extract classes defined args(with default value)") {
     {
       val input = """class MyClass(name: String = "foo") class MyClass2(name: Bean = new Bean()) """
       val parser = new TargetParser("com.example", importList)
@@ -262,9 +262,24 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("MyClass")
       result.get(1).typeName should equal("MyClass2")
     }
+  }
+
+  test("extract classes which have empty string default values") {
     {
       val input = "case class GroupField(@BeanProperty val field: String = \"\") extends RequestParam           " +
         "case class GroupQuery(@BeanProperty val query: String = \"grouped\") extends RequestParam           "
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+    }
+  }
+
+  test("extract classes which have floatingPointNumber default values") {
+    {
+      val input = """
+      case class MaxAlternateFieldLength(@BeanProperty val maxAlternateFieldLength: Int = -1) extends RequestParam
+      case class RegexFragmenterSlop(@BeanProperty val regexSlop: Double = 0.6) extends RequestParam
+      """
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
