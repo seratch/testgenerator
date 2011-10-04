@@ -2,7 +2,7 @@ package com.github.seratch.testgen
 
 /*
  * Copyright 2011 Kazuhiro SERA.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
@@ -16,9 +16,12 @@ package com.github.seratch.testgen
  * governing permissions and limitations under the License. 
  */
 
-case class Config(encoding: String = "UTF-8",
-                  srcDir: String = "src/main/scala",
-                  srcTestDir: String = "src/test/scala",
-                  testTemplate: TestTemplate = TestTemplate.ScalaTestFunSuite,
-                  scalaTestMatchers: ScalaTestMatchers = ScalaTestMatchers.Should,
-                  debug: Boolean = false)
+class DebugLog(config: Config) {
+
+  def ifDebug(msg: => String): Unit = {
+    if (config.debug) {
+      println("[DEBUG] " + msg)
+    }
+  }
+
+}

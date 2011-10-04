@@ -262,6 +262,13 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("MyClass")
       result.get(1).typeName should equal("MyClass2")
     }
+    {
+      val input = "case class GroupField(@BeanProperty val field: String = \"\") extends RequestParam           " +
+        "case class GroupQuery(@BeanProperty val query: String = \"grouped\") extends RequestParam           "
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(2)
+    }
   }
 
   test("extract all targets") {

@@ -234,12 +234,12 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   }
 
   test("extract case class from defOnly") {
-    val defOnly = "package example    class Logger     case class Log(logger:Logger)"
+    val defOnly = "package example    class Logger     case class DebugLog(logger:Logger)"
     val extractor = new TargetExtractor(config)
     val targets = extractor.extractFromDefOnly(defOnly, Nil)
     targets.size should equal(2)
     targets(0).typeName should equal("Logger")
-    targets(1).typeName should equal("Log")
+    targets(1).typeName should equal("DebugLog")
   }
 
   test("extract case object from defOnly") {
@@ -380,6 +380,20 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "class Sample1\\s+" +
       "class Sample2\\(name: String = \"\"\\)\\s*"
     result.matches(expected) should equal(true)
+  }
+
+  test("extract from the source code") {
+    {
+      val lines = List("package com.example     ",
+        "case class Format(val value: String = \"\") ",
+        "case class Query(val value: String = \"grouped\") extends RequestParam"
+      )
+      val (defOnly, _) = extractor.getDefOnlyAndImportedList(lines)
+      val expected = "package com.example      " +
+        "case class Format(val value: String = \"\")  " +
+        "case class Query(val value: String = \"\") extends RequestParam"
+      defOnly should equal(expected)
+    }
   }
 
 }

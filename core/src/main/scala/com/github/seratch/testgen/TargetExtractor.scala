@@ -20,6 +20,8 @@ import java.io.File
 
 class TargetExtractor(val config: Config) {
 
+  val debugLog = new DebugLog(config)
+
   def extract(pathOrPackage: String): List[Target] = {
     val path_ = pathOrPackage.replaceAll("\\.", "/").replaceFirst("/scala$", ".scala")
     if (!path_.startsWith(config.srcDir)) {
@@ -67,6 +69,8 @@ class TargetExtractor(val config: Config) {
   }
 
   private[testgen] def getDefOnlyAndImportedList(lines: List[String]): (String, List[String]) = {
+
+    debugLog.ifDebug("TargetExtractor:lines -> \"" + lines.mkString("\n") + "\"")
 
     object Pattern {
       val importedType = java.util.regex.Pattern.compile("import\\s+([\\w\\.]+)")
@@ -141,11 +145,16 @@ class TargetExtractor(val config: Config) {
         }
       }
     }).mkString(" ")
-      .replaceAll("\\\\\"","") // escaped double quartation
-      .replaceAll("\"{3}[^(\"{3})]+?\"{3}", "\"\"") // here document
-      .replaceAll("\"[^\"]+?\"", "\"\"") // string literal
 
-    (defOnly, importedList.toList)
+    debugLog.ifDebug("TargetExtractor:defOnly -> \"" + defOnly + "\"")
+
+    val defOnlyWithoutStringValues = defOnly.replaceAll("\\\\\"", "") // escaped double quartation
+      .replaceAll("\"{3}[^\"{3}]+?\"{3}", "\"\"") // here document
+      .replaceAll("\"[^\"]*?\"", "\"\"") // string literal
+
+    debugLog.ifDebug("TargetExtractor:defOnlyWithoutStringValues -> \"" + defOnlyWithoutStringValues + "\"")
+
+    (defOnlyWithoutStringValues, importedList.toList)
   }
 
 }

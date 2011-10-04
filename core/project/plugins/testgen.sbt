@@ -7,7 +7,7 @@ resolvers ++= Seq(
   "seratch.github.com snapshots" at "http://seratch.github.com/mvn-repo/snapshots"
 )
 
-libraryDependencies ++= Seq(
-  "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
-)
+//libraryDependencies ++= Seq(
+//  "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
+//)
 
