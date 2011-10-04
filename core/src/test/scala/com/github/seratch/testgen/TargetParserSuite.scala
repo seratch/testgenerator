@@ -286,6 +286,28 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
+  test("extract classes which have classOf[Type]") {
+    {
+      val input = """class HttpSolrClient(
+        val log: Log = new Log(LoggerFactory.getLogger(classOf[Type].getCanonicalName))
+      ) extends Something"""
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+    }
+  }
+
+  test("extract classes which have asInstanceOf[Type]") {
+    {
+      val input = """class HttpSolrClient(
+        val log: Log = something.asInstanceOf[Log]
+      ) extends Something"""
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+    }
+  }
+
   test("extract all targets") {
     val input = "class MyClass class MyClass2 class MyClass3 trait MyTrait object MyObject "
     val result = new TargetParser("com.example", importList).parse(input)

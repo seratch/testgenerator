@@ -44,9 +44,20 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def packageName = "[\\w\\.]+".r
 
+  def charLiteral = "'.{1}'".r
+
+  // JavaTokenParsers's stringLiteral does not work for string contains backslash, etc..
+  override def stringLiteral = "\"[^(\")]+\"".r | super.stringLiteral
+
   def literal = {
-    // stringLiteral does not work for string contains backslash, etc..
-    "'.{1}'".r | "\"[^(\")]+\"".r | floatingPointNumber | stringLiteral | packageName
+
+    def tokenWithTypeParameters = "[\\[\\]\\w\\.]+".r
+
+    charLiteral |
+      stringLiteral |
+      floatingPointNumber |
+      tokenWithTypeParameters |
+      packageName
   }
 
   // --- type def ---
