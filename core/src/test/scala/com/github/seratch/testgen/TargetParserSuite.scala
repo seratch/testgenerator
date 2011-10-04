@@ -308,6 +308,27 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
+  test("extract classes which have args which omitted round bracket from new literal") {
+    {
+      val input = """class Document(
+        val value: String = new String()
+      )
+      """
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+    }
+    {
+      val input = """class Document(
+        val value: String = new String
+      )
+      """
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+    }
+  }
+
   test("extract all targets") {
     val input = "class MyClass class MyClass2 class MyClass3 trait MyTrait object MyObject "
     val result = new TargetParser("com.example", importList).parse(input)

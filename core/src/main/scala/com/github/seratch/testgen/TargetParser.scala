@@ -81,7 +81,9 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
 
   def args = {
 
-    def argDefaultValue = newLiteral | literal
+    // repeat because it's possible to omit dot
+    // e.g. "new Something", "someList filter ( _ > 1 )"
+    def argDefaultValue = rep(newLiteral | literal)
 
     def valDef = "val\\s".r
 
