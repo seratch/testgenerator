@@ -188,24 +188,30 @@ Create the directory if it doesn't yet exist.
 Edit project/plugins.sbt as follows:
 
 ```scala
-scalaVersion := "2.9.1"
-
 resolvers ++= Seq(
-  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
+  "seratch" at "http://seratch.github.com/mvn-repo/releases"
 )
+```
 
-libraryDependencies ++= Seq(
+xsbt 0.10.x:
+
+```scala
+libraryDependencies ++= Seq (
   "com.github.seratch" %% "testgen-sbt" % "0.1"
 )
+```
 
+xsbt 0.11.x:
+
+```scala
 addSbtPlugin("com.github.seratch" %% "testgen-sbt" % "0.1")
 ```
 
 ### Run sbt
 
-#### xsbt 0.11.x
+#### xsbt 0.10.x / 0.11.x
 
-"testgen" requires xsbt 0.11.x (sorry, sbt 0.7.x is not supported). 
+"testgen" requires xsbt 0.10.x / 0.11.x (sorry, sbt 0.7.x is not supported). 
 
 See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
 
@@ -309,11 +315,6 @@ java -jar sbt-launch.jar \
     <id>seratch.github.com releases</id>
     <name>seratch.github.com releases</name>
     <url>http://seratch.github.com/mvn-repo/releases</url>
-  </pluginRepository>
-  <pluginRepository>
-    <id>seratch.github.com snapshots</id>
-    <name>seratch.github.com snapshots</name>
-    <url>http://seratch.github.com/mvn-repo/snapshots</url>
   </pluginRepository>
 </pluginRepositories>
 
