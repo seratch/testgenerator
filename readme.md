@@ -179,7 +179,9 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 ## Usage with sbt
 
-### xsbt 0.10.x : put project/plugins/build.sbt
+### How to setup
+
+#### xsbt 0.10.x : put project/plugins/build.sbt
 
 Edit project/plugins/build.sbt as follows:
 
@@ -193,7 +195,7 @@ libraryDependencies ++= Seq (
 )
 ```
 
-### xsbt 0.11.x : put project/plugins.sbt
+#### xsbt 0.11.x : put project/plugins.sbt
 
 Delete project/plugins directory if it exists and edit project/plugins.sbt as follows:
 
@@ -305,7 +307,9 @@ java -jar sbt-launch.jar \
 
 ## Usage with maven 
 
-### pom.xml
+### How to setup
+
+#### pom.xml
 
 ```xml
 <pluginRepositories>
