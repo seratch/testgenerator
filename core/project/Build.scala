@@ -9,11 +9,11 @@ object TestgenCoreBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "testgen-core",
-    version := "0.1-SNAPSHOT",
+    version := "0.1",
     publishTo := Some(
       Resolver.file(
         "Github Pages", 
-        Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / "snapshots" asFile
+        Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / "releases" asFile
       )
       (Patterns(true, Resolver.mavenStyleBasePattern))
     ),

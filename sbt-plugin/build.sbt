@@ -4,9 +4,9 @@ name := "testgen-sbt"
 
 organization := "com.github.seratch"
 
-version := "0.1-SNAPSHOT"
+crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0")
 
-scalaVersion := "2.8.1"
+scalaVersion := "2.9.1"
 
 resolvers ++= Seq(
   "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases",
@@ -14,6 +14,6 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "testgen-core" % "0.1-SNAPSHOT"
+  "com.github.seratch" %% "testgen-core" % "0.1"
 )
 

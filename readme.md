@@ -183,28 +183,29 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 Create the directory if it doesn't yet exist.
 
-### put project/plugins/build.sbt
+### put project/plugins.sbt
 
-Edit project/plugins/build.sbt as follows:
+Edit project/plugins.sbt as follows:
 
 ```scala
-scalaVersion := "2.8.1"
+scalaVersion := "2.9.1"
 
 resolvers ++= Seq(
-  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases",
-  "seratch.github.com snapshots" at "http://seratch.github.com/mvn-repo/snapshots"
+  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
 )
 
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "testgen-sbt" % "0.1-SNAPSHOT"
+  "com.github.seratch" %% "testgen-sbt" % "0.1"
 )
+
+addSbtPlugin("com.github.seratch" %% "testgen-sbt" % "0.1")
 ```
 
 ### Run sbt
 
-#### xsbt 0.10.x
+#### xsbt 0.11.x
 
-"testgen" requires xsbt 0.10.x (sorry, sbt 0.7.x is not supported). 
+"testgen" requires xsbt 0.11.x (sorry, sbt 0.7.x is not supported). 
 
 See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
 
@@ -321,7 +322,7 @@ java -jar sbt-launch.jar \
     <plugin>
       <groupId>com.github.seratch</groupId>
       <artifactId>maven-testgen-plugin</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>0.1</version>
       <!-- If you need
       <configuration>
         <srcDir>src/main/scala</srcDir>
