@@ -183,27 +183,29 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 Create the directory if it doesn't yet exist.
 
-### put project/plugins.sbt
+### xsbt 0.10.x : put project/plugins/build.sbt
 
-Edit project/plugins.sbt as follows:
+Edit project/plugins/build.sbt as follows:
 
 ```scala
 resolvers ++= Seq(
   "seratch" at "http://seratch.github.com/mvn-repo/releases"
 )
-```
 
-xsbt 0.10.x:
-
-```scala
 libraryDependencies ++= Seq (
   "com.github.seratch" %% "testgen-sbt" % "0.1"
 )
 ```
 
-xsbt 0.11.x:
+### xsbt 0.11.x : put project/plugins.sbt
+
+Delete project/plugins directory if it exists and edit project/plugins.sbt as follows:
 
 ```scala
+resolvers ++= Seq(
+  "seratch" at "http://seratch.github.com/mvn-repo/releases"
+)
+
 addSbtPlugin("com.github.seratch" %% "testgen-sbt" % "0.1")
 ```
 
