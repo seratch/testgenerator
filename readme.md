@@ -179,10 +179,6 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 ## Usage with sbt
 
-### mkdir -p project/plugins
-
-Create the directory if it doesn't yet exist.
-
 ### xsbt 0.10.x : put project/plugins/build.sbt
 
 Edit project/plugins/build.sbt as follows:
