@@ -68,6 +68,38 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).parameters(0).name should equal("value")
     }
     {
+      val input = "case class MyClass(val className: String)"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+      result.get(0).parameters(0).name should equal("className")
+    }
+    {
+      val input = "case class MyClass(val objectName: String)"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+      result.get(0).parameters(0).name should equal("objectName")
+    }
+    {
+      val input = "case class MyClass(val traitName: String)"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+      result.get(0).parameters(0).name should equal("traitName")
+    }
+    {
+      val input = "case class MyClass(val finalAnswer: String)"
+      val parser = new TargetParser("com.example", importList)
+      val result = parser.parse(parser.allDef, input)
+      result.get.size should equal(1)
+      result.get(0).typeName should equal("MyClass")
+      result.get(0).parameters(0).name should equal("finalAnswer")
+    }
+    {
       val input = """case class Config(encoding: String = "UTF-8",
                   srcDir: String = "src/main/scala",
                   srcTestDir: String = "src/test/scala",
