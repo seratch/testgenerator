@@ -1,0 +1,19 @@
+
+{
+ "organization":"com.github.seratch",
+ "name":"testgen-sbt",
+ "version":"0.1",
+ "description":"testgen-sbt",
+ "site":"",
+ "tags":[],
+ "docs":"",
+ "licenses": [],
+ "resolvers": ["http://seratch.github.com/mvn-repo/releases"],
+ "dependencies": [{
+   "organization":"com.github.seratch",
+   "name": "testgen-core",
+   "version": "0.1"
+  }],
+ "scalas": ["2.9.1","2.9.0-1","2.9.0"],
+ "sbt": true
+}
