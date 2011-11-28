@@ -211,7 +211,7 @@ addSbtPlugin("com.github.seratch" %% "testgen-sbt" % "0.1")
 
 #### xsbt 0.10.x / 0.11.x
 
-"testgen" requires xsbt 0.10.x / 0.11.x (sorry, sbt 0.7.x is not supported). 
+"testgen" requires xsbt 0.10.x / 0.11.0 / 0.11.1 / 0.11.2 (sorry, sbt 0.7.x is not supported). 
 
 See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
 
