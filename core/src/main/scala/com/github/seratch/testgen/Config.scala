@@ -16,9 +16,17 @@ package com.github.seratch.testgen
  * governing permissions and limitations under the License. 
  */
 
+object Config {
+  def apply(encoding: Option[String], testTemplate: Option[String], scalaTestMatcher: Option[String], debug: Option[String]): Config = {
+    val e = encoding getOrElse "UTF-8"
+    val tt = testTemplate getOrElse "scalatest.FunSuite"
+    val stm = scalaTestMatcher getOrElse "ShouldMatchers"
+    val d = debug getOrElse "false"
+    new Config(e, new TestTemplate(tt), new ScalaTestMatchers(stm), d.toBoolean)
+  }
+}
+  
 case class Config(encoding: String = "UTF-8",
-                  srcDir: String = "src/main/scala",
-                  srcTestDir: String = "src/test/scala",
                   testTemplate: TestTemplate = TestTemplate.ScalaTestFunSuite,
                   scalaTestMatchers: ScalaTestMatchers = ScalaTestMatchers.Should,
                   debug: Boolean = false)

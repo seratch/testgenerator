@@ -16,31 +16,12 @@
 package com.github.seratch.testgen
 
 import java.io.{OutputStreamWriter, FileOutputStream, File}
+import util.Properties
+import sbt._
+import Path.sep
 
-case class Test(config: Config,
-                fullPackageName: String,
+case class Test(fullPackageName: String,
                 testClassName: String,
                 sourceCode: String) {
-
-  def createFileIfNotExist(): Unit = {
-    val filepath = config.srcTestDir + "/" + fullPackageName.replaceAll("\\.", "/") + "/" + testClassName + ".scala"
-    val file = new File(filepath)
-    if (file.exists) {
-      println("\"" + fullPackageName + "." + testClassName + "\"" + " already exists.")
-    } else {
-      mkdir_p(file.getParentFile)
-      IO.using(new OutputStreamWriter(new FileOutputStream(file))) {
-        writer => {
-          writer.write(sourceCode)
-          println("\"" + fullPackageName + "." + testClassName + "\"" + " created.")
-        }
-      }
-    }
-  }
-
-  def mkdir_p(file: File): Unit = {
-    if (!file.getParentFile.exists) mkdir_p(file.getParentFile)
-    if (!file.exists) file.mkdir()
-  }
-
 }
+
