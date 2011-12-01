@@ -33,8 +33,7 @@ object ScalaTestGen extends Build {
         "org.scalatest" %% "scalatest" % scalatestVersion % "test",
         "org.scala-tools.testing" % specsArtifactId % "1.6.8" % "test",
         "org.specs2" %% "specs2" % "1.5" % "test",
-        "org.scala-tools.testing" %% "scalacheck" % scalacheckVersion % "test",
-        "ex" %% "ex" % "0.1.1"
+        "org.scala-tools.testing" %% "scalacheck" % scalacheckVersion % "test"
       )
     },
     publishTo := Some(

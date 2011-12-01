@@ -19,8 +19,6 @@ import sbt.{ Command => SbtCommand, _ }
 import Path.sep
 import Keys._
 import java.io.File
-import ex.Ex._
-import com.github.seratch.testgen.{ Command => TestgenCommand }
 import util.Properties.propOrNone
 
 object TestGenKeys {
@@ -50,7 +48,6 @@ object TestGenPlugin extends Plugin {
 
         val testGenerator = new TestGenerator(config)
         val extractor = new TargetExtractor(config)
-
   
         val tests: Seq[Test] =  extractor.readFileAndExtractTargets(targetFile) map testGenerator.generate
         
