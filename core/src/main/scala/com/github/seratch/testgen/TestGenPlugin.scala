@@ -42,15 +42,15 @@ object TestGenPlugin extends Plugin {
     (argTask, baseDirectory, sourceDirectory in Compile , sourceDirectory in sbt.Test, organization) map {
       (args, base, main, test, org) => {
         val orgDir = packToDir(org)
-        val targetFile: File = args.headOption.map { path => main / "scala" / orgDir / (path + ".scala") } getOrElse sys.error("path")
+        val pathOrPackage: File = main / "scala" / orgDir / (args.headOption getOrElse "")
         
         val config = Config(propOrNone("encoding"), propOrNone("testTemplate"), propOrNone("scalatest.Matchers"), propOrNone("debug"))
 
         val testGenerator = new TestGenerator(config)
         val extractor = new TargetExtractor(config)
   
-        val tests: Seq[Test] =  extractor.readFileAndExtractTargets(targetFile) map testGenerator.generate
-        
+        val tests: Seq[Test] =  extractor.extractAllFilesRecursively(pathOrPackage) map testGenerator.generate distinct
+
         tests foreach { case Test(packageName, className, sourceCode) =>
           val testFileDir = test / "scala" / (packToDir(packageName) + sep + (className + ".scala"))
           createFileIfNotExists(testFileDir, sourceCode)

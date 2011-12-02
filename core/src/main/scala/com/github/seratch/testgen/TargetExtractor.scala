@@ -22,6 +22,22 @@ class TargetExtractor(val config: Config) {
 
   val debugLog = new DebugLog(config)
 
+  def extractAllFilesRecursively(file: File): List[Target] = {
+    var file_ = file
+    val fileWithDotScala = new File(file.getPath + ".scala")
+    if (!file.exists && fileWithDotScala.exists) {
+      file_ = fileWithDotScala
+    }
+    if (file_.isDirectory) {
+      file_.listFiles.toList flatMap {
+        case child if child.isDirectory => extractAllFilesRecursively(child)
+        case child => readFileAndExtractTargets(child)
+      }
+    } else {
+      readFileAndExtractTargets(file_)
+    }
+  }
+                                           
   def readFileAndExtractTargets(file: File): List[Target] = {
     val lines = readLines(file.getPath)
     val (defOnly, importedList) = getDefOnlyAndImportedList(lines)
