@@ -17,6 +17,9 @@ package com.github.seratch.testgen
  */
 
 object Config {
+  def apply(encoding: String, testTemplate: String, scalaTestMatcher: String, debug: Boolean): Config =
+    new Config(encoding, new TestTemplate(testTemplate), new ScalaTestMatchers(scalaTestMatcher), debug)
+  
   def apply(encoding: Option[String], testTemplate: Option[String], scalaTestMatcher: Option[String], debug: Option[String]): Config = {
     val e = encoding getOrElse "UTF-8"
     val tt = testTemplate getOrElse "scalatest.FunSuite"

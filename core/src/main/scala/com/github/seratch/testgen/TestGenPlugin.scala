@@ -15,51 +15,61 @@
  */
 package com.github.seratch.testgen
 
-import sbt.{ Command => SbtCommand, _ }
+import sbt._
 import Path.sep
 import Keys._
 import java.io.File
 import util.Properties.propOrNone
 
 object TestGenKeys {
-  val genTest = InputKey[Unit]("gen-test")
+  val testgen = InputKey[Unit]("testgen")
+  val isMavenStyle = SettingKey[Boolean]("is-maven-style")
+  val encoding = SettingKey[String]("encoding")
+  val testTemplate = SettingKey[String]("test-template") // we should change String to TestTemplate?
+  val scalatestMatchers = SettingKey[String]("scalatest-matchers")
+  val debug = SettingKey[Boolean]("debug")
 }
 
-object SbtIO {
+object TestGenPlugin extends Plugin {
+  import TestGenKeys._
   def createFileIfNotExists(f: File, s: String): Unit = {
     if(!f.exists) { IO.write(f, s) }
     else { println(f + " already exists") }
   }
 
   def packToDir(s: String): String = s.replace(".", sep.toString)
-}
-
-object TestGenPlugin extends Plugin {
-  import TestGenKeys._
-  import SbtIO._
 
   val generateTest = inputTask { (argTask: TaskKey[Seq[String]]) => 
-    (argTask, baseDirectory, sourceDirectory in Compile , sourceDirectory in sbt.Test, organization) map {
-      (args, base, main, test, org) => {
-        val orgDir = packToDir(org)
-        val pathOrPackage: File = main / "scala" / orgDir / (args.headOption getOrElse "")
+    (argTask, sourceDirectory in Compile, sourceDirectory in sbt.Test,
+     organization, isMavenStyle, encoding, testTemplate, scalatestMatchers, debug) map {
+      (args, main, test, org, isMavenStyle, encoding, testTemplate, matchers, debug) => {
         
-        val config = Config(propOrNone("encoding"), propOrNone("testTemplate"), propOrNone("scalatest.Matchers"), propOrNone("debug"))
+        val pathOrPackage = args.headOption getOrElse ""
+        
+        val base =
+          if(isMavenStyle) "scala" +sep+ packToDir(org)
+          else "scala"
+        
+        val config = Config(encoding, testTemplate, matchers, debug)
 
-        val testGenerator = new TestGenerator(config)
-        val extractor = new TargetExtractor(config)
-  
-        val tests: Seq[Test] =  extractor.extractAllFilesRecursively(pathOrPackage) map testGenerator.generate distinct
+        val tests: Seq[Test] = Command.generateTests(main / base / pathOrPackage, config)
 
         tests foreach { case Test(packageName, className, sourceCode) =>
-          val testFileDir = test / "scala" / (packToDir(packageName) + sep + (className + ".scala"))
+          val testFileDir = test / base / (className + ".scala")
           createFileIfNotExists(testFileDir, sourceCode)
         }
       }
     }
   }
 
+  
   val testGenSettings = Seq(
-    genTest <<= generateTest
+    testgen <<= generateTest,
+    isMavenStyle := true,
+    encoding := "UTF-8", 
+    testTemplate := "scalatest.FunSuite",
+    scalatestMatchers := "ShouldMatchers",
+    debug := false
   )
+  // you can override this in build.sbt or project/Build.scala
 }
