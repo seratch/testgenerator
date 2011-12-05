@@ -19,21 +19,21 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
   }
 
   test("extract classname") {
-    val targets = extractor.extract("com.github.seratch.testgen.Command")
+    val targets = extractor.extract("com.github.seratch.testgen.MainCommand")
     targets.size should equal(1)
   }
 
   test("extract path") {
     {
-      val targets = extractor.extract("com/github/seratch/testgen/Command.scala")
+      val targets = extractor.extract("com/github/seratch/testgen/MainCommand.scala")
       targets.size should equal(1)
     }
     {
-      val targets = extractor.extract("com/github/seratch/testgen/Command")
+      val targets = extractor.extract("com/github/seratch/testgen/MainCommand")
       targets.size should equal(1)
     }
     {
-      val targets = extractor.extract("src/main/scala/com/github/seratch/testgen/Command.scala")
+      val targets = extractor.extract("src/main/scala/com/github/seratch/testgen/MainCommand.scala")
       targets.size should equal(1)
     }
   }

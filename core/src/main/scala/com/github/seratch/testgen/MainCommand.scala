@@ -16,7 +16,7 @@
 package com.github.seratch.testgen
 
 /**
- * Command interface
+ * MainCommand interface
  *
  * System.property
  *  -Dtestgen.srcDir
@@ -26,16 +26,25 @@ package com.github.seratch.testgen
  *  -Dtestgen.scalatest.Matchers
  *
  */
-object Command {
+object MainCommand {
 
   def main(args: Array[String]) {
 
-    val env_srcDir = System.getProperty("testgen.srcDir")
-    val env_srcTestDir = System.getProperty("testgen.srcTestDir")
-    val env_encoding = System.getProperty("testgen.encoding")
-    val env_testTemplate = System.getProperty("testgen.testTemplate")
-    val env_scalaTestMatcher = System.getProperty("testgen.scalatest.Matchers")
-    val env_debug = System.getProperty("testgen.debug")
+    val envArgs: Map[String, String] = (args flatMap {
+      case null => None
+      case arg if arg.trim.startsWith("-") => {
+        val arr = arg.trim.split("=")
+        Some((arr.head.replaceFirst("-", "").trim, arr.tail.head.trim))
+      }
+      case _ => None
+    }).toMap
+
+    val env_srcDir: String = envArgs.getOrElse("testgen.srcDir", System.getProperty("testgen.srcDir"))
+    val env_srcTestDir: String = envArgs.getOrElse("testgen.srcTestDir", System.getProperty("testgen.srcTestDir"))
+    val env_encoding: String = envArgs.getOrElse("testgen.encoding", System.getProperty("testgen.encoding"))
+    val env_testTemplate: String = envArgs.getOrElse("testgen.testTemplate", System.getProperty("testgen.testTemplate"))
+    val env_scalaTestMatcher: String = envArgs.getOrElse("testgen.scalatest.Matchers", System.getProperty("testgen.scalatest.Matchers"))
+    val env_debug: String = envArgs.getOrElse("testgen.debug", System.getProperty("testgen.debug"))
 
     val defaultConfig = new Config
     val srcDir = if (env_srcDir == null) defaultConfig.srcDir else env_srcDir
@@ -54,20 +63,18 @@ object Command {
       debug = debug
     )
 
-    val pathOrPackage = args(0)
-    val targets = new TargetExtractor(config).extract(pathOrPackage)
-    val generator = new TestGenerator(config)
-    targets match {
-      case Nil => {
-        println("Cannot find the targets to generate test for \"" + pathOrPackage + "\"")
-      }
-      case all => {
-        all foreach {
-          case target => {
-            generator.generate(target).createFileIfNotExist()
-          }
-        }
-      }
+    val pathOrPackage = (args flatMap {
+      case null => None
+      case arg if arg.trim.startsWith("-") => None
+      case arg => Some(arg.trim)
+    }).head
+
+    val executor = new TestGenExecutor(config)
+    val tests = executor.execute(pathOrPackage)
+
+    tests match {
+      case Nil => println(ErrorMessage.noTargetsToGenerateFor(pathOrPackage))
+      case allTests => allTests foreach (_.createFileIfNotExist())
     }
 
   }

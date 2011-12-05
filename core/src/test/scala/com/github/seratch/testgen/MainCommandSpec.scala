@@ -6,13 +6,13 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class CommandSpec extends Spec with MustMatchers {
+class MainCommandSpec extends Spec with MustMatchers {
 
   type ? = this.type // for IntelliJ IDEA
 
-  describe("Command") {
+  describe("MainCommand") {
     it("should be available") {
-      Command.isInstanceOf[Singleton] must equal(true)
+      MainCommand.isInstanceOf[Singleton] must equal(true)
     }
   }
 
