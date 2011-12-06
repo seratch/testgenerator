@@ -9,7 +9,7 @@ object TestgenCoreBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "testgen-core",
-    version := "0.2-SNAPSHOT",
+    version := "0.2",
     publishTo <<= (version) { version: String =>
       Some(
         Resolver.file("GitHub Pages", Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / {
