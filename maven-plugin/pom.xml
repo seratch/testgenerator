@@ -8,6 +8,17 @@
   <name>maven-testgen-plugin Maven Mojo</name>
   <url>http://maven.apache.org</url>
 
+  <distributionManagement>
+    <repository>
+      <id>repo</id>
+      <url>http://seratch.github.com/mvn-repo/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshot-repo</id>
+      <url>http://seratch.github.com/mvn-repo/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <repositories>
     <repository>
       <id>seratch.github.com releases</id>
