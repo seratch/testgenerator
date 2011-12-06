@@ -15,9 +15,9 @@
  */
 package com.github.seratch.testgen
 
-class TestGenExecutor(val config: Config) {
+class TestgenExecutor(val config: Config) {
 
-  def execute(pathOrPackage: String): Seq[Test] = {
+  def generateTests(pathOrPackage: String): Seq[Test] = {
     val targets = new TargetExtractor(config).extract(pathOrPackage)
     val generator = new TestGenerator(config)
     targets match {

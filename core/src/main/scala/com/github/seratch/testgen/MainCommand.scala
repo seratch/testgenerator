@@ -69,8 +69,8 @@ object MainCommand {
       case arg => Some(arg.trim)
     }).head
 
-    val executor = new TestGenExecutor(config)
-    val tests = executor.execute(pathOrPackage)
+    val executor = new TestgenExecutor(config)
+    val tests = executor.generateTests(pathOrPackage)
 
     tests match {
       case Nil => println(ErrorMessage.noTargetsToGenerateFor(pathOrPackage))

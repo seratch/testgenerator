@@ -15,10 +15,24 @@ package com.github.seratch.testgen
  * either express or implied. See the License for the specific language 
  * governing permissions and limitations under the License. 
  */
+object ConfigDefault {
 
-case class Config(encoding: String = "UTF-8",
-                  srcDir: String = "src/main/scala",
-                  srcTestDir: String = "src/test/scala",
-                  testTemplate: TestTemplate = TestTemplate.ScalaTestFunSuite,
-                  scalaTestMatchers: ScalaTestMatchers = ScalaTestMatchers.Should,
-                  debug: Boolean = false)
+  val encoding = "UTF-8"
+  val srcDir = "src/main/scala"
+  val srcTestDir = "src/test/scala"
+  val testTemplate = TestTemplate.ScalaTestFunSuite
+  val scalaTestMatchers = ScalaTestMatchers.Should
+  val debug = false
+
+}
+
+case class Config(encoding: String = ConfigDefault.encoding,
+                  srcDir: String = ConfigDefault.srcDir,
+                  srcTestDir: String = ConfigDefault.srcTestDir,
+                  testTemplate: TestTemplate = ConfigDefault.testTemplate,
+                  scalaTestMatchers: ScalaTestMatchers = ConfigDefault.scalaTestMatchers,
+                  debug: Boolean = ConfigDefault.debug)
+
+
+
+
