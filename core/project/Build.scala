@@ -10,13 +10,13 @@ object TestgenCoreBuild extends Build {
     organization := "com.github.seratch",
     name := "testgen-core",
     version := "0.2-SNAPSHOT",
-    publishTo := Some(
-      Resolver.file(
-        "Github Pages", 
-        Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / "releases" asFile
+    publishTo <<= (version) { version: String =>
+      Some(
+        Resolver.file("GitHub Pages", Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / {
+          if (version.trim.endsWith("SNAPSHOT")) "snapshots" else "releases" 
+        })
       )
-      (Patterns(true, Resolver.mavenStyleBasePattern))
-    ),
+    },
     publishMavenStyle := true,
     scalacOptions ++= Seq("-deprecation", "-unchecked")
   )
