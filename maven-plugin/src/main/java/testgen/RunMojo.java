@@ -1,8 +1,8 @@
-package com.github.seratch.testgen;
+package testgen;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import com.github.seratch.testgen.*;
+import testgen.*;
 
 /**
  * This goadl will process "testgen"
@@ -53,7 +53,7 @@ public class RunMojo extends AbstractMojo {
     }
 
     try {
-      Command.main(new String[] { target });
+      MainCommand.main(new String[] { target });
     } catch (Exception e) {
       throw new MojoExecutionException("testgen execute error...", e);
     }
