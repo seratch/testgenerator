@@ -4,7 +4,7 @@
 
 Please check the following page.
 
-### https://github.com/seratch/testgen-sbt/blob/master/readme.md
+### [testgen-sbt/readme.md](https://github.com/seratch/testgen-sbt/blob/master/readme.md)
 
 ## Overview
 
@@ -187,7 +187,7 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 Please check the following page.
 
-### https://github.com/seratch/testgen-sbt/blob/master/readme.md
+### [testgen-sbt/readme.md](https://github.com/seratch/testgen-sbt/blob/master/readme.md)
 
 
 ## Usage with maven 
