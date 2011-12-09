@@ -1,4 +1,10 @@
-# testgen : Scala unit test template generator
+# scala-testgen : Scala Unit Test Template Generator
+
+## Setup
+
+Please check the following page.
+
+### https://github.com/seratch/testgen-sbt/blob/master/readme.md
 
 ## Overview
 
@@ -179,9 +185,10 @@ class WritableSuite extends FunSuite with ShouldMatchers {
 
 ## Usage with sbt
 
-see:
+Please check the following page.
 
-https://github.com/seratch/testgen-sbt
+### https://github.com/seratch/testgen-sbt/blob/master/readme.md
+
 
 ## Usage with maven 
 
