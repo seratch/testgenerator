@@ -17,7 +17,7 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
     case _       => "specs_" + scalaVersion
   }
   Seq(
-    "junit" % "junit" % "4.9" % "test",
+    "junit" % "junit" % "4.10" % "test",
     "org.scalatest" %% "scalatest" % "1.6.1" % "test",
     "org.scala-tools.testing" % specsArtifactId % "1.6.8" % "test",
     "org.specs2" %% "specs2" % "1.5" % "test",
@@ -25,4 +25,7 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
   )
 }
 
+seq(testgenSettings: _*)
+
+seq(scalariformSettings: _*)
 
