@@ -15,12 +15,12 @@
  */
 package testgen
 
-import java.io.{OutputStreamWriter, FileOutputStream, File}
+import java.io.{ OutputStreamWriter, FileOutputStream, File }
 
 case class Test(config: Config,
-                fullPackageName: String,
-                testClassName: String,
-                sourceCode: String) {
+    fullPackageName: String,
+    testClassName: String,
+    sourceCode: String) {
 
   def createFileIfNotExist(): Unit = {
     val filepath = config.srcTestDir + "/" + fullPackageName.replaceAll("\\.", "/") + "/" + testClassName + ".scala"
@@ -30,10 +30,11 @@ case class Test(config: Config,
     } else {
       mkdir_p(file.getParentFile)
       IO.using(new OutputStreamWriter(new FileOutputStream(file))) {
-        writer => {
-          writer.write(sourceCode)
-          println("\"" + fullPackageName + "." + testClassName + "\"" + " created.")
-        }
+        writer =>
+          {
+            writer.write(sourceCode)
+            println("\"" + fullPackageName + "." + testClassName + "\"" + " created.")
+          }
       }
     }
   }

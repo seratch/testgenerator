@@ -15,7 +15,7 @@ class SolrAddRequestSuite extends FunSuite with ShouldMatchers {
     val documents: List[String] = Nil
     val writerType: WriterType = null
     val additionalQueryString: String = ""
-    val instance = new SolrAddRequest(core,documents,writerType,additionalQueryString)
+    val instance = new SolrAddRequest(core, documents, writerType, additionalQueryString)
     instance should not be null
   }
 

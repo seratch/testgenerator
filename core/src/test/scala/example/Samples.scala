@@ -21,7 +21,7 @@ class SampleSpecsSpec extends Specification {
 
 }
 
-import org.specs2.mutable.{Specification => Specs2Specification}
+import org.specs2.mutable.{ Specification => Specs2Specification }
 
 @RunWith(classOf[JUnitRunner])
 class SampleSpecs2Spec extends Specs2Specification {

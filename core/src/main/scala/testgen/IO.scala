@@ -20,7 +20,7 @@ object IO {
   /**
    * Loan Pattern (invoke close method safely)
    */
-  def using[Closable <: {def close() : Unit}, Result](closable: Closable)(function: Closable => Result): Result = {
+  def using[Closable <: { def close(): Unit }, Result](closable: Closable)(function: Closable => Result): Result = {
     try {
       function(closable)
     } finally {

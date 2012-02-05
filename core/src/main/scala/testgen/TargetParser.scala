@@ -148,14 +148,15 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   }
 
   def classDef = "class" ~> typeName ^^ {
-    name => {
-      new Target(
-        fullPackageName = fullPackageName,
-        defType = DefType.Class,
-        importList = importList,
-        typeName = name
-      )
-    }
+    name =>
+      {
+        new Target(
+          fullPackageName = fullPackageName,
+          defType = DefType.Class,
+          importList = importList,
+          typeName = name
+        )
+      }
   }
 
   def classWithConstructorDef = "class" ~> typeName ~ "(" ~ args <~ ")" ^^ {
@@ -183,12 +184,13 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   }
 
   def objectDef = "object" ~> typeName ^^ {
-    name => new Target(
-      fullPackageName = fullPackageName,
-      importList = importList,
-      defType = DefType.Object,
-      typeName = name
-    )
+    name =>
+      new Target(
+        fullPackageName = fullPackageName,
+        importList = importList,
+        defType = DefType.Object,
+        typeName = name
+      )
   }
 
   // --- trait ---
@@ -202,12 +204,13 @@ case class TargetParser(fullPackageName: String, importList: List[String]) exten
   }
 
   def traitDef = "trait" ~> typeName ^^ {
-    name => new Target(
-      fullPackageName = fullPackageName,
-      importList = importList,
-      defType = DefType.Trait,
-      typeName = name
-    )
+    name =>
+      new Target(
+        fullPackageName = fullPackageName,
+        importList = importList,
+        defType = DefType.Trait,
+        typeName = name
+      )
   }
 
 }

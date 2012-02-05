@@ -27,12 +27,9 @@ object ConfigDefault {
 }
 
 case class Config(encoding: String = ConfigDefault.encoding,
-                  srcDir: String = ConfigDefault.srcDir,
-                  srcTestDir: String = ConfigDefault.srcTestDir,
-                  testTemplate: TestTemplate = ConfigDefault.testTemplate,
-                  scalaTestMatchers: ScalaTestMatchers = ConfigDefault.scalaTestMatchers,
-                  debug: Boolean = ConfigDefault.debug)
-
-
-
+  srcDir: String = ConfigDefault.srcDir,
+  srcTestDir: String = ConfigDefault.srcTestDir,
+  testTemplate: TestTemplate = ConfigDefault.testTemplate,
+  scalaTestMatchers: ScalaTestMatchers = ConfigDefault.scalaTestMatchers,
+  debug: Boolean = ConfigDefault.debug)
 

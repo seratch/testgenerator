@@ -199,7 +199,6 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-
   test("extract classes defined with args annotated)") {
     {
       val input = "class MyClass(@reflect.BeanProperty name: String) class MyClass2(@BeanProperty val name: String, age:Int) "

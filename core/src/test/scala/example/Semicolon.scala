@@ -16,4 +16,3 @@ class Semicolon2(v: String) {
 }
 
 class Semicolon3;
-

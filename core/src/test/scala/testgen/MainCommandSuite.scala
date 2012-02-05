@@ -24,9 +24,7 @@ class MainCommandSuite extends FunSuite with ShouldMatchers {
     System.setProperty("testgen.testTemplate", "xxx")
     System.setProperty("testgen.scalatest.Matchers", "xxx")
     System.setProperty("testgen.debug", "false")
-    MainCommand.main(Array("testgen.MainCommand.scala"
-      , "-testgen.testTemplate=scalatest.Spec"
-      , "-testgen.scalatest.Matchers=MustMatchers"))
+    MainCommand.main(Array("testgen.MainCommand.scala", "-testgen.testTemplate=scalatest.Spec", "-testgen.scalatest.Matchers=MustMatchers"))
   }
 
 }

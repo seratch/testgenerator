@@ -13,7 +13,7 @@ class NameSuite extends FunSuite with ShouldMatchers {
   test("available") {
     val first: String = null
     val last: String = null
-    val instance = new Name(first,last)
+    val instance = new Name(first, last)
     instance should not be null
   }
 

@@ -4,9 +4,9 @@ class WithTypeParameters[T]
 
 trait WithTypeParametersTrait[T]
 
-class StructuralType[Foo <: {def toString() : String}]
+class StructuralType[Foo <: { def toString(): String }]
 
-trait StructuralTypeTrait[Foo <: {def toString() : String}]
+trait StructuralTypeTrait[Foo <: { def toString(): String }]
 
 class CoVariant[+T]
 

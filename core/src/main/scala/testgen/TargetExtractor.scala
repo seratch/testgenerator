@@ -80,70 +80,71 @@ class TargetExtractor(val config: Config) {
     var isComment = false
     var blockDepth = 0
     val defOnly = (lines map {
-      line => {
-        // mutable line string
-        var line_ = line
-        if (line_.matches("\\s*import\\s+.+$")) {
-          val matcher = Pattern.importedType.matcher(line_)
-          if (matcher.find) {
-            val importedType = {
-              if (matcher.group(1).endsWith(".")) matcher.group(1) + "_"
-              else matcher.group(1)
-            }
-            importedList.append(importedType)
-            // remove type-import
-            line_ = line_.replaceFirst("import\\s+.+$", "")
-          }
-        }
-        // remove semicolon
-        line_ = line_.replaceAll(";", "")
-
-        if (line_.matches("\\s*//\\s*.*")) {
-          // line comment
-          ""
-        } else if (line_.contains("/*")) {
-          // comment start
-          isComment = true
-          val arr = line_.split("/\\*")
-          if (arr.length > 0) arr(0) else ""
-        } else {
-          if (line_.contains("*/")) {
-            // comment end
-            isComment = false
-            val arr = line_.split("\\*/")
-            if (arr.length > 0) line_ = arr(arr.length - 1) else line_ = ""
-          }
-          if (isComment) {
-            // inside of comment
-            ""
-          } else {
-            val startCount = line_.count(c => c == '{')
-            val endCount = line_.count(c => c == '}')
-            if (blockDepth == 0) {
-              blockDepth = blockDepth + startCount - endCount
-              if (blockDepth < 0) blockDepth = 0
-              if (startCount == 0 && endCount == 0) {
-                line_
-              } else {
-                var prefix = ""
-                if (startCount > 0) {
-                  prefix = line_.split("\\{")(0)
-                }
-                var suffix = ""
-                if (endCount > 0) {
-                  val arr = line_.split("\\}")
-                  suffix = if (arr.length > 1) arr.last else ""
-                }
-                prefix + suffix
+      line =>
+        {
+          // mutable line string
+          var line_ = line
+          if (line_.matches("\\s*import\\s+.+$")) {
+            val matcher = Pattern.importedType.matcher(line_)
+            if (matcher.find) {
+              val importedType = {
+                if (matcher.group(1).endsWith(".")) matcher.group(1) + "_"
+                else matcher.group(1)
               }
-            } else {
-              blockDepth = blockDepth + startCount - endCount
-              if (blockDepth < 0) blockDepth = 0
+              importedList.append(importedType)
+              // remove type-import
+              line_ = line_.replaceFirst("import\\s+.+$", "")
+            }
+          }
+          // remove semicolon
+          line_ = line_.replaceAll(";", "")
+
+          if (line_.matches("\\s*//\\s*.*")) {
+            // line comment
+            ""
+          } else if (line_.contains("/*")) {
+            // comment start
+            isComment = true
+            val arr = line_.split("/\\*")
+            if (arr.length > 0) arr(0) else ""
+          } else {
+            if (line_.contains("*/")) {
+              // comment end
+              isComment = false
+              val arr = line_.split("\\*/")
+              if (arr.length > 0) line_ = arr(arr.length - 1) else line_ = ""
+            }
+            if (isComment) {
+              // inside of comment
               ""
+            } else {
+              val startCount = line_.count(c => c == '{')
+              val endCount = line_.count(c => c == '}')
+              if (blockDepth == 0) {
+                blockDepth = blockDepth + startCount - endCount
+                if (blockDepth < 0) blockDepth = 0
+                if (startCount == 0 && endCount == 0) {
+                  line_
+                } else {
+                  var prefix = ""
+                  if (startCount > 0) {
+                    prefix = line_.split("\\{")(0)
+                  }
+                  var suffix = ""
+                  if (endCount > 0) {
+                    val arr = line_.split("\\}")
+                    suffix = if (arr.length > 1) arr.last else ""
+                  }
+                  prefix + suffix
+                }
+              } else {
+                blockDepth = blockDepth + startCount - endCount
+                if (blockDepth < 0) blockDepth = 0
+                ""
+              }
             }
           }
         }
-      }
     }).mkString(" ")
 
     debugLog.ifDebug("TargetExtractor:defOnly -> \"" + defOnly + "\"")

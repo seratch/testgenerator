@@ -15,8 +15,8 @@ class ErrorMessageSuite extends FunSuite with ShouldMatchers {
   }
 
   test("noTargetsToGenerateFor") {
-     val msg = ErrorMessage.noTargetsToGenerateFor("com.github")
+    val msg = ErrorMessage.noTargetsToGenerateFor("com.github")
     msg should be("Cannot find the targets to generate test for \"com.github\"")
-   }
+  }
 
 }

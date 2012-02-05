@@ -1,6 +1,6 @@
 package example
 
-import java.io.{BufferedReader, InputStream}
+import java.io.{ BufferedReader, InputStream }
 
 object IO {
 
