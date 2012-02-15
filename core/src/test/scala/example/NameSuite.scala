@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class NameSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val first: String = null
     val last: String = null

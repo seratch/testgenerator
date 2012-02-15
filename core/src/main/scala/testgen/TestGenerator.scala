@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Kazuhiro SERA.
+ * Copyright 2011 Kazuhiro Sera.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,10 +102,6 @@ class TestGenerator(val config: Config) {
     }
     val testClassName = target.typeName + suffix
     code += "class " += testClassName += " " += toExtend += toMixIn += " {" += CRLF
-    if (isScalaTest) {
-      code += CRLF
-      code += INDENT += "type ? = this.type // for IntelliJ IDEA" += CRLF
-    }
     code += CRLF
 
     var depth = 1
@@ -131,7 +127,9 @@ class TestGenerator(val config: Config) {
         depth += 1
       }
       case TestTemplate.ScalaTestFlatSpec => {
-        code += INDENT * depth += "\"" + target.typeName + "\" should \"be available\" in {" += CRLF
+        code += INDENT * depth += "behavior of " + "\"" + target.typeName + "\"" + CRLF
+        code += CRLF
+        code += INDENT * depth += "it should \"be available\" in {" += CRLF
         depth += 1
       }
       case TestTemplate.ScalaTestFeatureSpec => {
@@ -215,24 +213,25 @@ class TestGenerator(val config: Config) {
       }
       case DefType.Object => {
         if (isScalaTest) {
+          code += INDENT * depth += "val singleton = " + target.typeName += CRLF
           config.scalaTestMatchers match {
             case ScalaTestMatchers.Should => {
-              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] should equal(true)" += CRLF
+              code += INDENT * depth += "singleton should not be null" += CRLF
             }
             case ScalaTestMatchers.Must => {
-              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] must equal(true)" += CRLF
+              code += INDENT * depth += "singleton must not be null" += CRLF
             }
             case _ => {
-              code += INDENT * depth += "assert(" += target.typeName += ".isInstanceOf[Singleton])" += CRLF
+              code += INDENT * depth += "assert(singleton != null)" += CRLF
             }
           }
         } else {
           config.testTemplate match {
             case TestTemplate.SpecsSpecification => {
-              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] must beEqual(true)" += CRLF
+              code += INDENT * depth += "singleton must notBeNull" += CRLF
             }
             case TestTemplate.Specs2Specification => {
-              code += INDENT * depth += target.typeName += ".isInstanceOf[Singleton] must beEqual(true)" += CRLF
+              code += INDENT * depth += "singleton must not beNull" += CRLF
             }
           }
         }

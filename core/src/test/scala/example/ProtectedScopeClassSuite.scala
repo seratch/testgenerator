@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ProtectedScopeClassSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val instance = new ProtectedScopeClass()
     instance should not be null

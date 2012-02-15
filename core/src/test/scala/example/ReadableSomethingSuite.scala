@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ReadableSomethingSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val instance = new ReadableSomething()
     instance should not be null

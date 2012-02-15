@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class SolrAddRequestSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val core: SolrCore = null
     val documents: List[String] = Nil

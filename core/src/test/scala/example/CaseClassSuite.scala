@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class CaseClassSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val v: String = null
     val instance = new CaseClass(v)

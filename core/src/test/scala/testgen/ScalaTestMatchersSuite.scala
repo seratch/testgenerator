@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ScalaTestMatchersSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val name: String = ""
     val instance = new ScalaTestMatchers(name)

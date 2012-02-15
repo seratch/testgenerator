@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class UpperBoundTraitSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val mixedin = new Object with UpperBoundTrait[List[String]]
     mixedin should not be null

@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TestgenExecutorSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val config = new Config
     val instance = new TestgenExecutor(config)

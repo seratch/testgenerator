@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class MyTrait2Suite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val mixedin = new Object with MyTrait2
     mixedin should not be null

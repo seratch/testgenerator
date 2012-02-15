@@ -10,8 +10,6 @@ import java.applet._
 @RunWith(classOf[JUnitRunner])
 class Semicolon2Suite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val v: String = ""
     val instance = new Semicolon2(v)

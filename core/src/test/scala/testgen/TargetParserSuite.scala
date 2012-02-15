@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TargetParserSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   val importList = List("util._", "com.example.bean.SampleBean")
 
   test("extract classes defined no arg") {

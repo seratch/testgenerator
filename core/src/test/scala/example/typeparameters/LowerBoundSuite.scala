@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class LowerBoundSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val instance = new LowerBound[Any]()
     instance should not be null

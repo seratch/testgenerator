@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ProtectedScopeTraitSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val mixedin = new Object with ProtectedScopeTrait
     mixedin should not be null

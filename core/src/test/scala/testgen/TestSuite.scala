@@ -9,8 +9,6 @@ import java.io.File
 @RunWith(classOf[JUnitRunner])
 class TestSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   val config = new Config
   val generator = new TestGenerator(config)
 

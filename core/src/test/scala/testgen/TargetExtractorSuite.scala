@@ -8,8 +8,6 @@ import org.scalatest.FunSuite
 @RunWith(classOf[JUnitRunner])
 class TargetExtractorSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   val config = new Config
   val extractor = new TargetExtractor(config)
 

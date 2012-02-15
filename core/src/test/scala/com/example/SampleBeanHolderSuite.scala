@@ -9,8 +9,6 @@ import com.example.bean.SampleBean
 @RunWith(classOf[JUnitRunner])
 class SampleBeanHolderSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val bean: SampleBean = null
     val instance = new SampleBeanHolder(bean)

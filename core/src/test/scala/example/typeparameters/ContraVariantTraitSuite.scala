@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ContraVariantTraitSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     val mixedin = new Object with ContraVariantTrait[String]
     mixedin should not be null

@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ReadableSObjectSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type
-
   test("available") {
     ReadableSObject.isInstanceOf[Singleton] should equal(true)
   }

@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TestGeneratorSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   val config = new Config
   val generator = new TestGenerator(config)
 
@@ -90,8 +88,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val instance = new Sample()
     instance should not be null
@@ -123,11 +119,71 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite with MustMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val instance = new Sample()
     instance must not be null
+  }
+
+}
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFunSuite with MustMatcher for objects") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      scalaTestMatchers = ScalaTestMatchers.Must
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Object,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSuite extends FunSuite with MustMatchers {
+
+  test("available") {
+    val singleton = Sample
+    singleton must not be null
+  }
+
+}
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFunSuite with MustMatcher for traits") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      scalaTestMatchers = ScalaTestMatchers.Must
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Trait,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSuite extends FunSuite with MustMatchers {
+
+  test("available") {
+    val mixedin = new Object with Sample
+    mixedin must not be null
   }
 
 }
@@ -155,8 +211,6 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite {
-
-  type ? = this.type // for IntelliJ IDEA
 
   test("available") {
     val instance = new Sample()
@@ -186,8 +240,6 @@ import org.scalatest.matchers._
 import org.junit.Test
 
 class SampleSuite extends Assertions with ShouldMatchers {
-
-  type ? = this.type // for IntelliJ IDEA
 
   @Test def available {
     val instance = new Sample()
@@ -219,8 +271,6 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class SampleSpec extends Spec with ShouldMatchers {
-
-  type ? = this.type // for IntelliJ IDEA
 
   describe("Sample") {
     it("should be available") {
@@ -255,8 +305,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class SampleSpec extends WordSpec with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   "Sample" should {
     "be available" in {
       val instance = new Sample()
@@ -290,9 +338,9 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class SampleSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
+  behavior of "Sample"
 
-  "Sample" should "be available" in {
+  it should "be available" in {
     val instance = new Sample()
     instance should not be null
   }
@@ -322,8 +370,6 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class SampleSpec extends FeatureSpec with ShouldMatchers {
-
-  type ? = this.type // for IntelliJ IDEA
 
   feature("Sample") {
     scenario("it is prepared") {

@@ -8,8 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ScalaTestOrSpecsSpec extends Spec with ShouldMatchers {
 
-  type ? = this.type
-
   describe("ScalaTestOrSpecs") {
     it("should be available") {
       val instance = new ScalaTestOrSpecs()
