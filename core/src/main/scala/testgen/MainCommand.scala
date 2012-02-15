@@ -24,6 +24,7 @@ package testgen
  *  -Dtestgen.encoding
  *  -Dtestgen.testTemplate
  *  -Dtestgen.scalatest.Matchers
+ *  -Dtestgen.name
  *
  */
 object MainCommand {
@@ -44,6 +45,7 @@ object MainCommand {
     val env_encoding: String = envArgs.getOrElse("testgen.encoding", System.getProperty("testgen.encoding"))
     val env_testTemplate: String = envArgs.getOrElse("testgen.testTemplate", System.getProperty("testgen.testTemplate"))
     val env_scalaTestMatcher: String = envArgs.getOrElse("testgen.scalatest.Matchers", System.getProperty("testgen.scalatest.Matchers"))
+    val env_lineBreak: String = envArgs.getOrElse("testgen.name", System.getProperty("testgen.name"))
     val env_debug: String = envArgs.getOrElse("testgen.debug", System.getProperty("testgen.debug"))
 
     val defaultConfig = new Config
@@ -52,6 +54,7 @@ object MainCommand {
     val encoding = if (env_encoding == null) defaultConfig.encoding else env_encoding
     val testTemplate = if (env_testTemplate == null) defaultConfig.testTemplate.name else env_testTemplate
     val scalaTestMatcher = if (env_scalaTestMatcher == null) defaultConfig.scalaTestMatchers.name else env_scalaTestMatcher
+    val lineBreak = if (env_lineBreak == null) defaultConfig.lineBreak.name else env_lineBreak
     val debug = if (env_debug == null) defaultConfig.debug else env_debug.toBoolean
 
     val config = new Config(
@@ -60,6 +63,7 @@ object MainCommand {
       srcTestDir = srcTestDir,
       testTemplate = new TestTemplate(testTemplate),
       scalaTestMatchers = new ScalaTestMatchers(scalaTestMatcher),
+      lineBreak = new LineBreak(lineBreak),
       debug = debug
     )
 

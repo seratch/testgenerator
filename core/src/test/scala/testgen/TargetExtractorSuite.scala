@@ -121,7 +121,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "package com.example ",
         "import com.example.util.{IOUtil, StringUtil}",
         "",
-        "class Sample(name: String = \"\") {",
+        "class Sample(value: String = \"\") {",
         "  def doSomething() = println(\"foo\")",
         "}",
         "// this line is commented out",
@@ -135,7 +135,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       val (defOnly, importedList) = extractor.getDefOnlyAndImportedList(lines)
       val expected = "package com.example\\s+" +
         "\\s+" +
-        "class Sample\\(name: String = \"\"\\)\\s+" +
+        "class Sample\\(value: String = \"\"\\)\\s+" +
         "class Sample2\\s+" +
         "class Sample3\\s+"
       defOnly.matches(expected) should equal(true)
@@ -148,7 +148,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "package com{ ",
         "package example {",
         "  import com.example.util._",
-        "  class Sample(name: String = \"\") {",
+        "  class Sample(value: String = \"\") {",
         "    def doSomething() = println(\"foo\")",
         "  }",
         "  // this line is commented out",
@@ -186,7 +186,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
         "trait Example " +
         "package com.github " +
         "object GitHub " +
-        "class WithArgs(name: String = \"foo\", age: Int)"
+        "class WithArgs(value: String = \"foo\", age: Int)"
       val result = extractor.extractFromDefOnly(defOnly, Nil)
       result.size should equal(3)
       result(0).fullPackageName should equal("com.example")
@@ -200,7 +200,7 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       result(2).fullPackageName should equal("com.github")
       result(2).typeName should equal("WithArgs")
       result(2).defType should equal(DefType.Class)
-      result(2).parameters should equal(List(TargetParameter("name", "String"), TargetParameter("age", "Int")))
+      result(2).parameters should equal(List(TargetParameter("value", "String"), TargetParameter("age", "Int")))
     }
   }
 
@@ -369,14 +369,14 @@ class TargetExtractorSuite extends FunSuite with ShouldMatchers {
       "package com.example",
       "import com.example.util._",
       "class Sample1;",
-      "class Sample2(name: String = \"\") {",
+      "class Sample2(value: String = \"\") {",
       "  def doSomething() = println(\"foo\")",
       "}"
     )
     val (result, _) = extractor.getDefOnlyAndImportedList(lines)
     val expected = "package com.example\\s+" +
       "class Sample1\\s+" +
-      "class Sample2\\(name: String = \"\"\\)\\s*"
+      "class Sample2\\(value: String = \"\"\\)\\s*"
     result.matches(expected) should equal(true)
   }
 

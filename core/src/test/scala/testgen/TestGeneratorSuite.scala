@@ -98,6 +98,37 @@ class SampleSuite extends FunSuite with ShouldMatchers {
     test.sourceCode should equal(expected)
   }
 
+  test("generate ScalaTestFunSuite when name is LF") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      lineBreak = LineBreak.LF
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class SampleSuite extends FunSuite with ShouldMatchers {
+
+  test("available") {
+    val instance = new Sample()
+    instance should not be null
+  }
+
+}
+""".replaceAll("\r", "")
+    test.sourceCode should equal(expected)
+  }
+
   test("generate ScalaTestFunSuite with MustMatcher") {
     val config = new Config(
       srcDir = "src/test/scala",

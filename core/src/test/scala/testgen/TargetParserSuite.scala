@@ -23,7 +23,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
 
   test("extract classes defined with args") {
     {
-      val input = "class MyClass(name: String) class MyClass2(name: String, age:Int) "
+      val input = "class MyClass(value: String) class MyClass2(value: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.classWithConstructorDef, input)
       result.get.size should equal(2)
@@ -31,7 +31,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("MyClass2")
     }
     {
-      val input = "class MyClass(l1: List[String], l2: List[String]) class MyClass2(name: String, age:Int) "
+      val input = "class MyClass(l1: List[String], l2: List[String]) class MyClass2(value: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.classWithConstructorDef, input)
       result.get.size should equal(2)
@@ -39,7 +39,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("MyClass2")
     }
     {
-      val input = "class MyClass(l: List[String], m: Map[String,String], str: String) class MyClass2(name: String, age:Int) "
+      val input = "class MyClass(l: List[String], m: Map[String,String], str: String) class MyClass2(value: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.classWithConstructorDef, input)
       result.get.size should equal(2)
@@ -47,7 +47,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("MyClass2")
     }
     {
-      val input = "class MyClass(name: String) class MyClass2(name: String, age:Int) "
+      val input = "class MyClass(value: String) class MyClass2(value: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.classWithConstructorDef, input)
       result.get.size should equal(2)
@@ -170,9 +170,9 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("extract classes annotated(the annotation has name and value)") {
+  test("extract classes annotated(the annotation has value and value)") {
     {
-      val input = "@Foo(name = \"/baz\", key = \"ddd\") class Foo object MyObject"
+      val input = "@Foo(value = \"/baz\", key = \"ddd\") class Foo object MyObject"
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
@@ -180,7 +180,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("MyObject")
     }
     {
-      val input = "@Foo(name = \"\\xxx\\\") class Foo object MyObject"
+      val input = "@Foo(value = \"\\xxx\\\") class Foo object MyObject"
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
@@ -199,7 +199,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
 
   test("extract classes defined with args annotated)") {
     {
-      val input = "class MyClass(@reflect.BeanProperty name: String) class MyClass2(@BeanProperty val name: String, age:Int) "
+      val input = "class MyClass(@reflect.BeanProperty value: String) class MyClass2(@BeanProperty val value: String, age:Int) "
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
@@ -210,7 +210,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
 
   test("extract classes which extend something") {
     {
-      val input = """class MyClass(name: String = "foo") extends SomeTrait"""
+      val input = """class MyClass(value: String = "foo") extends SomeTrait"""
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(1)
@@ -225,7 +225,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("ReadableSomething")
     }
     {
-      val input = """class MyClass(name: String = "foo") extends SomeTrait with AnotherTrait"""
+      val input = """class MyClass(value: String = "foo") extends SomeTrait with AnotherTrait"""
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(1)
@@ -257,7 +257,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
 
   test("extract classes defined args(with default value)") {
     {
-      val input = """class MyClass(name: String = "foo") class MyClass2(name: Bean = new Bean()) """
+      val input = """class MyClass(value: String = "foo") class MyClass2(value: Bean = new Bean()) """
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
@@ -265,7 +265,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(1).typeName should equal("MyClass2")
     }
     {
-      val input = """class MyClass(name: String = "foo") class MyClass2(name: String = new String("var"), age:Int = 123) """
+      val input = """class MyClass(value: String = "foo") class MyClass2(value: String = new String("var"), age:Int = 123) """
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)
@@ -284,7 +284,7 @@ class TargetParserSuite extends FunSuite with ShouldMatchers {
       result.get(0).typeName should equal("SolrAddRequest")
     }
     {
-      val input = """class MyClass(name: String = "foo") class MyClass2(name: F = new F(1,2), age:Int = 123) """
+      val input = """class MyClass(value: String = "foo") class MyClass2(value: F = new F(1,2), age:Int = 123) """
       val parser = new TargetParser("com.example", importList)
       val result = parser.parse(parser.allDef, input)
       result.get.size should equal(2)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Kazuhiro SERA.
+ * Copyright 2011 Kazuhiro Sera.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -22,6 +22,7 @@ object ConfigDefault {
   val srcTestDir = "src/test/scala"
   val testTemplate = TestTemplate.ScalaTestFunSuite
   val scalaTestMatchers = ScalaTestMatchers.Should
+  val lineBreak = LineBreak.CRLF
   val debug = false
 
 }
@@ -31,5 +32,6 @@ case class Config(encoding: String = ConfigDefault.encoding,
   srcTestDir: String = ConfigDefault.srcTestDir,
   testTemplate: TestTemplate = ConfigDefault.testTemplate,
   scalaTestMatchers: ScalaTestMatchers = ConfigDefault.scalaTestMatchers,
+  lineBreak: LineBreak = LineBreak.CRLF,
   debug: Boolean = ConfigDefault.debug)
 
