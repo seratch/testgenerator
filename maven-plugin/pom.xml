@@ -4,31 +4,35 @@
   <groupId>com.github.seratch</groupId>
   <artifactId>maven-testgen-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.2</version>
+  <version>0.3</version>
   <name>maven-testgen-plugin Maven Mojo</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/seratch/scala-testgen</url>
 
-  <distributionManagement>
-    <repository>
-      <id>repo</id>
-      <url>http://seratch.github.com/mvn-repo/releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>snapshot-repo</id>
-      <url>http://seratch.github.com/mvn-repo/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <scm>
+    <connection>scm:git:git@github.com:seratch/taskun.git</connection>
+    <developerConnection>scm:git:git@github.com:seratch/taskun.git</developerConnection>
+    <url>git@github.com:seratch/taskun.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>seratch</id>
+      <name>Kazuhiro Sera</name>
+      <email>seratch@gmail.com</email>
+    </developer>
+  </developers>
 
   <repositories>
     <repository>
-      <id>seratch.github.com releases</id>
-      <name>seratch.github.com releases</name>
-      <url>http://seratch.github.com/mvn-repo/releases</url>
-    </repository>
-    <repository>
-      <id>seratch.github.com snapshots</id>
-      <name>seratch.github.com snapshots</name>
-      <url>http://seratch.github.com/mvn-repo/snapshots</url>
+      <id>scala-tools.org</id>
+      <name>releases</name>
+      <url>http://scala-tools.org/repo-releases</url>
     </repository>
   </repositories>
 
@@ -41,7 +45,70 @@
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>testgen-core_2.9.1</artifactId>
-      <version>0.2</version>
+      <version>0.3</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <minmemory>128m</minmemory>
+          <maxmemory>256m</maxmemory>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
 </project>

@@ -37,6 +37,11 @@ public class RunMojo extends AbstractMojo {
    */
   protected String scalatest_Matchers = "ShouldMatchers";
 
+  /**
+   * @parameter
+   */
+  protected String lineBreak = "CRLF";
+
   public void execute() throws MojoExecutionException {
 
     // configure
@@ -45,6 +50,7 @@ public class RunMojo extends AbstractMojo {
     System.setProperty("testgen.srcTestDir", srcTestDir);
     System.setProperty("testgen.testTemplate", testTemplate);
     System.setProperty("testgen.scalatest.Matchers", scalatest_Matchers);
+    System.setProperty("testgen.lineBreak", lineBreak);
 
     // target paramter
     String target = System.getProperty("target");

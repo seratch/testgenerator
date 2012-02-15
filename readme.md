@@ -38,8 +38,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class NameSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val first: String = ""
     val last: String = ""
@@ -80,9 +78,9 @@ import entity.Bean
 @RunWith(classOf[JUnitRunner])
 class BeanHolderSpec extends FlatSpec with MustMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
+  behaivor of "BeanHolder"
 
-  "BeanHolder" should "be available" in {
+  it should "be available" in {
     val bean: Bean = null
     val instance = new BeanHolder(bean)
     instance must not be null
@@ -136,8 +134,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class UtilSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     Util.isInstanceOf[Singleton] should equal(true)
   }
@@ -173,8 +169,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class WritableSuite extends FunSuite with ShouldMatchers {
 
-  type ? = this.type // for IntelliJ IDEA
-
   test("available") {
     val mixedin = new Object with Writable
     mixedin should not be null
@@ -197,20 +191,12 @@ Please check the following page.
 #### pom.xml
 
 ```xml
-<pluginRepositories>
-  <pluginRepository>
-    <id>seratch.github.com releases</id>
-    <name>seratch.github.com releases</name>
-    <url>http://seratch.github.com/mvn-repo/releases</url>
-  </pluginRepository>
-</pluginRepositories>
-
 <build>
   <plugins>
     <plugin>
       <groupId>com.github.seratch</groupId>
       <artifactId>maven-testgen-plugin</artifactId>
-      <version>0.1</version>
+      <version>0.3</version>
       <!-- If you need
       <configuration>
         <srcDir>src/main/scala</srcDir>
@@ -218,6 +204,7 @@ Please check the following page.
         <encoding>UTF-8</encoding>
         <testTemplate>scalatest.FunSuite</testTemplate>
         <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
+        <lineBreak>CRLF</scalatest_Matchers>
       </configuration>
       -->
     </plugin>
