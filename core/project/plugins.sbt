@@ -1,11 +1,10 @@
-resolvers ++= Seq(
-  "seratch" at "http://seratch.github.com/mvn-repo/releases",
-  "sbt-idea-repo" at "http://mpeltonen.github.com/maven/"
-)
+externalResolvers ~= (_.filter(_.name != "Scala-Tools Maven2 Repository"))
+
+resolvers +="sbt-idea-repo" at "http://mpeltonen.github.com/maven/"
 
 resolvers += Classpaths.typesafeResolver
 
-addSbtPlugin("com.github.seratch" %% "testgen-sbt" % "0.2")
+addSbtPlugin("com.github.seratch" %% "testgen-sbt" % "0.3.0")
 
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.0.0")
 

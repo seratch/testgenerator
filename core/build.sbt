@@ -16,6 +16,8 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
   )
 }
 
+externalResolvers ~= (_.filter(_.name != "Scala-Tools Maven2 Repository"))
+
 seq(testgenSettings: _*)
 
 seq(scalariformSettings: _*)
