@@ -30,9 +30,9 @@
 
   <repositories>
     <repository>
-      <id>scala-tools.org</id>
+      <id>sonatype oss</id>
       <name>releases</name>
-      <url>http://scala-tools.org/repo-releases</url>
+      <url>http://oss.sonatype.org/content/repositories/releases</url>
     </repository>
   </repositories>
 
