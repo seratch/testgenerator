@@ -22,6 +22,7 @@ object ConfigDefault {
   val srcTestDir = "src/test/scala"
   val testTemplate = TestTemplate.ScalaTestFunSuite
   val scalaTestMatchers = ScalaTestMatchers.Should
+  val withJUnitRunner = false
   val lineBreak = LineBreak.CRLF
   val debug = false
 
@@ -32,6 +33,7 @@ case class Config(encoding: String = ConfigDefault.encoding,
   srcTestDir: String = ConfigDefault.srcTestDir,
   testTemplate: TestTemplate = ConfigDefault.testTemplate,
   scalaTestMatchers: ScalaTestMatchers = ConfigDefault.scalaTestMatchers,
+  withJUnitRunner: Boolean = ConfigDefault.withJUnitRunner,
   lineBreak: LineBreak = LineBreak.CRLF,
   debug: Boolean = ConfigDefault.debug)
 
