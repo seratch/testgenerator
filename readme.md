@@ -32,10 +32,7 @@ package com.example
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class NameSuite extends FunSuite with ShouldMatchers {
 
   test("available") {
@@ -71,11 +68,8 @@ package com.example
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import entity.Bean
 
-@RunWith(classOf[JUnitRunner])
 class BeanHolderSpec extends FlatSpec with MustMatchers {
 
   behaivor of "BeanHolder"
@@ -92,7 +86,6 @@ class BeanHolderSpec extends FlatSpec with MustMatchers {
 Following is an example with specs/specs2:
 
 ```scala
-@RunWith(classOf[JUnitRunner])
 class BeanHolderSpec extends Specification {
 
   "BeanHolder" should {
@@ -128,10 +121,7 @@ package com.example
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class UtilSuite extends FunSuite with ShouldMatchers {
 
   test("available") {
@@ -163,10 +153,7 @@ package com.example
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class WritableSuite extends FunSuite with ShouldMatchers {
 
   test("available") {
@@ -204,6 +191,7 @@ Please check the following page.
         <encoding>UTF-8</encoding>
         <testTemplate>scalatest.FunSuite</testTemplate>
         <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
+        <withJUnitRunner>false</withJUnitRunner>
         <lineBreak>CRLF</scalatest_Matchers>
       </configuration>
       -->
