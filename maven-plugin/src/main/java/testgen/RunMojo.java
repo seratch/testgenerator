@@ -40,6 +40,11 @@ public class RunMojo extends AbstractMojo {
   /**
    * @parameter
    */
+  protected String withJUnitRunner = "false";
+
+  /**
+   * @parameter
+   */
   protected String lineBreak = "CRLF";
 
   public void execute() throws MojoExecutionException {
@@ -50,6 +55,7 @@ public class RunMojo extends AbstractMojo {
     System.setProperty("testgen.srcTestDir", srcTestDir);
     System.setProperty("testgen.testTemplate", testTemplate);
     System.setProperty("testgen.scalatest.Matchers", scalatest_Matchers);
+    System.setProperty("testgen.withJUnitRunner", withJUnitRunner);
     System.setProperty("testgen.lineBreak", lineBreak);
 
     // target paramter
