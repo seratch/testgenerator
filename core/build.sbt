@@ -1,18 +1,26 @@
-crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0")
+crossScalaVersions := Seq("2.9.2", "2.9.1", "2.9.0")
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
 libraryDependencies <++= (scalaVersion) { scalaVersion =>
-  val specsArtifactId = scalaVersion match {
-    case "2.9.1" => "specs_2.9.0"
+  val specs = scalaVersion match {
+    case "2.9.2" | "2.9.1" => "specs_2.9.0"
     case _       => "specs_" + scalaVersion
+  }
+  val scalacheck = scalaVersion match {
+    case "2.9.2" => "scalacheck_2.9.1"
+    case _       => "scalacheck_" + scalaVersion
+  }
+  val specs2 = scalaVersion match {
+    case "2.9.0" => "specs2_2.9.1"
+    case _       => "specs2_" + scalaVersion
   }
   Seq(
     "junit" % "junit" % "4.10" % "test",
-    "org.scalatest" %% "scalatest" % "1.6.1" % "test",
-    "org.scala-tools.testing" % specsArtifactId % "1.6.8" % "test",
-    "org.specs2" %% "specs2" % "1.5" % "test",
-    "org.scala-tools.testing" %% "scalacheck" % "1.9" % "test"
+    "org.scalatest" %% "scalatest" % "1.7.2" % "test",
+    "org.scala-tools.testing" % specs % "1.6.8" % "test",
+    "org.specs2" % specs2 % "1.9" % "test",
+    "org.scala-tools.testing" % scalacheck % "1.9" % "test"
   )
 }
 

@@ -9,7 +9,7 @@ object TestgenCoreBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "testgen-core",
-    version := "0.3",
+    version := "1.0",
     publishTo <<= version { (v: String) =>
       val nexus = "https://oss.sonatype.org/"
         if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
