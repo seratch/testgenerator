@@ -42,26 +42,36 @@ class TestGenerator(val config: Config) {
       config.testTemplate != TestTemplate.Specs2Specification
 
     val toImportList = (config.testTemplate match {
-      case TestTemplate.SpecsSpecification => List(
+      case TestTemplate.SpecsSpecification if config.withJUnitRunner => List(
         "org.specs.Specification",
         "org.junit.runner.RunWith",
         "org.scalatest.junit.JUnitRunner"
       )
-      case TestTemplate.Specs2Specification => List(
+      case TestTemplate.SpecsSpecification => List(
+        "org.specs.Specification"
+      )
+      case TestTemplate.Specs2Specification if config.withJUnitRunner => List(
         "org.specs2.mutable.Specification",
         "org.junit.runner.RunWith",
         "org.scalatest.junit.JUnitRunner"
+      )
+      case TestTemplate.Specs2Specification => List(
+        "org.specs2.mutable.Specification"
       )
       case TestTemplate.ScalaTestAssertions => List(
         "org.scalatest._",
         "org.scalatest.matchers._",
         "org.junit.Test"
       )
-      case _ => List(
+      case _ if config.withJUnitRunner => List(
         "org.scalatest._",
         "org.scalatest.matchers._",
         "org.junit.runner.RunWith",
         "org.scalatest.junit.JUnitRunner"
+      )
+      case _ => List(
+        "org.scalatest._",
+        "org.scalatest.matchers._"
       )
     }) ::: target.importList
 
@@ -75,7 +85,8 @@ class TestGenerator(val config: Config) {
     code += lineBreak
     config.testTemplate match {
       case TestTemplate.ScalaTestAssertions =>
-      case _ => code += "@RunWith(classOf[JUnitRunner])" += lineBreak
+      case _ if config.withJUnitRunner => code += "@RunWith(classOf[JUnitRunner])" += lineBreak
+      case _ =>
     }
     val toExtend = config.testTemplate match {
       case TestTemplate.ScalaTestFunSuite => "extends FunSuite"

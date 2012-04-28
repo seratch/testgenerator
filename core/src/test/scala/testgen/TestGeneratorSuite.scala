@@ -82,6 +82,34 @@ class TestGeneratorSuite extends FunSuite with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
+
+class SampleSuite extends FunSuite with ShouldMatchers {
+
+  test("available") {
+    val instance = new Sample()
+    instance should not be null
+  }
+
+}
+""".replaceAll("\r", "").replaceAll("\n", "\r\n")
+    test.sourceCode should equal(expected)
+  }
+
+  test("generate ScalaTestFunSuite with JUnitRunner") {
+    val config = new Config(
+      srcDir = "src/test/scala",
+      withJUnitRunner = true
+    )
+    val generator = new TestGenerator(config)
+    val test = generator.generate(new Target(
+      defType = DefType.Class,
+      fullPackageName = "com.example",
+      typeName = "Sample"
+    ))
+    val expected = """package com.example
+
+import org.scalatest._
+import org.scalatest.matchers._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -113,10 +141,7 @@ class SampleSuite extends FunSuite with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite with ShouldMatchers {
 
   test("available") {
@@ -144,10 +169,7 @@ class SampleSuite extends FunSuite with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite with MustMatchers {
 
   test("available") {
@@ -175,10 +197,7 @@ class SampleSuite extends FunSuite with MustMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite with MustMatchers {
 
   test("available") {
@@ -206,10 +225,7 @@ class SampleSuite extends FunSuite with MustMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite with MustMatchers {
 
   test("available") {
@@ -237,10 +253,7 @@ class SampleSuite extends FunSuite with MustMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSuite extends FunSuite {
 
   test("available") {
@@ -297,10 +310,7 @@ class SampleSuite extends Assertions with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSpec extends Spec with ShouldMatchers {
 
   describe("Sample") {
@@ -330,10 +340,7 @@ class SampleSpec extends Spec with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSpec extends WordSpec with ShouldMatchers {
 
   "Sample" should {
@@ -363,10 +370,7 @@ class SampleSpec extends WordSpec with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "Sample"
@@ -396,10 +400,7 @@ class SampleSpec extends FlatSpec with ShouldMatchers {
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSpec extends FeatureSpec with ShouldMatchers {
 
   feature("Sample") {
@@ -428,10 +429,7 @@ class SampleSpec extends FeatureSpec with ShouldMatchers {
     val expected = """package com.example
 
 import org.specs.Specification
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSpec extends Specification {
 
   "Sample" should {
@@ -460,10 +458,7 @@ class SampleSpec extends Specification {
     val expected = """package com.example
 
 import org.specs2.mutable.Specification
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SampleSpec extends Specification {
 
   "Sample" should {
