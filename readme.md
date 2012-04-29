@@ -183,7 +183,7 @@ Please check the following page.
     <plugin>
       <groupId>com.github.seratch</groupId>
       <artifactId>maven-testgen-plugin</artifactId>
-      <version>0.3</version>
+      <version>1.0.1</version>
       <!-- If you need
       <configuration>
         <srcDir>src/main/scala</srcDir>
@@ -192,7 +192,7 @@ Please check the following page.
         <testTemplate>scalatest.FunSuite</testTemplate>
         <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
         <withJUnitRunner>false</withJUnitRunner>
-        <lineBreak>CRLF</scalatest_Matchers>
+        <lineBreak>CRLF</lineBreak>
       </configuration>
       -->
     </plugin>
