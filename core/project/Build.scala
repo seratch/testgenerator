@@ -1,14 +1,14 @@
 import sbt._
 import Keys._
 
-object TestgenCoreBuild extends Build {
+object TestgeneratorCoreBuild extends Build {
 
-  lazy val testgenCore = Project("testgen-core", file("."), settings = mainSettings)
+  lazy val testgeneratorCore = Project("testgenerator-core", file("."), settings = mainSettings)
 
   lazy val mainSettings: Seq[Project.Setting[_]] = Defaults.defaultSettings ++ Seq(
     sbtPlugin := false,
     organization := "com.github.seratch",
-    name := "testgen-core",
+    name := "testgenerator-core",
     version := "1.1",
     publishTo <<= version { (v: String) =>
       val nexus = "https://oss.sonatype.org/"
