@@ -6,10 +6,10 @@ object TestgeneratorBuild extends Build {
   lazy val testgenerator = Project("testgenerator", file("."), settings = mainSettings)
 
   lazy val mainSettings: Seq[Project.Setting[_]] = Defaults.defaultSettings ++ Seq(
-    sbtPlugin := false,
+    sbtPlugin := true,
     organization := "com.github.seratch",
     name := "testgenerator",
-    version := "1.1.0-SNAPSHOT",
+    version := "1.1.0",
     publishTo <<= version { (v: String) =>
       val nexus = "https://oss.sonatype.org/"
         if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
