@@ -11,6 +11,8 @@
 Delete project/plugins directory if it exists and edit project/plugins.sbt as follows:
 
 ```scala
+resolvers += "sonatype" at "http://oss.sonatype.org/content/repositories/releases"
+
 addSbtPlugin("com.github.seratch" %% "testgenerator" % "1.1.0")
 ```
 
