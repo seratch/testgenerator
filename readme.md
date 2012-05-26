@@ -1,4 +1,4 @@
-# Scala Test Generator sbt 0.11+ plugin 
+# Scala test generator sbt plugin 
 
 ## How to setup
 
