@@ -18,7 +18,7 @@ class TestgenExecutorSuite extends FunSuite with ShouldMatchers {
     val config = new Config
     val executor = new TestgenExecutor(config)
     val tests = executor.generateTests("testgenerator")
-    tests.size should be(20)
+    tests.size should be(22)
   }
 
 }

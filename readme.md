@@ -1,212 +1,135 @@
-# scala-testgen : Scala Unit Test Template Generator
+# Scala Test Generator sbt 0.11+ plugin 
 
-## Setup
+## How to setup
 
-Please check the following page.
+### Requirement
 
-### [testgen-sbt/readme.md](https://github.com/seratch/testgen-sbt/blob/master/readme.md)
+[xsbt 0.11.x](https://github.com/harrah/xsbt)
 
-## Overview
+### Add this plugin to project/plugins.sbt
 
-The default template is "FunSuite with ShouldMatchers", but it's also possible to specify other templates, such as ScalaTest or specs/specs2.
+Delete project/plugins directory if it exists and edit project/plugins.sbt as follows:
 
-### Class
+```scala
+addSbtPlugin("com.github.seratch" %% "testgenerator" % "1.1.0")
+```
+
+or use ls:
+
+[testgenerator @ ls.implicit.ly](http://ls.implicit.ly/seratch/testgenerator)
+
+```
+ls -n testgenerator
+ls-install testgenerator
+```
+
+### Add the settings to built.sbt
+
+```scala
+seq(testgeneratorSettings: _*)
+```
+
+
+## Run sbt
+
+"testgenerator" requires xsbt 0.11.x.
+
+See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
+
+### Specify a filename
+
+src/main/scala/com/example/models.scala:
 
 ```scala
 package com.example
-case class Name(first: String, last: String)
+case class Staff(id: Long, name: String, ...)
+case class Company(id: Long, name: String, ...)
+case class Stock(id: Long, itemId: Long, ...)
 ```
 
-When you run "testgen" via sbt:
+And specify the above file:
 
 ```sh
 $ sbt
-> testgen com.example.Name
-"com.example.NameSuite" created.
+> test-gen com/example/models.scala
+"com.example.StaffSpec" already exists.
+"com.example.CompanySpec" already exists.
+"com.example.StockSpec" created.
 ```
 
-the following code will be generated:
+### Specify a class name
 
-```scala
-package com.example
+If you specify a class name, it must be the name of the source file.
 
-import org.scalatest._
-import org.scalatest.matchers._
-
-class NameSuite extends FunSuite with ShouldMatchers {
-
-  test("available") {
-    val first: String = ""
-    val last: String = ""
-    val instance = new Name(first,last)
-    instance should not be null
-  }
-
-}
-```
-
-Also for classes which import other types:
-
-```scala
-package com.example
-import entity.Bean
-class BeanHolder(val bean: Bean) extends AbstractHolder
-```
-
-Run "testgen":
+"com.example.MyApp" will be translated as "src/main/scala/com/example/MyApp.scala".
 
 ```sh
 $ sbt
-> testgen com.example.BeanHolder
-"com.example.BeanHolderSpec" created.
+> test-gen com.example.MyApp
+"com.example.MyAppSpec" created.
 ```
 
-"entity.Bean" will be imported in the generated test:
+### Specify a directory
 
-```scala
-package com.example
-
-import org.scalatest._
-import org.scalatest.matchers._
-import entity.Bean
-
-class BeanHolderSpec extends FlatSpec with MustMatchers {
-
-  behaivor of "BeanHolder"
-
-  it should "be available" in {
-    val bean: Bean = null
-    val instance = new BeanHolder(bean)
-    instance must not be null
-  }
-
-}
-```
-
-Following is an example with specs/specs2:
-
-```scala
-class BeanHolderSpec extends Specification {
-
-  "BeanHolder" should {
-    "be available" in {
-      val instance = new Sample()
-      instance must notBeNull
-      // (specs2) instance must not beNull 
-    }
-  }
- 
-}
-```
-
-### Object
-
-```scala
-package com.example
-object Util
-```
-
-Run "testgen" via sbt:
+"test-gen" will search targets recursively under the directory.
 
 ```sh
 $ sbt
-> testgen com.example.Util
-"com.example.UtilSuite" created.
+> test-gen com/example
 ```
 
-The following code will be generated:
+### Specify a package name
 
-```scala
-package com.example
-
-import org.scalatest._
-import org.scalatest.matchers._
-
-class UtilSuite extends FunSuite with ShouldMatchers {
-
-  test("available") {
-    Util.isInstanceOf[Singleton] should equal(true)
-  }
-
-}
-```
-
-### Trait
-
-```scala
-package com.example
-trait Writable
-```
-
-Run "testgen" via sbt:
+The same as specifying a directory.
 
 ```sh
 $ sbt
-> testgen com.example.Writable
-"com.example.WritableSuite" created.
+> test-gen com.example
+"com.example.MyAppSpec" created.
+"com.example.util.MyUtilSpec" created.
 ```
 
-The following code will be generated:
+## Configuration
+
+Please add the following line at the top of your buid.sbt:
 
 ```scala
-package com.example
-
-import org.scalatest._
-import org.scalatest.matchers._
-
-class WritableSuite extends FunSuite with ShouldMatchers {
-
-  test("available") {
-    val mixedin = new Object with Writable
-    mixedin should not be null
-  }
-
-}
+import testgenerator.SbtKeys._
 ```
 
-## Usage with sbt
+and then,
 
-Please check the following page.
+```scala
+seq(testgeneratorSettings: _*)
 
-### [testgen-sbt/readme.md](https://github.com/seratch/testgen-sbt/blob/master/readme.md)
+testgeneratorEncoding in Compile := "UTF-8"
 
+testgeneratorTestTemplate in Compile := "scalatest.FlatSpec"
 
-## Usage with maven 
+testgeneratorScalaTestMatchers in Compile := "ShouldMatchers"
 
-### How to setup
+testgeneratorWithJUnitRunner in Compile := false 
 
-#### pom.xml
-
-```xml
-<build>
-  <plugins>
-    <plugin>
-      <groupId>com.github.seratch</groupId>
-      <artifactId>maven-testgen-plugin</artifactId>
-      <version>1.0.1</version>
-      <!-- If you need
-      <configuration>
-        <srcDir>src/main/scala</srcDir>
-        <srcTestDir>src/test/scala</srcTestDir>
-        <encoding>UTF-8</encoding>
-        <testTemplate>scalatest.FunSuite</testTemplate>
-        <scalatest_Matchers>ShouldMatchers</scalatest_Matchers>
-        <withJUnitRunner>false</withJUnitRunner>
-        <lineBreak>CRLF</lineBreak>
-      </configuration>
-      -->
-    </plugin>
-  </plugins>
-</build>
+testgeneratorLineBreak in Compile := "LF"
 ```
 
-### Run "testgen" goal
+### testgeneratorTestTemplate
 
-The rule to specify targets is the same as with the sbt plugin.
+- ["scalatest.FunSuite"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.FunSuite)
+- ["scalatest.Assertions"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.Assertions)
+- ["scalatest.Spec"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.Spec)
+- ["scalatest.WordSpec"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.WordSpec)
+- ["scalatest.FlatSpec"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.FlatSpec) (default)
+- ["scalatest.FeatureSpec"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.FeatureSpec)
+- ["specs.Specification"](http://code.google.com/p/specs/wiki/DeclareSpecifications)
+- ["specs2.Specification"](http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html#Quick+Start)
 
-```sh
-maven testgen:run -Dtarget=com.exmaple.MyApp
-```
+### testgenScalaTestMatchers
+
+- ["ShouldMatchers"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.matchers.ShouldMatchers) (default)
+- ["MustMatchers"](http://www.scalatest.org/scaladoc/1.6.1/#org.scalatest.matchers.MustMatchers)
+- "" (empty)
+
 
 ## Happy Testing! :)
 

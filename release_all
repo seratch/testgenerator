@@ -1,0 +1,7 @@
+#!/bin/sh
+#./sbt_0.11.0 +publish
+#./sbt_0.11.1 +publish
+./sbt_0.11.2 +publish
+./sbt_0.11.3 +publish
+
+
