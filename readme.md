@@ -2,39 +2,21 @@
 
 ## How to setup
 
-### Requirement
-
-[xsbt 0.11.x](https://github.com/harrah/xsbt)
-
 ### Add this plugin to project/plugins.sbt
 
 Delete project/plugins directory if it exists and edit project/plugins.sbt as follows:
 
 ```scala
-resolvers += "sonatype" at "http://oss.sonatype.org/content/repositories/releases"
-
 addSbtPlugin("com.github.seratch" %% "testgenerator" % "1.1.0")
-```
-
-or use ls:
-
-[testgenerator @ ls.implicit.ly](http://ls.implicit.ly/seratch/testgenerator)
-
-```
-ls -n testgenerator
-ls-install testgenerator
 ```
 
 ### Add the settings to built.sbt
 
 ```scala
-seq(testgeneratorSettings: _*)
+testgeneratorSettings
 ```
 
-
 ## Run sbt
-
-"testgenerator" requires xsbt 0.11.x.
 
 See also: [https://github.com/harrah/xsbt/wiki/Setup](https://github.com/harrah/xsbt/wiki/Setup)
 
@@ -102,7 +84,7 @@ import testgenerator.SbtKeys._
 and then,
 
 ```scala
-seq(testgeneratorSettings: _*)
+testgeneratorSettings
 
 testgeneratorEncoding in Compile := "UTF-8"
 
