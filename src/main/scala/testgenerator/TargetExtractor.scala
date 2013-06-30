@@ -58,8 +58,13 @@ class TargetExtractor(val config: Config) {
       case eachDefOnly => {
         val fullPackageName = eachDefOnly.trim.split("\\s+").toList.head
         val parser = new TargetParser(fullPackageName, importedList)
-        val defOnlyToParse = eachDefOnly.replaceFirst(fullPackageName, "")
-        parser.parse(defOnlyToParse).getOrElse(Nil)
+        try {
+          val defOnlyToParse = eachDefOnly.replaceFirst(fullPackageName, "")
+          parser.parse(defOnlyToParse).getOrElse(Nil)
+        } catch { case e: Exception =>
+          debugLog.ifDebug("Failed to parse defOnly because " + e.getMessage)
+          Nil
+        }
       }
     }
   }
