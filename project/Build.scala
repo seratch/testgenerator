@@ -9,14 +9,13 @@ object TestgeneratorBuild extends Build {
     sbtPlugin := true,
     organization := "com.github.seratch",
     name := "testgenerator",
-    version := "1.1.0",
-    scalaVersion := "2.9.2",
+    version := "1.1.1",
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
       Seq(
-        "junit" % "junit" % "4.10" % "test",
-        "org.scalatest" %% "scalatest" % "1.7.2" % "test",
-        "org.scala-tools.testing" % "specs_2.9.0" % "1.6.8" % "test",
-        "org.specs2" %% "specs2" % "1.9" % "test"
+        "junit"                   % "junit"        % "4.10" % "test",
+        "org.scalatest"           %% "scalatest"   % "1.9.1" % "test",
+        "org.scala-tools.testing" %  "specs_2.9.0" % "1.6.8" % "test",
+        "org.specs2"              %% "specs2"      % "1.12.4.1" % "test"
      )
     },
     externalResolvers ~= (_.filter(_.name != "Scala-Tools Maven2 Repository")),
