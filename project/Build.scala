@@ -12,10 +12,10 @@ object TestgeneratorBuild extends Build {
     version := "1.1.1",
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
       Seq(
-        "junit"                   % "junit"        % "4.10" % "test",
+        "junit"                   % "junit"        % "4.11"  % "test",
         "org.scalatest"           %% "scalatest"   % "1.9.1" % "test",
         "org.scala-tools.testing" %  "specs_2.9.0" % "1.6.8" % "test",
-        "org.specs2"              %% "specs2"      % "1.12.4.1" % "test"
+        "org.specs2"              %% "specs2"      % "1.14"  % "test"
      )
     },
     externalResolvers ~= (_.filter(_.name != "Scala-Tools Maven2 Repository")),
