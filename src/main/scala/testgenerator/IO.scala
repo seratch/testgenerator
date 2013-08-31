@@ -26,10 +26,10 @@ object IO {
     } finally {
       closable match {
         case null =>
-        case _ => try {
+        case e: Exception => try {
           closable.close()
         } catch {
-          case _ =>
+          case e: Exception =>
         }
       }
     }
