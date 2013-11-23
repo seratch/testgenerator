@@ -7,7 +7,7 @@
 Delete project/plugins directory if it exists and edit project/plugins.sbt as follows:
 
 ```scala
-addSbtPlugin("com.github.seratch" %% "testgenerator" % "1.1.0")
+addSbtPlugin("com.github.seratch" %% "testgenerator" % "1.1.1")
 ```
 
 ### Add the settings to built.sbt
